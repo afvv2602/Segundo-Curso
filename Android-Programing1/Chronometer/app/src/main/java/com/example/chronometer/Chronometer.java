@@ -39,7 +39,9 @@ public class Chronometer extends Service {
         handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
-                activityListener.updateChronometer(time);
+                if (activityListener != null) {
+                    activityListener.updateChronometer(time);
+                }
             }
         };
     }
@@ -56,20 +58,22 @@ public class Chronometer extends Service {
     }
 
     // Método para iniciar el cronómetro
-    private void startCronometer() {
-        timer.scheduleAtFixedRate(new TimerTask() {
+    public void startCronometer() {
+        handler.postDelayed(new Runnable() {
+            @Override
             public void run() {
                 time += 0.01;
                 handler.sendEmptyMessage(0);
+                handler.postDelayed(this, INTERVAL);
             }
-        }, 0, INTERVAL);
+        }, INTERVAL);
     }
 
     // Método para detener el cronómetro
-    private void stopCronometer() {
-        if (timer != null)
-            timer.cancel();
+    public void stopCronometer() {
+        handler.removeCallbacksAndMessages(null);
     }
+
     public void resetTime() {
         this.time = 0;
     }

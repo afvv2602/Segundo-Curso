@@ -15,7 +15,7 @@ import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
     private TextView tvChronometer;
-    private Button btnStart, btnStop, btnReset;
+    private Button btnStart, btnReset;
     private boolean isRunning = false;
     private DecimalFormat df = new DecimalFormat("00");
 
@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
 
         tvChronometer = findViewById(R.id.tv_chronometer);
         btnStart = findViewById(R.id.btn_start);
-        btnStop = findViewById(R.id.btn_stop);
         btnReset = findViewById(R.id.btn_reset);
 
         // Establecer el comportamiento al hacer clic en el botón de inicio
@@ -54,19 +53,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!isRunning) {
-                    startChronometerService();
+                    if (chronometer != null) {
+                        chronometer.startCronometer();
+                    }
                     isRunning = true;
-                }
-            }
-        });
-
-        // Establecer el comportamiento al hacer clic en el botón de detener
-        btnStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isRunning) {
-                    stopChronometerService();
+                    btnStart.setText("Pause"); // Cambiar el texto del botón a "Pause"
+                } else {
+                    if (chronometer != null) {
+                        chronometer.stopCronometer();
+                    }
                     isRunning = false;
+                    btnStart.setText("Start"); // Cambiar el texto del botón a "Start"
                 }
             }
         });
@@ -84,17 +81,6 @@ public class MainActivity extends AppCompatActivity {
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
-    // Método para iniciar el servicio Chronometer
-    private void startChronometerService() {
-        Intent intent = new Intent(this, Chronometer.class);
-        startService(intent);
-    }
-
-    // Método para detener el servicio Chronometer
-    private void stopChronometerService() {
-        Intent intent = new Intent(this, Chronometer.class);
-        stopService(intent);
-    }
 
     // Método para actualizar la UI del cronómetro
     public void updateChronometer(double time) {
@@ -124,6 +110,6 @@ public class MainActivity extends AppCompatActivity {
             unbindService(serviceConnection);
             isBound = false;
         }
-        stopChronometerService();
+        chronometer.stopCronometer();
     }
 }
