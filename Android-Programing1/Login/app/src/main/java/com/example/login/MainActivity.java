@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashMap;
@@ -30,12 +31,12 @@ public class MainActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.passwordEditText);
 
         Button loginButton = findViewById(R.id.loginButton);
+        Button registerButton = findViewById(R.id.registerButton);
+        TextView forgotPass  = findViewById(R.id.forgotPasswordTextView);
 
-        //Llamamos a la funcion login y si el usuario y la contraseña estan en el hashmap entonces pasamos
-        //A la siguiente actividad
         loginButton.setOnClickListener(v -> login());
-
-
+        registerButton.setOnClickListener(v -> register());
+        forgotPass.setOnClickListener(v -> forgotPass());
     }
 
     private boolean isValidUser(String username, String password) {
@@ -48,11 +49,23 @@ public class MainActivity extends AppCompatActivity {
         String password = passwordEditText.getText().toString();
 
         if (isValidUser(username, password)) {
-            Intent intent = new Intent(MainActivity.this, WelcomePage.class);
+            Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
             intent.putExtra("username", username);
             startActivity(intent);
         } else {
             Toast.makeText(MainActivity.this, "Usuario o contraseña inválidos", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void register(){
+        Intent registerIntent = new Intent(MainActivity.this, RegisterActivity.class);
+        startActivity(registerIntent);
+    }
+
+    private void forgotPass(){
+        Intent forgotPasswordIntent = new Intent(MainActivity.this, ForgotPasswordActivity.class);
+        String username = usernameEditText.getText().toString();
+        forgotPasswordIntent.putExtra("username", username);
+        startActivity(forgotPasswordIntent);
     }
 }

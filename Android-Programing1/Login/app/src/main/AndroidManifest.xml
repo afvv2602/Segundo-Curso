@@ -21,7 +21,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".WelcomePage"></activity>
+        <activity android:name=".WelcomeActivity"></activity>
+        <activity android:name=".ForgotPasswordActivity"></activity>
+        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".RegisterDetailsActivity"></activity>
     </application>
 
 </manifest>
