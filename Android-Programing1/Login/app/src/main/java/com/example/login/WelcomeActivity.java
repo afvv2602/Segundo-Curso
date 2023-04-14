@@ -25,5 +25,5 @@ public class WelcomeActivity extends AppCompatActivity {
     private void logout(){
         finish();
     }
-    
+
     }
