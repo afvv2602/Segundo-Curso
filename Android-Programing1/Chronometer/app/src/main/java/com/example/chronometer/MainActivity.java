@@ -49,38 +49,30 @@ public class MainActivity extends AppCompatActivity {
         btnReset = findViewById(R.id.btn_reset);
 
         // Establecer el comportamiento al hacer clic en el botón de inicio
-        btnStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isRunning) {
-                    if (chronometer != null) {
-                        chronometer.startCronometer();
-                    }
-                    isRunning = true;
-                    btnStart.setText("Pause"); // Cambiar el texto del botón a "Pause"
-                } else {
-                    if (chronometer != null) {
-                        chronometer.stopCronometer();
-                    }
-                    isRunning = false;
-                    btnStart.setText("Start"); // Cambiar el texto del botón a "Start"
-                }
-            }
-        });
+        btnStart.setOnClickListener(v -> playPause());
 
         // Establecer el comportamiento al hacer clic en el botón de reinicio
-        btnReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetChronometer();
-            }
-        });
+        btnReset.setOnClickListener(v -> resetChronometer());
 
         // Enlazar el servicio Chronometer cuando se crea la actividad
         Intent intent = new Intent(this, Chronometer.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
-
+    private void playPause(){
+        if (!isRunning) {
+            if (chronometer != null) {
+                chronometer.startCronometer();
+            }
+            isRunning = true;
+            btnStart.setText("Pause"); // Cambiar el texto del botón a "Pause"
+        } else {
+            if (chronometer != null) {
+                chronometer.stopCronometer();
+            }
+            isRunning = false;
+            btnStart.setText("Start"); // Cambiar el texto del botón a "Start"
+        }
+    }
 
     // Método para actualizar la UI del cronómetro
     public void updateChronometer(double time) {
@@ -112,4 +104,6 @@ public class MainActivity extends AppCompatActivity {
         }
         chronometer.stopCronometer();
     }
+
+
 }

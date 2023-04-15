@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Tema dia -->
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryVariant">#3700B3</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorSecondary">#03DAC5</color>
+    <color name="colorSecondaryVariant">#018786</color>
+    <color name="colorOnSecondary">#000000</color>
+
+    <!-- Tema noche -->
+    <color name="colorPrimaryNight">#BB86FC</color>
+    <color name="colorPrimaryVariantNight">#3700B3</color>
+    <color name="colorOnPrimaryNight">#000000</color>
+    <color name="colorSecondaryNight">#03DAC5</color>
+    <color name="colorSecondaryVariantNight">#018786</color>
+    <color name="colorOnSecondaryNight">#FFFFFF</color>
 </resources>
