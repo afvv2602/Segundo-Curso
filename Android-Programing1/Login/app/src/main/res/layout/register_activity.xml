@@ -3,34 +3,59 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/colorBackground"
     tools:context=".RegisterActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_height="match_parent"
+        android:background="@color/colorBackground"
+        tools:context=".RegisterActivity">
+
+        <TextView
+            android:id="@+id/Tittle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Registrarse"
+            android:textColor="@color/colorPrimary"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@id/userEditText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <EditText
             android:id="@+id/userEditText"
             android:layout_width="0dp"
             android:layout_height="48dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="8dp"
             android:background="@android:color/transparent"
             android:ems="10"
             android:hint="User"
+            android:textColor="@color/colorOnSecondary"
+            app:layout_constraintBottom_toTopOf="@id/emailEditText"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/Tittle" />
 
         <EditText
             android:id="@+id/emailEditText"
             android:layout_width="0dp"
             android:layout_height="48dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
             android:background="@android:color/transparent"
             android:ems="10"
             android:hint="Email"
             android:inputType="textEmailAddress"
+            android:textColor="@color/colorOnSecondary"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/userEditText" />
 
@@ -38,11 +63,15 @@
             android:id="@+id/phoneEditText"
             android:layout_width="0dp"
             android:layout_height="48dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
             android:background="@android:color/transparent"
             android:ems="10"
             android:hint="Phone"
             android:inputType="phone"
+            android:textColor="@color/colorOnSecondary"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
 
@@ -50,19 +79,23 @@
             android:id="@+id/genreRadioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/phoneEditText">
 
             <RadioButton
                 android:id="@+id/maleRadioButton"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:buttonTint="@color/colorSecondaryVariant"
                 android:text="Male" />
 
             <RadioButton
                 android:id="@+id/femaleRadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:buttonTint="@color/colorSecondaryVariant"
                 android:text="Female" />
 
         </RadioGroup>
@@ -71,6 +104,9 @@
             android:id="@+id/conditionsCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:buttonTint="@color/colorSecondaryVariant"
             android:text="Aceptar condiciones"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/genreRadioGroup" />
@@ -79,10 +115,12 @@
             android:id="@+id/registerButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@color/colorPrimary"
             android:text="Registrar"
-            android:textColor="#FFFFFF"
-            android:background="#4E4E4E"
+            android:textColor="@color/colorBackground"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/conditionsCheckBox" />
 

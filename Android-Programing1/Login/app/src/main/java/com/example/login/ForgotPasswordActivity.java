@@ -15,6 +15,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
     private EditText forgotUsernameEditText;
     private Button recoverButton;
+
+    private String username;
     private Button backToLoginButton;
     private TextView recoveredPasswordTextView;
 
@@ -31,9 +33,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         forgotUsernameEditText = findViewById(R.id.forgotUsernameEditText);
         recoverButton = findViewById(R.id.recoverButton);
         // Recupera el nombre de usuario y establece el valor en el campo de texto
-        String username = getIntent().getStringExtra("username");
+        username = getIntent().getStringExtra("username");
         if (username != null && !username.isEmpty()) {
-            forgotUsernameEditText.setText(username);
+            forgotUsernameEditText.setText(String.format("Username:  %s", username));
         }
 
         backToLoginButton = findViewById(R.id.backToLoginButton);
@@ -44,7 +46,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void RecoverPass(){
-        String username = forgotUsernameEditText.getText().toString();
+        if (username.isEmpty()){
+            username = ((EditText) findViewById(R.id.forgotUsernameEditText)).getText().toString();
+        }
         String password = users.get(username);
 
         if (password != null) {

@@ -2,8 +2,7 @@
     <!-- Base application theme. -->
     <style name="Dark" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimaryNight</item>
-        <item name="colorPrimaryVariant">@color/colorPrimaryVariantNight</item>
-        <item name="colorOnPrimary">@color/colorOnPrimaryNight</item>
+        <item name="backgroundColor">@color/colorBackgroundNight</item>
         <item name="colorSecondary">@color/colorSecondaryNight</item>
         <item name="colorSecondaryVariant">@color/colorSecondaryVariantNight</item>
         <item name="colorOnSecondary">@color/colorOnSecondaryNight</item>

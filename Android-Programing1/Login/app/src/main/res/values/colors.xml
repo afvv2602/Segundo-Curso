@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Tema dia -->
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryVariant">#3700B3</color>
-    <color name="colorOnPrimary">#FFFFFF</color>
-    <color name="colorSecondary">#03DAC5</color>
-    <color name="colorSecondaryVariant">#018786</color>
+    <color name="colorPrimary">#007AFF </color>
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorSecondary">#28B62C </color>
+    <color name="colorSecondaryVariant">#FFD700 </color>
     <color name="colorOnSecondary">#000000</color>
 
     <!-- Tema noche -->
-    <color name="colorPrimaryNight">#BB86FC</color>
-    <color name="colorPrimaryVariantNight">#3700B3</color>
-    <color name="colorOnPrimaryNight">#000000</color>
-    <color name="colorSecondaryNight">#03DAC5</color>
-    <color name="colorSecondaryVariantNight">#018786</color>
+    <color name="colorPrimaryNight">#E5E5E5</color>
+    <color name="colorBackgroundNight">#1A1A1A </color>
+    <color name="colorSecondaryNight">#FF6700 </color>
+    <color name="colorSecondaryVariantNight">#4B0082</color>
     <color name="colorOnSecondaryNight">#FFFFFF</color>
 </resources>
