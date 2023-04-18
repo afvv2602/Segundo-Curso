@@ -20,6 +20,7 @@ public class WelcomeActivity extends AppCompatActivity {
         welcomeTextView.setText(String.format("Welcome, %s", username));
 
         logoutButton.setOnClickListener(v -> logout());
+
         }
 
     private void logout(){
