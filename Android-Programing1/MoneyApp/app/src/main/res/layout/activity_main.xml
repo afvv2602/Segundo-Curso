@@ -31,8 +31,6 @@
             android:layout_marginStart="30dp"
             android:text="Cantidad " />
 
-
-
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -43,6 +41,13 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/mostrar_gastos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_stat_name" />
 
     <LinearLayout
         android:layout_width="match_parent"

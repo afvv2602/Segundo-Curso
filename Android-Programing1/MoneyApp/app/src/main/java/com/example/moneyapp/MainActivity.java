@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerViewController adapter; // Adaptador personalizado para el RecyclerView
@@ -25,11 +27,11 @@ public class MainActivity extends AppCompatActivity {
 
         Button addButton = findViewById(R.id.addButton);
         Button removeButton = findViewById(R.id.removeButton);
-
+        FloatingActionButton mostrarGastosButton = findViewById(R.id.mostrar_gastos);
 
         removeButton.setOnClickListener(v -> removePair());
         addButton.setOnClickListener( v -> addPair());
-        //addButton.setOnClickListener(v -> calcularYEnviar());
+        mostrarGastosButton.setOnClickListener(v -> calcularYEnviar());
     }
 
     // Método para inicializar la lista con 4 pares automáticamente
