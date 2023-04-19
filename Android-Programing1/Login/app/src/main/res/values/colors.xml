@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Tema dia -->
-    <color name="colorPrimary">#007AFF </color>
-    <color name="colorBackground">#FFFFFF</color>
-    <color name="colorSecondary">#28B62C </color>
-    <color name="colorSecondaryVariant">#FFD700 </color>
-    <color name="colorOnSecondary">#000000</color>
+    <color name="primary">#00BCD4 </color>
+    <color name="primary_dark">#0097A7 </color>
+    <color name="primary_light">#B2EBF2</color>
+    <color name="accent">#FF4081</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#BDBDBD</color>
 
     <!-- Tema noche -->
-    <color name="colorPrimaryNight">#E5E5E5</color>
-    <color name="colorBackgroundNight">#1A1A1A </color>
-    <color name="colorSecondaryNight">#FF6700 </color>
-    <color name="colorSecondaryVariantNight">#4B0082</color>
-    <color name="colorOnSecondaryNight">#FFFFFF</color>
+<!--    <color name="primary">#00BCD4 </color>-->
+<!--    <color name="primary_dark">#0097A7 </color>-->
+<!--    <color name="primary_light">#B2EBF2</color>-->
+<!--    <color name="accent">#FF4081</color>-->
+<!--    <color name="primary_text">#212121</color>-->
+<!--    <color name="secondary_text">#757575</color>-->
+<!--    <color name="icons">#FFFFFF</color>-->
+<!--    <color name="divider">#BDBDBD</color>-->
 </resources>
