@@ -37,7 +37,9 @@ public class RegisterActivity extends AppCompatActivity {
         femaleRadioButton = findViewById(R.id.femaleRadioButton);
         conditionsCheckBox = findViewById(R.id.conditionsCheckBox);
         registerButton = findViewById(R.id.registerButton);
+        Button themeButton = findViewById(R.id.themeSwitchBut);
 
+        themeButton.setOnClickListener(v -> ThemeController.switchTheme(this));
         registerButton.setOnClickListener(v -> register());
     }
 

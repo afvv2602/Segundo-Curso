@@ -1,7 +1,6 @@
 package com.example.login;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -18,8 +17,10 @@ public class WelcomeActivity extends AppCompatActivity {
         Button logoutButton = findViewById(R.id.logoutButton);
         String username = getIntent().getStringExtra("username");
         welcomeTextView.setText(String.format("Welcome, %s", username));
+        Button themeButton = findViewById(R.id.themeSwitchBut);
 
         logoutButton.setOnClickListener(v -> logout());
+        themeButton.setOnClickListener(v -> ThemeController.switchTheme(this));
 
         }
 

@@ -8,6 +8,5 @@
         <item name="colorSecondaryVariant">@color/accent</item>
         <item name="colorOnSecondary">@color/icons</item>
         <item name="android:statusBarColor" tools:tagetApi="1">@color/primary</item>
-
     </style>
 </resources>

@@ -40,7 +40,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         backToLoginButton = findViewById(R.id.backToLoginButton);
         recoveredPasswordTextView = findViewById(R.id.recoveredPasswordTextView);
+        Button themeButton = findViewById(R.id.themeSwitchBut);
 
+        themeButton.setOnClickListener(v -> ThemeController.switchTheme(this));
         recoverButton.setOnClickListener(v -> RecoverPass());
         backToLoginButton.setOnClickListener(v -> BackToLogin());
     }

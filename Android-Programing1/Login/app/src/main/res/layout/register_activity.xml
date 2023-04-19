@@ -11,6 +11,17 @@
         android:layout_height="match_parent"
         tools:context=".RegisterActivity">
 
+        <Button
+            android:id="@+id/themeSwitchBut"
+            android:layout_width="93dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="4dp"
+            android:text="Theme"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.949"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/Tittle"
             android:layout_width="wrap_content"

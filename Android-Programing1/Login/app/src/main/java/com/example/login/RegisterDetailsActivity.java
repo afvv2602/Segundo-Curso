@@ -3,6 +3,7 @@ package com.example.login;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class RegisterDetailsActivity extends AppCompatActivity {
@@ -23,7 +24,7 @@ public class RegisterDetailsActivity extends AppCompatActivity {
         phoneTextView = findViewById(R.id.phoneTextView);
         genreTextView = findViewById(R.id.genreTextView);
         conditionsTextView = findViewById(R.id.conditionsTextView);
-
+        Button themeButton = findViewById(R.id.themeSwitchBut);
         String user = getIntent().getStringExtra("user");
         String email = getIntent().getStringExtra("email");
         String phone = getIntent().getStringExtra("phone");
@@ -36,5 +37,7 @@ public class RegisterDetailsActivity extends AppCompatActivity {
         phoneTextView.setText(String.format("Phone:  %s", phone));
         genreTextView.setText(String.format("Genre:  %s", genre));
         conditionsTextView.setText(conditionsAccepted ? "Condiciones aceptadas" : "Condiciones no aceptadas");
+
+        themeButton.setOnClickListener(v -> ThemeController.switchTheme(this));
     }
 }
