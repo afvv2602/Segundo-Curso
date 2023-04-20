@@ -10,12 +10,15 @@
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_weight="1"
-        android:text="" />
+        android:hint="Nombre"
+        />
 
     <EditText
         android:id="@+id/cantidad"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_weight="1"
-        android:text="" />
+        android:hint="Dinero pagado"
+        android:inputType="numberDecimal"
+     />
 </LinearLayout>

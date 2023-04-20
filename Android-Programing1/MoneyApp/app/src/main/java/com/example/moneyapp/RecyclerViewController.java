@@ -17,6 +17,9 @@ public class RecyclerViewController extends RecyclerView.Adapter<RecyclerViewCon
     // Lista de datos que se mostrarán en las parejas de EditText
     private List<String> data;
 
+    private RecyclerView recyclerView;
+
+
     public RecyclerViewController() {
         data = new ArrayList<>(); // Inicializar la lista de datos vacía
     }
@@ -33,8 +36,8 @@ public class RecyclerViewController extends RecyclerView.Adapter<RecyclerViewCon
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String text = data.get(position);
-        holder.nombre.setText(text + " - 1");
-        holder.cantidad.setText(text + " - 2");
+        holder.nombre.setText(text);
+        holder.cantidad.setText(text);
     }
 
     // Este método devuelve la cantidad de elementos en la lista de datos
@@ -47,6 +50,10 @@ public class RecyclerViewController extends RecyclerView.Adapter<RecyclerViewCon
     public void addItem(String item) {
         data.add(item);
         notifyItemInserted(data.size() - 1);
+    }
+
+    public void setRecyclerView(RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
     }
 
     // Esta clase interna representa la vista de una pareja de EditText y contiene referencias a las vistas
@@ -67,6 +74,21 @@ public class RecyclerViewController extends RecyclerView.Adapter<RecyclerViewCon
             data.remove(data.size() - 1);
             notifyItemRemoved(data.size());
         }
+    }
+
+    // Método para obtener la lista actualizada de datos de los EditText
+    public List<String> getUpdatedData() {
+        List<String> updatedData = new ArrayList<>(); // Crear una lista vacía para almacenar los datos actualizados
+        for (int i = 0; i < getItemCount(); i++) { // Iterar sobre todos los elementos del RecyclerView
+            ViewHolder viewHolder = (ViewHolder) recyclerView.findViewHolderForAdapterPosition(i); // Obtener el ViewHolder en la posición 'i'
+            if (viewHolder != null) { // Verificar si el ViewHolder no es nulo
+                String nombre = viewHolder.nombre.getText().toString(); // Obtener el texto del EditText 'nombre'
+                String cantidad = viewHolder.cantidad.getText().toString(); // Obtener el texto del EditText 'cantidad'
+                updatedData.add(nombre); // Agregar el nombre a la lista updatedData
+                updatedData.add(cantidad); // Agregar la cantidad a la lista updatedData
+            }
+        }
+        return updatedData; // Devolver la lista actualizada de datos
     }
 
     // Devuelve la lista
