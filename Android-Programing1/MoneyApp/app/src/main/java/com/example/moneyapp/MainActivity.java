@@ -11,6 +11,7 @@ import android.widget.Button;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -66,14 +67,8 @@ public class MainActivity extends AppCompatActivity {
     //Metodo para calcular y enviar los datos de los EditText a la actividad MostrarGastos
     private void calcularYEnviar() {
         Intent intent = new Intent(MainActivity.this, MostrarGastos.class); // Crear un Intent para iniciar la actividad MostrarGastos
-        StringBuilder data = new StringBuilder(); // Crear un StringBuilder para almacenar los datos como un solo String
-        List<String> updatedData = adapter.getUpdatedData(); // Obtener los datos actualizados de los EditText utilizando el método getUpdatedData()
-        for (int i = 0; i < updatedData.size(); i++) { // Iterar sobre todos los elementos de la lista updatedData
-            data.append(updatedData.get(i)); // Agregar el elemento actual a 'data'
-            Log.v("", "###" + updatedData.get(i)); // Imprimir el elemento actual en el Logcat (para depuración)
-        }
-        
-        intent.putExtra("data", data.toString()); // Agregar el String 'data' como extra en el Intent
+        List<Persona> updatedData = adapter.getUpdatedData(); // Obtener los datos actualizados de los EditText utilizando el método getUpdatedData()
+        intent.putExtra("list",(Serializable) updatedData);
         startActivity(intent); // Iniciar la actividad MostrarGastos con el Intent
     }
 }

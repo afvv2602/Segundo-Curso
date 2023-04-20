@@ -74,15 +74,15 @@ public class RecyclerViewController extends RecyclerView.Adapter<RecyclerViewCon
     }
 
     // Método para obtener la lista actualizada de datos de los EditText
-    public List<String> getUpdatedData() {
-        List<String> updatedData = new ArrayList<>(); // Crear una lista vacía para almacenar los datos actualizados
+    public List<Persona> getUpdatedData() {
+        List<Persona> updatedData = new ArrayList<>(); // Crear una lista vacía para almacenar los datos actualizados
         for (int i = 0; i < getItemCount(); i++) { // Iterar sobre todos los elementos del RecyclerView
             ViewHolder viewHolder = (ViewHolder) recyclerView.findViewHolderForAdapterPosition(i); // Obtener el ViewHolder en la posición 'i'
             if (viewHolder != null) { // Verificar si el ViewHolder no es nulo
                 String nombre = viewHolder.nombre.getText().toString(); // Obtener el texto del EditText 'nombre'
                 String cantidad = viewHolder.cantidad.getText().toString(); // Obtener el texto del EditText 'cantidad'
-                updatedData.add(nombre); // Agregar el nombre a la lista updatedData
-                updatedData.add(cantidad); // Agregar la cantidad a la lista updatedData
+                Persona p = new Persona(nombre,Double.parseDouble(cantidad)); // Creamos una persona y la añadimos a la lista
+                updatedData.add(p);
             }
         }
         return updatedData; // Devolver la lista actualizada de datos
