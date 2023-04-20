@@ -3,6 +3,7 @@ package com.example.moneyapp;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,8 +33,8 @@ public class RecyclerViewController extends RecyclerView.Adapter<RecyclerViewCon
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String text = data.get(position);
-        holder.textView1.setText(text + " - 1");
-        holder.textView2.setText(text + " - 2");
+        holder.nombre.setText(text + " - 1");
+        holder.cantidad.setText(text + " - 2");
     }
 
     // Este método devuelve la cantidad de elementos en la lista de datos
@@ -50,13 +51,13 @@ public class RecyclerViewController extends RecyclerView.Adapter<RecyclerViewCon
 
     // Esta clase interna representa la vista de una pareja de EditText y contiene referencias a las vistas
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textView1;
-        TextView textView2;
+        EditText nombre;
+        EditText cantidad;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView1 = itemView.findViewById(R.id.nombre);
-            textView2 = itemView.findViewById(R.id.cantidad);
+            nombre = itemView.findViewById(R.id.nombre);
+            cantidad = itemView.findViewById(R.id.cantidad);
         }
     }
 

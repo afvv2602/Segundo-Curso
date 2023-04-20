@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+</head>
+<body>
+    <h1>Bienvenido al formulario de registro de usuario</h1>
+    <div id="form">
+        Introduce tu nombre: <input name="name" size="15" type="text" /><br><br>
+        Introduce tu cumpleaños: <input name="age" type="date"><br><br>
+        Introduce tu contraseña: <input name="password" type="password"><br><br>
+        Introuce tu dirección: <textarea name="address" rows="3" cols="30" ></textarea> <br><br>
+        Introduce tu numero de telefono: <input name="tlfnum" type="tel"><br><br>
+        Introduce tu email: <input name="email" type="email"><br><br>
+        Introduce una foto de tu DNI: <input name="dni" type="file"><br><br>
+        <!--Select-->
+        Introduce tu color favorito: 
+        <select multiple="multiple" name="colors">
+            <option> red </option>
+            <option> green </option>
+            <option> yellow </option>
+            <option> blue </option>
+            <option> orange </option>
+            </select><br><br>
+        <p>Selecciona tu preferecia (Solo puede escoger una)</p>
+        <!--Radio button-->
+        <input checked="checked" name="answer" type="radio" value="Manga" /> Manga
+        <input name="answer" type="radio" value="Amime" /> Anime
+            <br><br>
+        <!--Enviar-->
+        Si deseas no enviarlo puedes reiniciar el registro aqui: <input name="reset" type="reset">
+        Enviar el formulario: <input name="Submit" type="submit" value="Enviar" /><br><br>
+    </div>
+</body>
+</html>

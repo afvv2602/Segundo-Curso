@@ -1,0 +1,48 @@
+div#Contenedor{
+	text-align: left;
+	margin: auto;
+	width: 1000px;
+	height: 1000px;
+}
+header{
+	width: 100%;
+	height: 25%;
+	background-color: grey;	
+}
+nav{
+	margin-top: 5px;
+	width: 100%;
+	height: 5%;
+	background-color:brown;
+}
+div#Columnas{
+	margin-top: 5px;
+	width: 100%;
+	height: 65%;
+}
+div.col1{
+	background-color: grey;
+	float: left;
+	width: 24%;
+	height: 100%;
+	margin-right: 10px;
+}
+div.col2{
+	background-color: brown;
+	float: left;
+	width: 24%;
+	height: 100%;
+	margin-right: 10px;
+}
+div.dcha{
+	background-color: brown;
+	float: left;
+	width: 25%;
+	height: 100%;
+}
+footer{
+	margin-top: 5px;
+	height: 5%;
+	width: 100%;
+	background-color: brown;
+}
