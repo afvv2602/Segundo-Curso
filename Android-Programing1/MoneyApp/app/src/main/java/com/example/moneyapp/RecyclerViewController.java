@@ -4,7 +4,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,7 +20,7 @@ public class RecyclerViewController extends RecyclerView.Adapter<RecyclerViewCon
         data = new ArrayList<>(); // Inicializar la lista de datos vacía
     }
 
-    // Este método crea una nueva vista de pareja de TextViews inflándola desde el archivo XML
+    // Este metodo crea una nueva vista de pareja de TextViews añadiendola desde el archivo XML
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -29,7 +28,7 @@ public class RecyclerViewController extends RecyclerView.Adapter<RecyclerViewCon
         return new ViewHolder(view);
     }
 
-    // Este método vincula los datos a las vistas de cada pareja de TextViews
+    // Este metodo vincula los datos a las vistas de cada pareja de TextViews
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String text = data.get(position);
@@ -37,13 +36,13 @@ public class RecyclerViewController extends RecyclerView.Adapter<RecyclerViewCon
         holder.cantidad.setText(text);
     }
 
-    // Este método devuelve la cantidad de elementos en la lista de datos
+    // Este metodo devuelve la cantidad de elementos en la lista de datos
     @Override
     public int getItemCount() {
         return data.size();
     }
 
-    // Este método agrega un nuevo elemento a la lista de datos y notifica al RecyclerView para que actualice la vista
+    // Este metodo agrega un nuevo elemento a la lista de datos y notifica al RecyclerView para que actualice la vista
     public void addItem(String item) {
         data.add(item);
         notifyItemInserted(data.size() - 1);
@@ -53,7 +52,7 @@ public class RecyclerViewController extends RecyclerView.Adapter<RecyclerViewCon
         this.recyclerView = recyclerView;
     }
 
-    // Esta clase interna representa la vista de una pareja de EditText y contiene referencias a las vistas
+    // Esta clase representa la vista de una pareja de EditText y contiene referencias a las vistas
     static class ViewHolder extends RecyclerView.ViewHolder {
         EditText nombre;
         EditText cantidad;
@@ -65,7 +64,7 @@ public class RecyclerViewController extends RecyclerView.Adapter<RecyclerViewCon
         }
     }
 
-    // Este método elimina un elemento de la lista de datos y notifica al RecyclerView para que actualice la vista
+    // Este metodo elimina un elemento de la lista de datos y notifica al RecyclerView para que actualice la vista
     public void removePair() {
         if (!data.isEmpty()) {
             data.remove(data.size() - 1);
@@ -73,15 +72,20 @@ public class RecyclerViewController extends RecyclerView.Adapter<RecyclerViewCon
         }
     }
 
-    // Método para obtener la lista actualizada de datos de los EditText
+    // Metodo para obtener la lista actualizada de datos de los EditText
     public List<Persona> getUpdatedData() {
         List<Persona> updatedData = new ArrayList<>(); // Crear una lista vacía para almacenar los datos actualizados
         for (int i = 0; i < getItemCount(); i++) { // Iterar sobre todos los elementos del RecyclerView
-            ViewHolder viewHolder = (ViewHolder) recyclerView.findViewHolderForAdapterPosition(i); // Obtener el ViewHolder en la posición 'i'
+            ViewHolder viewHolder = (ViewHolder) recyclerView.findViewHolderForAdapterPosition(i); // Obtener el ViewHolder en la posicion 'i'
+            Persona p;
             if (viewHolder != null) { // Verificar si el ViewHolder no es nulo
                 String nombre = viewHolder.nombre.getText().toString(); // Obtener el texto del EditText 'nombre'
                 String cantidad = viewHolder.cantidad.getText().toString(); // Obtener el texto del EditText 'cantidad'
-                Persona p = new Persona(nombre,Double.parseDouble(cantidad)); // Creamos una persona y la añadimos a la lista
+                if (cantidad.isEmpty()){
+                    p = new Persona(nombre,0); // Creamos una persona y la añadimos a la lista
+                }else{
+                    p = new Persona(nombre,Double.parseDouble(cantidad)); // Creamos una persona y la añadimos a la lista
+                }
                 updatedData.add(p);
             }
         }

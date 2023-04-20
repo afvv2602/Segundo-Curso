@@ -5,9 +5,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -42,33 +41,36 @@ public class MainActivity extends AppCompatActivity {
         Button removeButton = findViewById(R.id.removeButton);
         FloatingActionButton mostrarGastosButton = findViewById(R.id.mostrar_gastos);
 
-        removeButton.setOnClickListener(v -> removePair());
-        addButton.setOnClickListener( v -> addPair());
-        mostrarGastosButton.setOnClickListener(v -> calcularYEnviar());
+        removeButton.setOnClickListener(v -> adapter.removePair());
+        addButton.setOnClickListener( v -> adapter.addItem(""));
+        mostrarGastosButton.setOnClickListener(v -> mostrarGastos());
     }
 
     //Metodo para inicializar la lista con 4 pares automaticamente
     private void initializePairs() {
         for (int i = 1; i <= 4; i++) {
-            String newItem = "";
-            adapter.addItem(newItem);
+            adapter.addItem("");
         }
     }
 
-    private void addPair() {
-        String newItem = "";
-        adapter.addItem(newItem);
-    }
-
-    private void removePair() {
-        adapter.removePair();
-    }
-
     //Metodo para calcular y enviar los datos de los EditText a la actividad MostrarGastos
-    private void calcularYEnviar() {
-        Intent intent = new Intent(MainActivity.this, MostrarGastos.class); // Crear un Intent para iniciar la actividad MostrarGastos
-        List<Persona> updatedData = adapter.getUpdatedData(); // Obtener los datos actualizados de los EditText utilizando el método getUpdatedData()
-        intent.putExtra("list",(Serializable) updatedData);
-        startActivity(intent); // Iniciar la actividad MostrarGastos con el Intent
+    private void mostrarGastos() {
+        List<Persona> updatedData = adapter.getUpdatedData(); // Obtener los datos actualizados de los EditText utilizando el metodo getUpdatedData()
+
+        if (validarCampos(updatedData)) {
+            Intent intent = new Intent(MainActivity.this, MostrarGastos.class); // Crear un Intent para iniciar la actividad MostrarGastos
+            intent.putExtra("list", (Serializable) updatedData);
+            startActivity(intent); // Iniciar la actividad MostrarGastos con el Intent
+        } else {
+            Toast.makeText(MainActivity.this, "Por favor, ingrese un nombre en todos los campos.", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private boolean validarCampos(List<Persona> dataList) {
+        for (Persona persona : dataList) {
+            if (persona.getNombre().trim().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 }
