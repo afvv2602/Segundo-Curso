@@ -42,14 +42,14 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton mostrarGastosButton = findViewById(R.id.mostrar_gastos);
 
         removeButton.setOnClickListener(v -> adapter.removePair());
-        addButton.setOnClickListener( v -> adapter.addItem(""));
+        addButton.setOnClickListener( v -> adapter.addItem());
         mostrarGastosButton.setOnClickListener(v -> mostrarGastos());
     }
 
     //Metodo para inicializar la lista con 4 pares automaticamente
     private void initializePairs() {
         for (int i = 1; i <= 4; i++) {
-            adapter.addItem("");
+            adapter.addItem();
         }
     }
 

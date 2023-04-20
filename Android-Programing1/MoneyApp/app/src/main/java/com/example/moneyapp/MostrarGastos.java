@@ -90,7 +90,7 @@ public class MostrarGastos extends AppCompatActivity {
         for (String element : elements) {
             TextView textView = new TextView(this);
             textView.setText(element);
-            textView.setTextSize(25);
+            textView.setTextSize(20);
             // Crear LayoutParams y establecer el margen izquierdo en 20
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
