@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             data.append(updatedData.get(i)); // Agregar el elemento actual a 'data'
             Log.v("", "###" + updatedData.get(i)); // Imprimir el elemento actual en el Logcat (para depuración)
         }
-
+        
         intent.putExtra("data", data.toString()); // Agregar el String 'data' como extra en el Intent
         startActivity(intent); // Iniciar la actividad MostrarGastos con el Intent
     }

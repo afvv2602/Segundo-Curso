@@ -16,10 +16,7 @@ public class RecyclerViewController extends RecyclerView.Adapter<RecyclerViewCon
 
     // Lista de datos que se mostrarán en las parejas de EditText
     private List<String> data;
-
     private RecyclerView recyclerView;
-
-
     public RecyclerViewController() {
         data = new ArrayList<>(); // Inicializar la lista de datos vacía
     }
@@ -91,8 +88,4 @@ public class RecyclerViewController extends RecyclerView.Adapter<RecyclerViewCon
         return updatedData; // Devolver la lista actualizada de datos
     }
 
-    // Devuelve la lista
-    public List<String> getData() {
-        return data;
-    }
 }
