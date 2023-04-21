@@ -174,7 +174,7 @@
             style="@style/Button_delete"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
-            android:text="."
+            android:text="<-"
             />
 
         <Button
