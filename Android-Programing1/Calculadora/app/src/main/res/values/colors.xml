@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="dark_purple">#4c147a</color>
-    <color name="brown">#ae925c</color>
+    <color name="dark_purple">#4C147A</color>
+    <color name="brown">#AE925C</color>
 
     <!-- Tema dia -->
-    <color name="primary">#00BCD4 </color>
+    <color name="primary">#00BCD4</color>
     <color name="primary_dark">#0097A7 </color>
     <color name="primary_light">#B2EBF2</color>
     <color name="accent">#FF4081</color>
@@ -14,4 +15,5 @@
     <color name="secondary_text">#757575</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
+
 </resources>

@@ -1,13 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Light" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Light" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primary_dark</item>
         <item name="colorOnPrimary">@color/icons</item>
         <item name="colorSecondary">@color/accent</item>
         <item name="colorSecondaryVariant">@color/accent</item>
         <item name="colorOnSecondary">@color/icons</item>
-        <item name="android:statusBarColor" tools:tagetApi="1">@color/primary</item>
+        <item name="android:statusBarColor" tools:targetApi="1">@color/primary</item>
     </style>
 
     <style name="Button_delete" parent="Widget.AppCompat.Button">
@@ -17,69 +17,70 @@
         <item name="android:gravity">center</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">24sp</item>
-        <item name="android:layout_height">15dp</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:background">@drawable/delete_button</item>
     </style>
 
     <style name="Button_c" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/c_button</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:layout_margin">7dp</item>
         <item name="android:gravity">center</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">24sp</item>
-        <item name="android:layout_height">15dp</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">0dp</item>
-        <item name="android:background">@drawable/c_button</item>
     </style>
 
     <style name="Button_bracket" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/bracket_button</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/brown</item>
         <item name="android:layout_margin">7dp</item>
         <item name="android:gravity">center</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">24sp</item>
-        <item name="android:layout_height">15dp</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">0dp</item>
-        <item name="android:background">@drawable/bracket_button</item>
     </style>
 
     <style name="Button_operators" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/operators_button</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/dark_purple</item>
         <item name="android:layout_margin">7dp</item>
         <item name="android:gravity">center</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">24sp</item>
-        <item name="android:layout_height">15dp</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">0dp</item>
-        <item name="android:background">@drawable/operators_button</item>
+
     </style>
 
     <style name="Button_numbers" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/numbers_button</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:layout_margin">7dp</item>
         <item name="android:gravity">center</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">24sp</item>
-        <item name="android:layout_height">15dp</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">0dp</item>
-        <item name="android:background">@drawable/operators_button</item>
     </style>
 
     <style name="Button_equal" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/equal_button</item>s
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:layout_margin">7dp</item>
         <item name="android:gravity">center</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">24sp</item>
-        <item name="android:layout_height">15dp</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">0dp</item>
-        <item name="android:background">@drawable/equal_button</item>
     </style>
 
 </resources>
