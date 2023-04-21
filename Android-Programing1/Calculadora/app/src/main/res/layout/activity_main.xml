@@ -6,6 +6,29 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/tvResult"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="bottom|end"
+            android:padding="16dp"
+            android:text=""
+            android:textStyle="bold"
+            android:textSize="40sp" />
+
+    </LinearLayout>
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
@@ -29,32 +52,18 @@
             android:id="@+id/btnC"
             style="@style/Button_c"
             app:layout_columnWeight="1"
+            app:layout_columnSpan="2"
             app:layout_rowWeight="1"
             android:text="C"
             />
 
         <Button
-            android:id="@+id/btnLeft"
-            style="@style/Button_bracket"
+            android:id="@+id/btnIgual"
+            style="@style/Button_equal"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
-            android:text="("
-            />
-
-        <Button
-            android:id="@+id/btnRight"
-            style="@style/Button_bracket"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
-            android:text=")"
-            />
-
-        <Button
-            android:id="@+id/btnMultiplicar"
-            style="@style/Button_operators"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
-            android:text="×"
+            app:layout_columnSpan="2"
+            android:text="="
             />
 
         <Button
@@ -82,12 +91,14 @@
             />
 
         <Button
-            android:id="@+id/btnDividir"
+            android:id="@+id/btnMultiplicar"
             style="@style/Button_operators"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
-            android:text="÷"
+            android:text="×"
             />
+
+
 
         <Button
             android:id="@+id/btn4"
@@ -114,11 +125,11 @@
             />
 
         <Button
-            android:id="@+id/btnRestar"
+            android:id="@+id/btnDividir"
             style="@style/Button_operators"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
-            android:text="-"
+            android:text="÷"
             />
 
         <Button
@@ -146,12 +157,13 @@
             />
 
         <Button
-            android:id="@+id/btnSumar"
+            android:id="@+id/btnRestar"
             style="@style/Button_operators"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
-            android:text="+"
+            android:text="-"
             />
+
 
         <Button
             android:id="@+id/btnDecimal"
@@ -174,16 +186,18 @@
             style="@style/Button_delete"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
-            android:text="<-"
+            android:text="D"
             />
 
         <Button
-            android:id="@+id/btnIgual"
-            style="@style/Button_equal"
+            android:id="@+id/btnSumar"
+            style="@style/Button_operators"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
-            android:text="="
+            android:text="+"
             />
+
+
 
     </androidx.gridlayout.widget.GridLayout>
 
