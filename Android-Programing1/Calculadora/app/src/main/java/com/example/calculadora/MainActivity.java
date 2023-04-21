@@ -3,6 +3,7 @@ package com.example.calculadora;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,9 +24,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         recogerLayout();
-        setClickListeners();
+        iniciarCalculadora();
     }
 
     private void recogerLayout() {
@@ -50,8 +51,7 @@ public class MainActivity extends AppCompatActivity {
         btnIgual = findViewById(R.id.btnIgual);
     }
 
-    // Método para asignar escuchadores de eventos a los botones
-    private void setClickListeners() {
+    private void iniciarCalculadora() {
         View.OnClickListener buttonClickListener = v -> {
             Button button = (Button) v;
             String input = button.getText().toString();
