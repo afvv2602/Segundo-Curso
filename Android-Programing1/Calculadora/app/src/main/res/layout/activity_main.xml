@@ -59,7 +59,7 @@
 
         <Button
             android:id="@+id/btn7"
-            android:style="@style/Button_numbers"
+            style="@style/Button_numbers"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
             android:text="7"
@@ -67,7 +67,7 @@
 
         <Button
             android:id="@+id/btn8"
-            android:style="@style/Button_numbers"
+            style="@style/Button_numbers"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
             android:text="8"
@@ -75,7 +75,7 @@
 
         <Button
             android:id="@+id/btn9"
-            android:style="@style/Button_numbers"
+            style="@style/Button_numbers"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
             android:text="9"
@@ -91,7 +91,7 @@
 
         <Button
             android:id="@+id/btn4"
-            android:style="@style/Button_numbers"
+            style="@style/Button_numbers"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
             android:text="4"
@@ -99,7 +99,7 @@
 
         <Button
             android:id="@+id/btn5"
-            android:style="@style/Button_numbers"
+            style="@style/Button_numbers"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
             android:text="5"
@@ -107,7 +107,7 @@
 
         <Button
             android:id="@+id/btn6"
-            android:style="@style/Button_numbers"
+            style="@style/Button_numbers"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
             android:text="6"
@@ -123,7 +123,7 @@
 
         <Button
             android:id="@+id/btn1"
-            android:style="@style/Button_numbers"
+            style="@style/Button_numbers"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
             android:text="1"
@@ -131,7 +131,7 @@
 
         <Button
             android:id="@+id/btn2"
-            android:style="@style/Button_numbers"
+            style="@style/Button_numbers"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
             android:text="2"
@@ -139,7 +139,7 @@
 
         <Button
             android:id="@+id/btn3"
-            android:style="@style/Button_numbers"
+            style="@style/Button_numbers"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
             android:text="3"
