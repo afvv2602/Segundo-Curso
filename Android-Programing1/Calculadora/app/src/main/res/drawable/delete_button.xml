@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Sombras -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#d7dade" />
+            <corners android:radius="50dp" />
+            <padding
+                android:bottom="2dp"
+                android:left="2dp"
+                android:right="2dp"
+                android:top="2dp" />
+        </shape>
+    </item>
+    <!--  Color  -->
     <item>
         <shape android:shape="oval">
             <gradient
@@ -11,7 +24,7 @@
                 android:type="radial" />
             <stroke
                 android:width="2dp"
-                android:color="#e8dbc0" />
+                android:color="#d7dade" />
         </shape>
     </item>
-</selector>
+</layer-list>
