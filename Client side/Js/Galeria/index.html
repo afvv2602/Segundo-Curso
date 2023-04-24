@@ -1,35 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <!--Imports-->
-    <script src="script.js"></script>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css"/>
-    <title>Javascript 1</title>
+    <title>Galería de Arte</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="icon" href="favicon.ico">
 </head>
 <body>
-    <div class="grid-layout">
-        <div class="container header">
-            <h1>Header</h1>
-        </div>
-        <div class="container menu">
-            <h1>Menu</h1>
-        </div>
-        <div class="container content">
-            <h1>Contenido</h1>
-        </div>
-        <div class="container aside">
-            <h1>Aside</h1>
-        </div>
-        <div class="container footer">
-            <h1>Footer</h1>
-        </div>
-    </div>
+    <header>
+        <h1>Galería de Arte</h1>
+        <nav>
+            <select id="exposiciones">
+                <option value="" disabled selected>Selecciona una exposición</option>
+                <option value="exposicion1">Exposición 1</option>
+                <option value="exposicion2">Exposición 2</option>
+                <option value="exposicion3">Exposición 3</option>
+            </select>
+        </nav>
+    </header>
+    <main>
+        <section id="galeria"></section>
+    </main>
+    <footer>
+        <form id="formulario">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+            <fieldset>
+                <legend>Exposición favorita:</legend>
+                <label for="expo1">Exposición 1</label>
+                <input type="radio" id="expo1" name="exposicionFavorita" value="exposicion1" required>
+                <label for="expo2">Exposición 2</label>
+                <input type="radio" id="expo2" name="exposicionFavorita" value="exposicion2">
+                <label for="expo3">Exposición 3</label>
+                <input type="radio" id="expo3" name="exposicionFavorita" value="exposicion3">
+            </fieldset>
+            <button type="submit">Comprar Entradas</button>
+        </form>
+    </footer>
+    <script src="js/scripts.js"></script>
 </body>
 </html>
-
-<!--
-    
--->

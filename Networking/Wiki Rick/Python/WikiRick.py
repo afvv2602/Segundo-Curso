@@ -17,7 +17,7 @@ def main():
             id_ubicacion = input('Introduce el ID de la ubicacion que deseas conocer: ')
             obtener_ubicacion(id_ubicacion)
         elif opcion == '4':
-            print('Hasta luego!')
+            print('Hasta luego!!')
             break
         else:
             print('Opcion invalida. Por favor, selecciona una opcion del menu.')
