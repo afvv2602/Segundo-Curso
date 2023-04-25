@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galería de Arte</title>
     <link rel="stylesheet" href="css/estilos.css">
-    <link rel="icon" href="favicon.ico">
+    <link rel="icon" href="favicon.png">
 </head>
 <body>
-    <header>
-        <h1>Galería de Arte</h1>
+    <header class="header-footer">
+        <h1 class="text-center mb-0">Galería de Arte</h1>
         <nav>
-            <select id="exposiciones">
+            <select class="form-select d-inline-block w-auto" id="exposiciones">
                 <option value="" disabled selected>Selecciona una exposición</option>
                 <option value="exposicion1">Exposición 1</option>
                 <option value="exposicion2">Exposición 2</option>
@@ -20,24 +20,25 @@
         </nav>
     </header>
     <main>
-        <section id="galeria"></section>
+        <section id="galeria">
+            <!-- Aqui va el carrousel -->
+        </section>
+        <footer class="header-footer">
+            <form id="formulario">
+                <legend>Compra tus entradas</legend>
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required>
+                <label>Exposición favorita:</label>
+                <input type="radio" id="exposicion1" name="exposicionFavorita" value="exposicion1" required>
+                <label for="exposicion1">Exposición 1</label>
+                <input type="radio" id="exposicion2" name="exposicionFavorita" value="exposicion2" required>
+                <label for="exposicion2">Exposición 2</label>
+                <input type="radio" id="exposicion3" name="exposicionFavorita" value="exposicion3" required>
+                <label for="exposicion3">Exposición 3</label>
+                <button type="submit">Comprar</button>
+            </form>
+        </footer>
     </main>
-    <footer>
-        <form id="formulario">
-            <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" required>
-            <fieldset>
-                <legend>Exposición favorita:</legend>
-                <label for="expo1">Exposición 1</label>
-                <input type="radio" id="expo1" name="exposicionFavorita" value="exposicion1" required>
-                <label for="expo2">Exposición 2</label>
-                <input type="radio" id="expo2" name="exposicionFavorita" value="exposicion2">
-                <label for="expo3">Exposición 3</label>
-                <input type="radio" id="expo3" name="exposicionFavorita" value="exposicion3">
-            </fieldset>
-            <button type="submit">Comprar Entradas</button>
-        </form>
-    </footer>
     <script src="js/scripts.js"></script>
 </body>
 </html>

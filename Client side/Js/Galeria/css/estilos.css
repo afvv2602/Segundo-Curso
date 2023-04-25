@@ -1,86 +1,122 @@
+/* Estilo general */
 body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
   margin: 0;
   padding: 0;
+  height: 100%;
 }
 
-header {
-  background: #333;
+/* Estilos del header y footer */
+.header-footer {
+  background-color: #000;
   color: #fff;
   text-align: center;
   padding: 1rem;
+  flex-shrink: 0;
 }
 
-header h1 {
-  margin: 0;
-}
-
-nav {
-  margin-top: 1rem;
-}
-
+/* Estilos del select */
 select {
-display: inline-block;
-background: #fff;
-color: #333;
-padding: 0.5rem;
-border: none;
-cursor: pointer;
+  display: inline-block;
+  background: #fff;
+  color: #333;
+  padding: 0.5rem;
+  border: none;
+  cursor: pointer;
 }
 
+/* Estilos del main y section */
 main {
-padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
 }
 
-#galeria {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-grid-gap: 1rem;
+section {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Estilos del formulario */
+form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+form > * {
+  flex-basis: 50%;
+  box-sizing: border-box;
+}
+
+label {
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+input[type="text"] {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+input[type="radio"] {
+  margin-right: 0.5rem;
+}
+
+/* Estilos del carrusel */
+.carrusel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 1rem;
+  padding: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  white-space: nowrap;
+  max-height: 50%;
+  overflow-y: hidden;
+}
+
+.carrusel::-webkit-scrollbar {
+  width: 0.25rem;
+  height: 0.25rem;
+}
+
+.carrusel::-webkit-scrollbar-thumb {
+  background-color: #333;
 }
 
 .galeria-imagen {
-display: flex;
-flex-direction: column;
-align-items: center;
+  display: inline-block;
+  scroll-snap-align: start;
+  width: 200px;
+  text-align: center;
 }
 
-.galeria-imagen img {
-width: 100%;
-height: auto;
+/* Estilo del popup */
+.popup {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
-.galeria-imagen figcaption {
-text-align: center;
-margin-top: 0.5rem;
-}
-
-footer {
-background: #333;
-color: #fff;
-text-align: center;
-padding: 1rem;
-}
-
-form {
-display: inline-block;
-}
-
-label, legend {
-display: block;
-margin: 0.5rem 0;
-}
-
-input[type="text"], input[type="radio"] {
-display: block;
-margin-bottom: 0.5rem;
-}
-
-button[type="submit"] {
-display: inline-block;
-background: #fff;
-color: #333;
-padding: 0.5rem 1rem;
-border: none;
-cursor: pointer;
+.popup-img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 90%;
+  max-height: 90%;
 }
