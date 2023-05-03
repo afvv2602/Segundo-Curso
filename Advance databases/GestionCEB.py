@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 from datetime import datetime
 
-# Conexiones con la base de datos
+#Conexiones con la base de datos
 client = MongoClient('mongodb://localhost:27017/')
 db = client['ceb']
 alumnos = db['alumnos']
@@ -10,20 +10,20 @@ modulos = db['modulos']
 def main():
     while True:
         menu()
-        op = int(input("\nIngrese el numero de la opcion deseada: "))
-        if op == 1:
+        opcion = int(input("\nIngrese el numero de la opcion deseada: "))
+        if opcion == 1:
             listar_alumnos()
-        elif op == 2:
+        elif opcion == 2:
             buscar_fecha_nacimiento()
-        elif op == 3:
+        elif opcion == 3:
             listar_modulos()
-        elif op == 4:
+        elif opcion == 4:
             listar_modulos_semestre()
-        elif op == 5:
+        elif opcion == 5:
             consultar_nota_modulo()
-        elif op == 6:
+        elif opcion == 6:
             actualizar_datos()
-        elif op == 7:
+        elif opcion == 7:
             print("Saliendo del programa.")
             break
         else:
@@ -58,7 +58,6 @@ def listar_modulos_semestre():
     for modulo in modulos.find({"semestre": semestre}):
         print(modulo['nombre'])
 
-# 
 def consultar_nota_modulo():
     nombre_modulo = input("Ingrese el nombre del módulo: ")
     modulo = modulos.find_one({"nombre": nombre_modulo})
@@ -67,24 +66,23 @@ def consultar_nota_modulo():
     else:
         print(f"No se encontró el módulo con nombre {nombre_modulo}.")
 
-# 
 def buscar_fecha_nacimiento():
-    nombre = input("Ingrese el nombre del compañero: ")
+    nombre = input("Ingrese el nombre del alumno: ")
     alumno = alumnos.find_one({"nombre": nombre.capitalize()})
     if alumno:
         fecha_nacimiento = alumno['fecha_nacimiento'].strftime("%d/%m/%Y")
         print(f"La fecha de nacimiento de {nombre.capitalize()} es {fecha_nacimiento}.")
     else:
-        print(f"No se encontro al compañero con nombre {nombre.capitalize()}.")
+        print(f"No se encontro al alumno con nombre {nombre.capitalize()}.")
 
 def actualizar_datos():
     print("\n¿Que dato quieres actualizar?")
-    print("1 Fecha de nacimiento de compañero.")
+    print("1 Fecha de nacimiento de alumno.")
     print("2. Nota de modulo.")
     print("3. Semestre de modulo.")
     opcion = int(input("Ingrese el numero de la opcion deseada: "))
     if opcion == 1:
-        nombre = input("Ingrese el nombre del companero: ")
+        nombre = input("Ingrese el nombre del alumno: ")
         fecha_nueva = input("Ingrese la nueva fecha de nacimiento (formato: 'YYYY-MM-DD'): ")
         fecha_nueva = datetime.strptime(fecha_nueva, "%Y-%m-%d")
         alumnos.update_one({"nombre": nombre.capitalize()}, {"$set": {"fecha_nacimiento": fecha_nueva}})
@@ -101,31 +99,6 @@ def actualizar_datos():
         print("Semestre del modulo actualizado.")
     else:
         print("Opcion no valida. Por favor, elija una opcion valida.")
-
-def modulos_que_superan_una_nota(nota : int):
-    query = modulos.aggregate([
-        {"$match": {"nota": {"$gt": nota}}},
-    ])
-    for actual in query:
-        print(f"{actual['_id']}: {actual['nombre']} - Nota: {actual['nota']}")
-
-def promedio_notas_semestre():
-    query = modulos.aggregate([
-    {
-        "$group": {
-            "_id": "$semestre",
-            "promedio_notas": {"$avg": "$nota"}
-        }
-    },
-    {
-        "$sort": {"_id": 1}
-    }
-    ])
-    print("Promedio de notas por semestre:")
-    for actual in query:
-        print(f"{actual['_id']}: {actual['promedio_notas']:.2f}")
-
-
 
 if __name__ == "__main__":
     main()
