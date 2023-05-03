@@ -24,6 +24,8 @@ def main():
         elif opcion == 6:
             actualizar_datos()
         elif opcion == 7:
+            menu_aggregate()
+        elif opcion == 8:
             print("Saliendo del programa.")
             break
         else:
@@ -37,8 +39,29 @@ def menu():
     print("4. Consultar los modulos de un semestre concreto.")
     print("5. Consultar la nota de un modulo concreto.")
     print("6. Actualizar datos.")
-    print("7. Salir.")
+    print("7. Funciones aggregate.")
+    print("8. Salir.")
 
+def menu_aggregate():
+    while True:
+        print("\nMenu de funciones aggregate")
+        print("1. Mostrar los alumnos agrupados por fecha de nacimiento.")
+        print("2. Promedio de notas por semestre.")
+        print("3. Ver que modulos superan un promedio.")
+        print("4. Volver al menu.")
+        opcion = int(input("\nIngrese el numero de la opcion deseada: "))
+        if opcion == 1:
+            mostrar_alumnos_por_fecha()
+        elif opcion == 2:
+            promedio_notas_semetre()
+        elif opcion == 3:
+            nota = int(input("\nIntroduce la nota para buscar."))
+            buscar_modulos_por_promedio(nota)
+        elif opcion == 4:
+            print("Volviendo al menu principal.")
+            break
+    main()
+           
 # En esta funcion se muestran todos los alumnos
 def listar_alumnos():
     print("\nLista de companeros de clase:")
@@ -59,12 +82,12 @@ def listar_modulos_semestre():
         print(modulo['nombre'])
 
 def consultar_nota_modulo():
-    nombre_modulo = input("Ingrese el nombre del módulo: ")
+    nombre_modulo = input("Ingrese el nombre del modulo: ")
     modulo = modulos.find_one({"nombre": nombre_modulo})
     if modulo:
         print(f"La nota del módulo {nombre_modulo} es {modulo['nota']}.")
     else:
-        print(f"No se encontró el módulo con nombre {nombre_modulo}.")
+        print(f"No se encontro el modulo con nombre {nombre_modulo}.")
 
 def buscar_fecha_nacimiento():
     nombre = input("Ingrese el nombre del alumno: ")
@@ -99,6 +122,60 @@ def actualizar_datos():
         print("Semestre del modulo actualizado.")
     else:
         print("Opcion no valida. Por favor, elija una opcion valida.")
+
+# Aggregate
+# Se muestran todos los alumnos agrupados por fecha de nacimiento
+def mostrar_alumnos_por_fecha():
+    print("Numero de alumnos por año de nacimiento:")
+    query = db.alumnos.aggregate([
+        {
+            "$group": {
+                "_id": {"$year": "$fecha_nacimiento"},
+                "total": {"$sum": 1}
+            }
+        }
+    ])
+    for actual in query:
+        print(f"Año {actual['_id']}: {actual['total']} alumnos")
+    main()
+    
+# Se muestra el promedio de notas por semestre
+def promedio_notas_semetre():
+    print("Promedio de notas de los modulos por semestre:")
+    query = db.modulos.aggregate([
+        {
+            "$group": {
+                "_id": "$semestre",
+                "nota_promedio": {"$avg": "$nota"}
+            }
+        }
+    ])
+    for actual in query:
+        print(f"{actual['_id']}: nota promedio {round(actual['nota_promedio'], 2)}")
+    main()
+
+# Se muestran los modulos que superar una nota promedio
+def buscar_modulos_por_promedio(nota):
+    print(f"Numero de modulos con nota igual o superior a {nota} por semestre:")
+    query = db.modulos.aggregate([
+        {
+            "$match": {
+                "nota": {"$gte": nota}
+            }
+        },
+        {
+            "$group": {
+                "_id": "$semestre",
+                "total_modulos": {"$sum": 1},
+                "modulos": {"$push": "$nombre"}
+            }
+        }
+    ])
+    for actual in query:
+        print(f"{actual['_id']}: {actual['total_modulos']} modulos")
+        for modulo in actual['modulos']:
+            print(f"  - {modulo}")
+    main()
 
 if __name__ == "__main__":
     main()
