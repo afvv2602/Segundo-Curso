@@ -2,15 +2,19 @@
 
 {% block content %}
   <h1>Author List</h1>
+  {% if some_data %}
+    <p>{{ some_data }}</p>
+  {% endif %}
   {% if author_list %}
-  <ul>
+    <ul>
     {% for author in author_list %}
       <li>
-        <a href="{{ author.get_absolute_url }}">{{ author.last_name }}, {{ author.first_name }}</a>
+        <a href="{% url 'author-detail' author.pk %}">{{ author }}</a>
       </li>
     {% endfor %}
-  </ul>
+    </ul>
   {% else %}
-    <p>There are no authors in the library.</p>
+    <p>No authors are available.</p>
   {% endif %}
+  <a href="{{ add_author_url }}">Add New Author</a>
 {% endblock %}

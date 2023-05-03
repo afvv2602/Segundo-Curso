@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 from datetime import datetime
 
-#Conexiones con la base de datos
+# Conexiones con la base de datos
 client = MongoClient('mongodb://localhost:27017/')
 db = client['ceb']
 alumnos = db['alumnos']
@@ -10,20 +10,20 @@ modulos = db['modulos']
 def main():
     while True:
         menu()
-        opcion = int(input("\nIngrese el numero de la opcion deseada: "))
-        if opcion == 1:
+        op = int(input("\nIngrese el numero de la opcion deseada: "))
+        if op == 1:
             listar_alumnos()
-        elif opcion == 2:
+        elif op == 2:
             buscar_fecha_nacimiento()
-        elif opcion == 3:
+        elif op == 3:
             listar_modulos()
-        elif opcion == 4:
+        elif op == 4:
             listar_modulos_semestre()
-        elif opcion == 5:
+        elif op == 5:
             consultar_nota_modulo()
-        elif opcion == 6:
+        elif op == 6:
             actualizar_datos()
-        elif opcion == 7:
+        elif op == 7:
             print("Saliendo del programa.")
             break
         else:
@@ -101,6 +101,31 @@ def actualizar_datos():
         print("Semestre del modulo actualizado.")
     else:
         print("Opcion no valida. Por favor, elija una opcion valida.")
+
+def modulos_que_superan_una_nota(nota : int):
+    query = modulos.aggregate([
+        {"$match": {"nota": {"$gt": nota}}},
+    ])
+    for actual in query:
+        print(f"{actual['_id']}: {actual['nombre']} - Nota: {actual['nota']}")
+
+def promedio_notas_semestre():
+    query = modulos.aggregate([
+    {
+        "$group": {
+            "_id": "$semestre",
+            "promedio_notas": {"$avg": "$nota"}
+        }
+    },
+    {
+        "$sort": {"_id": 1}
+    }
+    ])
+    print("Promedio de notas por semestre:")
+    for actual in query:
+        print(f"{actual['_id']}: {actual['promedio_notas']:.2f}")
+
+
 
 if __name__ == "__main__":
     main()
