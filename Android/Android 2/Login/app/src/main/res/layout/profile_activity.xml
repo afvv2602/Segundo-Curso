@@ -8,8 +8,18 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         tools:context=".RegisterActivity">
+
+        <TextView
+            android:id="@+id/Tittle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Perfil"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/themeSwitchBut"
@@ -23,110 +33,170 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/Tittle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Perfil"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@id/userEditText"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
             android:id="@+id/usernameTV"
             android:layout_width="120dp"
             android:layout_height="33dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginEnd="36dp"
+            android:layout_marginBottom="24dp"
             android:text="Usuario: "
             android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/passTV"
             app:layout_constraintEnd_toStartOf="@+id/userEditText"
-            app:layout_constraintHorizontal_bias="0.74"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Tittle" />
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
             android:id="@+id/userEditText"
-            android:layout_width="200dp"
+            android:layout_width="180dp"
             android:layout_height="33dp"
-            android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
+            android:layout_marginBottom="24dp"
             android:background="@android:color/transparent"
-            android:ems="10"
-            android:hint=""
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Tittle" />
+            android:enabled="false"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/passwordEditText"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
             android:id="@+id/passTV"
             android:layout_width="120dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_height="33dp"
+            android:layout_marginEnd="36dp"
+            android:layout_marginBottom="16dp"
             android:text="Contraseña: "
             android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/usernameTV" />
+            app:layout_constraintBottom_toTopOf="@+id/emailTV"
+            app:layout_constraintEnd_toStartOf="@+id/passwordEditText"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
             android:id="@+id/passwordEditText"
-            android:layout_width="200dp"
+            android:layout_width="180dp"
             android:layout_height="33dp"
-            android:layout_marginStart="36dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="16dp"
             android:background="@android:color/transparent"
-            android:ems="10"
-            android:hint="Password"
+            android:enabled="false"
+            android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/emailEditText"
-            app:layout_constraintStart_toEndOf="@+id/passTV"
-            app:layout_constraintTop_toBottomOf="@+id/userEditText"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
             android:id="@+id/emailTV"
             android:layout_width="120dp"
             android:layout_height="33dp"
-            android:layout_marginTop="16dp"
             android:layout_marginEnd="36dp"
-            android:layout_marginBottom="13dp"
+            android:layout_marginBottom="16dp"
             android:text="Email: "
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/phoneTV"
             app:layout_constraintEnd_toStartOf="@+id/emailEditText"
-            app:layout_constraintTop_toBottomOf="@+id/passTV"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
             android:id="@+id/emailEditText"
-            android:layout_width="200dp"
+            android:layout_width="180dp"
             android:layout_height="33dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="16dp"
             android:background="@android:color/transparent"
-            android:ems="10"
-            android:hint=""
-            tools:layout_editor_absoluteX="179dp"
-            tools:layout_editor_absoluteY="166dp" />
+            android:textSize="20sp"
+            android:enabled="false"
+            app:layout_constraintBottom_toTopOf="@+id/phoneEditText"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
             android:id="@+id/phoneTV"
             android:layout_width="120dp"
-            android:layout_height="32dp"
+            android:layout_height="33dp"
+            android:layout_marginEnd="36dp"
+            android:layout_marginBottom="16dp"
             android:text="Telefono: "
             android:textSize="20sp"
-            tools:layout_editor_absoluteX="20dp"
-            tools:layout_editor_absoluteY="212dp" />
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintEnd_toStartOf="@id/phoneEditText"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
             android:id="@+id/phoneEditText"
-            android:layout_width="200dp"
+            android:layout_width="180dp"
             android:layout_height="33dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="16dp"
+            android:enabled="false"
+            android:inputType="number"
             android:background="@android:color/transparent"
-            android:ems="10"
-            android:hint="Password"
-            tools:layout_editor_absoluteX="178dp"
-            tools:layout_editor_absoluteY="211dp" />
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="43dp"
+            android:layout_marginBottom="70dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/eliminarBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.466"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/generoTV"
+                android:layout_width="120dp"
+                android:layout_height="33dp"
+                android:layout_marginEnd="36dp"
+                android:text="Genero: "
+                android:textSize="20sp"
+                app:layout_constraintEnd_toStartOf="@id/phoneEditText"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:layout_editor_absoluteY="246dp" />
+
+            <RadioGroup
+                android:id="@+id/genderRadioGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/masculino"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:text="M" />
+
+                <RadioButton
+                    android:id="@+id/femenino"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:text="F" />
+            </RadioGroup>
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/eliminarBtn"
+            android:layout_width="150dp"
+            android:layout_height="70dp"
+            android:layout_marginEnd="36dp"
+            android:layout_marginBottom="232dp"
+            android:text="Eliminar usuario"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/editBtn" />
+
+        <Button
+            android:id="@+id/editBtn"
+            android:layout_width="150dp"
+            android:layout_height="70dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="232dp"
+            android:text="Editar Usuario"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

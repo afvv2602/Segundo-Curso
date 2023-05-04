@@ -18,13 +18,13 @@ public class DatabaseController extends SQLiteOpenHelper {
     public static final String COL_USER = "username";
     public static final String COL_PASSWORD = "password";
     public static final String COL_EMAIL = "email";
-    public static final String COL_GENRE = "genre";
     public static final String COL_PHONE = "phone";
+    public static final String COL_GENRE = "genre";
     private static final String COL_LOGIN_HISTORY = "login_history";
 
     // Constructor de la clase
     public DatabaseController(@Nullable Context context) {
-        super(context, DB_NAME, null, 1);
+        super(context, DB_NAME, null, 3);
     }
 
     // Este metodo se ejecuta cuando se crea la base de datos por primera vez
@@ -39,9 +39,12 @@ public class DatabaseController extends SQLiteOpenHelper {
                 COL_GENRE + " TEXT, " +
                 COL_PHONE + " TEXT, " +
                 COL_LOGIN_HISTORY + " TEXT)";
+
+        // Agrega esta línea para ejecutar la consulta SQL
+        db.execSQL(createTable);
     }
 
-    // Se ejecuta cuando la tabla se actuliza
+    // Se ejecuta cuando la tabla se actualiza
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Eliminar la tabla de usuarios existente y crear una nueva
@@ -62,6 +65,7 @@ public class DatabaseController extends SQLiteOpenHelper {
         return result != -1;
     }
 
+
     // Metodo login
     public boolean loginUser(String user, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -69,8 +73,35 @@ public class DatabaseController extends SQLiteOpenHelper {
                 COL_USER + "=? AND " + COL_PASSWORD + "=?", new String[]{user, password});
         return cursor.getCount() > 0;
     }
+    public boolean storeLoginTime(String user, String loginTime) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_LOGIN_HISTORY, loginTime);
+        int rowsAffected = db.update(TABLA_USERS, contentValues, COL_USER + "=?", new String[]{user});
+        return rowsAffected > 0;
+    }
 
-    // Este metodo devuelve la contraseña de un usuario especifico
+    // Actualiza los datos de usuario, excepto el nombre de usuario
+    public boolean updateUser(String user, String password, String email, String genre, String phone) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_PASSWORD, password);
+        contentValues.put(COL_EMAIL, email);
+        contentValues.put(COL_PHONE, phone);
+        contentValues.put(COL_GENRE, genre);
+
+        int rowsAffected = db.update(TABLA_USERS, contentValues, COL_USER + "=?", new String[]{user});
+        return rowsAffected > 0;
+    }
+
+    // Elimina un usuario de la base de datos
+    public boolean deleteUser(String user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(TABLA_USERS, COL_USER + "=?", new String[]{user});
+        return rowsAffected > 0;
+    }
+
+    // Getters
     public String getPassword(String user) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT " + COL_PASSWORD + " FROM " + TABLA_USERS + " WHERE " + COL_USER + "=?", new String[]{user});
@@ -96,13 +127,31 @@ public class DatabaseController extends SQLiteOpenHelper {
         return null;
     }
 
-    // Almacena la fecha y hora de inicio de sesión en la base de datos
-    public boolean storeLoginTime(String user, String loginTime) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_LOGIN_HISTORY, loginTime);
-        int rowsAffected = db.update(TABLA_USERS, contentValues, COL_USER + "=?", new String[]{user});
-        return rowsAffected > 0;
+    // Este metodo devuelve el correo electronico de un usuario especifico
+    public String getEmail(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT " + COL_EMAIL + " FROM " + TABLA_USERS + " WHERE " + COL_USER + "=?", new String[]{username});
+        if (cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndex(COL_EMAIL);
+            if (columnIndex != -1) {
+                return cursor.getString(columnIndex);
+            }
+        }
+        cursor.close();
+        return null;
+    }
+
+    public String getPhone(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT " + COL_PHONE + " FROM " + TABLA_USERS + " WHERE " + COL_USER + "=?", new String[]{username});
+        if (cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndex(COL_PHONE);
+            if (columnIndex != -1) {
+                return cursor.getString(columnIndex);
+            }
+        }
+        cursor.close();
+        return null;
     }
 
     // Obtiene la Ultima fecha y hora de inicio de sesiOn del usuario
@@ -117,5 +166,6 @@ public class DatabaseController extends SQLiteOpenHelper {
         }
         return null;
     }
+
 
 }

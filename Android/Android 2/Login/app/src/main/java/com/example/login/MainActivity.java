@@ -8,6 +8,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
 
     private EditText usernameEditText;
@@ -52,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private void register(){
         Intent registerIntent = new Intent(MainActivity.this, RegisterActivity.class);
         startActivity(registerIntent);
+        finish();
     }
 
     private void forgotPass(){
@@ -59,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         String username = usernameEditText.getText().toString();
         forgotPasswordIntent.putExtra("username", username);
         startActivity(forgotPasswordIntent);
+        finish();
     }
 
 }

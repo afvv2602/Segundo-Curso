@@ -98,6 +98,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
             intent.putExtra("username", user);
             startActivity(intent);
+            finish();
         }
     }
 

@@ -34,5 +34,6 @@ public class RegisterDetailsActivity extends AppCompatActivity {
         Intent intent = new Intent(this,WelcomeActivity.class);
         intent.putExtra("username",username);
         startActivity(intent);
+        finish();
     }
 }
