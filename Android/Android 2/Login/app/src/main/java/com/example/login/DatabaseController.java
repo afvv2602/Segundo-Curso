@@ -20,6 +20,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     public static final String COL_EMAIL = "email";
     public static final String COL_GENRE = "genre";
     public static final String COL_PHONE = "phone";
+    private static final String COL_LOGIN_HISTORY = "login_history";
 
     // Constructor de la clase
     public DatabaseController(@Nullable Context context) {
@@ -36,8 +37,8 @@ public class DatabaseController extends SQLiteOpenHelper {
                 COL_PASSWORD + " TEXT, " +
                 COL_EMAIL + " TEXT, " +
                 COL_GENRE + " TEXT, " +
-                COL_PHONE + " TEXT)";
-        db.execSQL(createTable);
+                COL_PHONE + " TEXT, " +
+                COL_LOGIN_HISTORY + " TEXT)";
     }
 
     // Se ejecuta cuando la tabla se actuliza
@@ -88,6 +89,28 @@ public class DatabaseController extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("SELECT " + COL_GENRE + " FROM " + TABLA_USERS + " WHERE " + COL_USER + "=?", new String[]{user});
         if (cursor.moveToFirst()) {
             int columnIndex = cursor.getColumnIndex(COL_GENRE);
+            if (columnIndex != -1) {
+                return cursor.getString(columnIndex);
+            }
+        }
+        return null;
+    }
+
+    // Almacena la fecha y hora de inicio de sesión en la base de datos
+    public boolean storeLoginTime(String user, String loginTime) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_LOGIN_HISTORY, loginTime);
+        int rowsAffected = db.update(TABLA_USERS, contentValues, COL_USER + "=?", new String[]{user});
+        return rowsAffected > 0;
+    }
+
+    // Obtiene la Ultima fecha y hora de inicio de sesiOn del usuario
+    public String getLastLoginTime(String user) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT " + COL_LOGIN_HISTORY + " FROM " + TABLA_USERS + " WHERE " + COL_USER + "=?", new String[]{user});
+        if (cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndex(COL_LOGIN_HISTORY);
             if (columnIndex != -1) {
                 return cursor.getString(columnIndex);
             }

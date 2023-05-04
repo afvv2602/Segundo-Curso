@@ -1,0 +1,133 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegisterActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        tools:context=".RegisterActivity">
+
+        <Button
+            android:id="@+id/themeSwitchBut"
+            android:layout_width="93dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="4dp"
+            android:text="Theme"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.949"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/Tittle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Perfil"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@id/userEditText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/usernameTV"
+            android:layout_width="120dp"
+            android:layout_height="33dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="32dp"
+            android:text="Usuario: "
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@+id/userEditText"
+            app:layout_constraintHorizontal_bias="0.74"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Tittle" />
+
+        <EditText
+            android:id="@+id/userEditText"
+            android:layout_width="200dp"
+            android:layout_height="33dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="32dp"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:hint=""
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Tittle" />
+
+        <TextView
+            android:id="@+id/passTV"
+            android:layout_width="120dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Contraseña: "
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/usernameTV" />
+
+        <EditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="200dp"
+            android:layout_height="33dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="15dp"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:hint="Password"
+            app:layout_constraintBottom_toTopOf="@+id/emailEditText"
+            app:layout_constraintStart_toEndOf="@+id/passTV"
+            app:layout_constraintTop_toBottomOf="@+id/userEditText"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <TextView
+            android:id="@+id/emailTV"
+            android:layout_width="120dp"
+            android:layout_height="33dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="36dp"
+            android:layout_marginBottom="13dp"
+            android:text="Email: "
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/phoneTV"
+            app:layout_constraintEnd_toStartOf="@+id/emailEditText"
+            app:layout_constraintTop_toBottomOf="@+id/passTV"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <EditText
+            android:id="@+id/emailEditText"
+            android:layout_width="200dp"
+            android:layout_height="33dp"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:hint=""
+            tools:layout_editor_absoluteX="179dp"
+            tools:layout_editor_absoluteY="166dp" />
+
+        <TextView
+            android:id="@+id/phoneTV"
+            android:layout_width="120dp"
+            android:layout_height="32dp"
+            android:text="Telefono: "
+            android:textSize="20sp"
+            tools:layout_editor_absoluteX="20dp"
+            tools:layout_editor_absoluteY="212dp" />
+
+        <EditText
+            android:id="@+id/phoneEditText"
+            android:layout_width="200dp"
+            android:layout_height="33dp"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:hint="Password"
+            tools:layout_editor_absoluteX="178dp"
+            tools:layout_editor_absoluteY="211dp" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
