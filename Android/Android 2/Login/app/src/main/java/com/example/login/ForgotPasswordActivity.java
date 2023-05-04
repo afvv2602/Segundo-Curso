@@ -17,8 +17,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private Button recoverButton,backToLoginButton;
 
     DatabaseController db;
+    String username = null;
 
-    private String username;
     private TextView recoveredPasswordTextView;
 
     @Override
@@ -33,11 +33,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         Button themeButton = findViewById(R.id.themeSwitchBut);
         db = new DatabaseController(this);
         // Recupera el nombre de usuario y establece el valor en el campo de texto
-        username = getIntent().getStringExtra("username");
-        if (username != null && !username.isEmpty()) {
+        String intent_username = getIntent().getStringExtra("username");
+        if (intent_username != null && !intent_username.isEmpty()) {
+            username = intent_username;
             forgotUsernameEditText.setText(String.format("Username:  %s", username));
         }
-
         // Botones
         themeButton.setOnClickListener(v -> ThemeController.switchTheme(this));
         recoverButton.setOnClickListener(v -> RecoverPass());
@@ -45,14 +45,16 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void RecoverPass(){
-        if (username.isEmpty()){
+        if (username == null){
             username = ((EditText) findViewById(R.id.forgotUsernameEditText)).getText().toString();
         }
         String password = db.getPassword(username);
-        if (!password.isEmpty() && password != null) {
+        if (password != null && !password.isEmpty() ) {
             recoveredPasswordTextView.setText(String.format("Contraseña: %s", password));
         } else {
             recoveredPasswordTextView.setText("Error: Usuario no encontrado");
+            username = null;
+            forgotUsernameEditText.setText("");
         }
     }
 

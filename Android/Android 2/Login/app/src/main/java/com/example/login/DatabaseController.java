@@ -82,10 +82,10 @@ public class DatabaseController extends SQLiteOpenHelper {
         return null;
     }
 
+    //Devuelve el genero del usuario
     public String getUserGenre(String user) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT " + COL_GENRE + " FROM " + TABLA_USERS + " WHERE " + COL_USER + "=?", new String[]{user});
-        // Si se encuentra el usuario, devolvera su genero
         if (cursor.moveToFirst()) {
             int columnIndex = cursor.getColumnIndex(COL_GENRE);
             if (columnIndex != -1) {
