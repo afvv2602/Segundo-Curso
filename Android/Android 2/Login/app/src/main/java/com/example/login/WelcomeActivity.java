@@ -14,18 +14,23 @@ public class WelcomeActivity extends AppCompatActivity {
         setContentView(R.layout.welcome_activity);
 
         TextView welcomeTextView = findViewById(R.id.welcomeTextView);
-        Button logoutButton = findViewById(R.id.logoutButton);
         String username = getIntent().getStringExtra("username");
-        welcomeTextView.setText(String.format("Welcome, %s", username));
-        Button themeButton = findViewById(R.id.themeSwitchBut);
+        DatabaseController db = new DatabaseController(this);
+        String genre = db.getUserGenre(username);
 
-        logoutButton.setOnClickListener(v -> logout());
+        // Revisamos si es femenino o masculino
+        if (genre.charAt(0) == 'f'){
+            welcomeTextView.setText(String.format("Bienvenida, %s", username));
+        }else{
+            welcomeTextView.setText(String.format("Bienvenido, %s", username));
+        }
+
+        // Botones
+        Button logoutButton = findViewById(R.id.logoutButton);
+        Button themeButton = findViewById(R.id.themeSwitchBut);
+        logoutButton.setOnClickListener(v -> finish());
         themeButton.setOnClickListener(v -> ThemeController.switchTheme(this));
 
         }
-
-    private void logout(){
-        finish();
-    }
 
     }

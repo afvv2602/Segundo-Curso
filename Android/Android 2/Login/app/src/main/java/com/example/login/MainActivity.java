@@ -7,19 +7,11 @@ import android.content.Intent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
     private EditText usernameEditText;
     private EditText passwordEditText;
-
-    // Usuarios y contraseñas almacenados en código
-    private final HashMap<String, String> users = new HashMap<String, String>() {{
-        put("admin", "root");
-        put("root", "admin");
-    }};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,10 +22,11 @@ public class MainActivity extends AppCompatActivity {
         usernameEditText = findViewById(R.id.usernameEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
 
+
+        // Botones
         Button loginButton = findViewById(R.id.loginButton);
         Button registerButton = findViewById(R.id.registerButton);
         Button themeButton = findViewById(R.id.themeSwitchBut);
-
         TextView forgotPass  = findViewById(R.id.forgotPasswordTextView);
 
         loginButton.setOnClickListener(v -> login());
@@ -43,21 +36,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private boolean isValidUser(String username, String password) {
-        String storedPassword = users.get(username);
-        return storedPassword != null && storedPassword.equals(password);
-    }
-
     private void login(){
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
-
-        if (isValidUser(username, password)) {
-            Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
-            intent.putExtra("username", username);
+        DatabaseController db = new DatabaseController(this);
+        if(db.loginUser(username,password)){
+            Intent intent = new Intent(this,WelcomeActivity.class);
+            intent.putExtra("username",username);
             startActivity(intent);
-        } else {
-            Toast.makeText(MainActivity.this, "Usuario o contraseña inválidos", Toast.LENGTH_SHORT).show();
+        }else{
+            UtilsController.showMessage(this,"Algo ha ido mal, ¿Has olvidado tu contraseña?");
         }
     }
 

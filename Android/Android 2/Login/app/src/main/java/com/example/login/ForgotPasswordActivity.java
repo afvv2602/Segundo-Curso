@@ -14,16 +14,12 @@ import java.util.HashMap;
 public class ForgotPasswordActivity extends AppCompatActivity {
 
     private EditText forgotUsernameEditText;
-    private Button recoverButton;
+    private Button recoverButton,backToLoginButton;
+
+    DatabaseController db;
 
     private String username;
-    private Button backToLoginButton;
     private TextView recoveredPasswordTextView;
-
-    private HashMap<String, String> users = new HashMap<String, String>() {{
-        put("admin", "root");
-        put("root", "admin");
-    }};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,16 +28,17 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         forgotUsernameEditText = findViewById(R.id.forgotUsernameEditText);
         recoverButton = findViewById(R.id.recoverButton);
+        backToLoginButton = findViewById(R.id.backToLoginButton);
+        recoveredPasswordTextView = findViewById(R.id.recoveredPasswordTextView);
+        Button themeButton = findViewById(R.id.themeSwitchBut);
+        db = new DatabaseController(this);
         // Recupera el nombre de usuario y establece el valor en el campo de texto
         username = getIntent().getStringExtra("username");
         if (username != null && !username.isEmpty()) {
             forgotUsernameEditText.setText(String.format("Username:  %s", username));
         }
 
-        backToLoginButton = findViewById(R.id.backToLoginButton);
-        recoveredPasswordTextView = findViewById(R.id.recoveredPasswordTextView);
-        Button themeButton = findViewById(R.id.themeSwitchBut);
-
+        // Botones
         themeButton.setOnClickListener(v -> ThemeController.switchTheme(this));
         recoverButton.setOnClickListener(v -> RecoverPass());
         backToLoginButton.setOnClickListener(v -> BackToLogin());
@@ -51,9 +48,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         if (username.isEmpty()){
             username = ((EditText) findViewById(R.id.forgotUsernameEditText)).getText().toString();
         }
-        String password = users.get(username);
-
-        if (password != null) {
+        String password = db.getPassword(username);
+        if (!password.isEmpty() && password != null) {
             recoveredPasswordTextView.setText(String.format("Contraseña: %s", password));
         } else {
             recoveredPasswordTextView.setText("Error: Usuario no encontrado");
