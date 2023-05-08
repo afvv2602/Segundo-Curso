@@ -12,10 +12,15 @@ class UserRepository {
     }
 
     public Long registerUser(User user) {
-        return userDAO.registerUser(user);
+        User existingUser = userDAO.findUserByUsername(user.getUsername());
+        if (existingUser == null) {
+            return userDAO.insert(user);
+        } else {
+            return null;
+        }
     }
 
-    public User loginUser(String username, String password) {
-        return userDAO.loginUser(username, password);
-    }
+    public User loginUser(String username, String password) { return userDAO.loginUser(username, password);}
+
+
 }

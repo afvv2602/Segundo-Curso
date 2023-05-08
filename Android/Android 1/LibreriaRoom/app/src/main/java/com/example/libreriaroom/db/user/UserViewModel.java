@@ -32,10 +32,15 @@ public class UserViewModel extends AndroidViewModel {
 
     // Ejecutamos las operaciones en la pool de hilos que habiamos creado en la base de datos
     // Asi las operaciones se ejecutaran de forma asincrona
-    public void registerUser(User user) {
+    public void registerUser(User user, CallBackFuntions callback) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            User registeredUser = userRepository.loginUser(user.getUsername(), user.getPassword());
-            loggedInUser.postValue(registeredUser);
+            Long userId = userRepository.registerUser(user);
+            if (userId != null) {
+                loggedInUser.postValue(user);
+                callback.onUserRegistered(true);
+            } else {
+                callback.onUserRegistered(false);
+            }
         });
     }
 
@@ -45,7 +50,6 @@ public class UserViewModel extends AndroidViewModel {
             loggedInUser.postValue(user);
         });
     }
-
 
     // Esta clase se encarga de crear instancias UserViewModel con el contexto de la aplicacion correcto
     // Sino no seria capaz de interactuar con el DAO o con la base de datos
