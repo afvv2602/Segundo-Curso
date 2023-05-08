@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
         usernameEditText = findViewById(R.id.usernameEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
 
-
         // Botones
         Button loginButton = findViewById(R.id.loginButton);
         Button registerButton = findViewById(R.id.registerButton);
@@ -37,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
         registerButton.setOnClickListener(v -> register());
         forgotPass.setOnClickListener(v -> forgotPass());
         themeButton.setOnClickListener(v -> ThemeController.switchTheme(this));
-
     }
 
     private void login(){
@@ -48,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this,WelcomeActivity.class);
             intent.putExtra("username",username);
             startActivity(intent);
+            finish();
         }else{
             UtilsController.showMessage(this,"Algo ha ido mal, ¿Has olvidado tu contraseña?");
         }

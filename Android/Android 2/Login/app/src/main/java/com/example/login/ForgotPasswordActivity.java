@@ -13,13 +13,11 @@ import java.util.HashMap;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
+    private TextView recoveredPasswordTextView;
     private EditText forgotUsernameEditText;
     private Button recoverButton,backToLoginButton;
-
     DatabaseController db;
     String username = null;
-
-    private TextView recoveredPasswordTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +29,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         backToLoginButton = findViewById(R.id.backToLoginButton);
         recoveredPasswordTextView = findViewById(R.id.recoveredPasswordTextView);
         Button themeButton = findViewById(R.id.themeSwitchBut);
+
+        //Base de datos
         db = new DatabaseController(this);
-        // Recupera el nombre de usuario y establece el valor en el campo de texto
         String intent_username = getIntent().getStringExtra("username");
         if (intent_username != null && !intent_username.isEmpty()) {
             username = intent_username;
@@ -57,7 +56,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             forgotUsernameEditText.setText("");
         }
     }
-
     private void BackToLogin() {
         Intent intent = new Intent(ForgotPasswordActivity.this, MainActivity.class);
         startActivity(intent);

@@ -90,7 +90,6 @@ public class RegisterActivity extends AppCompatActivity {
             } else if (checkedRadioButtonId == R.id.femaleRadioButton) {
                 genre = "female";
             }
-
             boolean conditionsAccepted = conditionsCheckBox.isChecked();
             Intent intent = new Intent(this,RegisterDetailsActivity.class);
             if (conditionsAccepted) {

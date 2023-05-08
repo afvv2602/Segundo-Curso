@@ -25,7 +25,6 @@ public class RegisterDetailsActivity extends AppCompatActivity {
 
         // Muestra los valores de los campos en los TextViews
         userTextView.setText(String.format(" El usuario %s ha sido creado.", username));
-
         themeButton.setOnClickListener(v -> ThemeController.switchTheme(this));
         backButton.setOnClickListener(v -> welcome());
     }

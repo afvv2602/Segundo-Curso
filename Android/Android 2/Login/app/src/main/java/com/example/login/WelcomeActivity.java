@@ -31,7 +31,7 @@ public class WelcomeActivity extends AppCompatActivity {
         }
 
         //Mostramos la ultima fecha de inicio de sesion
-        String ultimoInicio = db.getLastLoginTime(username);
+        String ultimoInicio = db.getLastLogin(username);
         if (ultimoInicio != null) {
             TextView lastLoginTextView = findViewById(R.id.lastLoginTv);
             lastLoginTextView.setText(String.format("Última conexion: %s", ultimoInicio));
@@ -41,7 +41,7 @@ public class WelcomeActivity extends AppCompatActivity {
         Date currentDate = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         String currentTime = formatter.format(currentDate);
-        db.storeLoginTime(username, currentTime);
+        db.saveLogin(username, currentTime);
 
         // Botones
         Button logoutButton = findViewById(R.id.logoutButton);
