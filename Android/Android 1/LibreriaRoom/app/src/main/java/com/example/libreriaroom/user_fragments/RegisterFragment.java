@@ -29,13 +29,10 @@ public class RegisterFragment extends Fragment {
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState) { super.onViewCreated(view, savedInstanceState);
-
         userViewModel = new ViewModelProvider(requireActivity(), new UserViewModel.UserViewModelFactory(requireActivity().getApplication())).get(UserViewModel.class);
-        // Con esto comprobamos si el registro ha sido completo
         usernameEditText = view.findViewById(R.id.usernameEditText);
         passwordEditText = view.findViewById(R.id.passwordEditText);
         Button registerButton = view.findViewById(R.id.registerButton);
-
         registerButton.setOnClickListener(v -> validateFields());
     }
 
@@ -48,7 +45,6 @@ public class RegisterFragment extends Fragment {
             throw new RuntimeException(context.toString());
         }
     }
-
     @Override
     public void onDetach() {
         super.onDetach();
