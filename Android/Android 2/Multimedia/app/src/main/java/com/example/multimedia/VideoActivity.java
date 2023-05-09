@@ -13,6 +13,7 @@ import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class VideoActivity extends AppCompatActivity {
 
@@ -45,25 +46,31 @@ public class VideoActivity extends AppCompatActivity {
     private void listVideosFromFolder() {
         AssetManager assetManager = getAssets();
         try {
-            // Obtiene la lista de archivos de video en la carpeta "videos"
+            // Obtiene la lista de archivos de video en la carpeta "videos_muestra"
             String[] videoFiles = assetManager.list("videos_muestra");
 
             if (videoFiles != null) {
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, videoFiles);
-
+                ArrayList<String> videoFileNames = new ArrayList<>();
+                for (String videoFile : videoFiles) {
+                    // Elimina la extensión del archivo de video antes de agregarlo a la lista
+                    String videoFileName = videoFile.substring(0, videoFile.lastIndexOf('.'));
+                    videoFileNames.add(videoFileName);
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, videoFileNames);
                 listView.setAdapter(adapter);
                 listView.setOnItemClickListener((parent, view, position, id) -> {
                     String videoPath = "file:///android_asset/videos_muestra/" + videoFiles[position];
                     Uri videoUri = Uri.parse(videoPath);
                     videoView.setVideoURI(videoUri);
                     videoView.start();
-                    changeAppear(videoFiles[position]);
+                    changeAppear(videoFileNames.get(position));
                 });
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     private void changeAppear(String... title) {
         if(title.length>0){

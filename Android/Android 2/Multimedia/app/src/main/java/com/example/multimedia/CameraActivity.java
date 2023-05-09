@@ -5,33 +5,30 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.MediaController;
-import android.widget.VideoView;
+
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+
+import com.example.multimedia.fragments.PhotoFragment;
+import com.example.multimedia.fragments.VideoFragment;
 
 public class CameraActivity extends AppCompatActivity {
 
-    private ImageView photo;
-    private VideoView videoView;
-
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
-
-        photo = findViewById(R.id.photoIV);
         Button recordVideoButton = findViewById(R.id.button_record_video);
         Button takePhotoButton = findViewById(R.id.button_take_photo);
+        fragmentManager = getSupportFragmentManager();
 
         takePhotoButton.setOnClickListener(v -> dispatchTakePictureIntent());
-
         recordVideoButton.setOnClickListener(v -> dispatchTakeVideoIntent());
     }
 
@@ -55,7 +52,7 @@ public class CameraActivity extends AppCompatActivity {
                     Intent data = result.getData();
                     Bundle extras = data.getExtras();
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
-                    photo.setImageBitmap(imageBitmap);
+                    loadPhotoFragment(imageBitmap); // Modificado para cargar el fragmento de foto
                 }
             });
 
@@ -64,18 +61,27 @@ public class CameraActivity extends AppCompatActivity {
                 if (result.getResultCode() == RESULT_OK) {
                     Intent data = result.getData();
                     Uri videoUri = data.getData();
-                    setupVideoView(videoUri);
+                    loadVideoFragment(videoUri); // Modificado para cargar el fragmento de video
                 }
             });
 
-    private void setupVideoView(Uri videoUri) {
-        photo.setVisibility(View.GONE);
-        videoView.setVisibility(View.VISIBLE);
-        videoView.setVideoURI(videoUri);
-        MediaController mediaController = new MediaController(this);
-        mediaController.setMediaPlayer(videoView);
-        videoView.setMediaController(mediaController);
-        videoView.requestFocus();
-        videoView.start();
+    private void loadPhotoFragment(Bitmap imageBitmap) {
+        PhotoFragment photoFragment = new PhotoFragment(imageBitmap);
+        fragmentManager.beginTransaction()
+                .add(R.id.fragment_container, photoFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void loadVideoFragment(Uri videoUri) {
+        VideoFragment videoFragment = new VideoFragment(videoUri);
+        fragmentManager.beginTransaction()
+                .add(R.id.fragment_container, videoFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void closeCurrentFragment() {
+        fragmentManager.popBackStack();
     }
 }
