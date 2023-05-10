@@ -21,18 +21,24 @@
         android:layout_weight="1"
         android:visibility="visible" />
 
-    <VideoView
-        android:id="@+id/videoView"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/closeVideoButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="X"
-        android:layout_gravity="right"
-        android:visibility="gone" />
+        <VideoView
+            android:id="@+id/videoView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/closeVideoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="X"
+            android:layout_gravity="top|end"
+            android:visibility="gone" />
+
+    </FrameLayout>
 
 </LinearLayout>

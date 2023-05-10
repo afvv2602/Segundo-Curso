@@ -1,6 +1,5 @@
 package com.example.multimedia;
 
-import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -12,17 +11,16 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
 
 public class VideoActivity extends AppCompatActivity {
 
     private VideoView videoView;
     private TextView videoTitle;
     private ListView listView;
-
     private Button closeButton;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,47 +36,55 @@ public class VideoActivity extends AppCompatActivity {
         mediaController.setAnchorView(videoView);
         videoView.setMediaController(mediaController);
 
-        listVideosFromFolder();
+        listVideosFromRaw();
         closeButton.setOnClickListener(v -> changeAppear());
-
     }
 
-    private void listVideosFromFolder() {
-        AssetManager assetManager = getAssets();
-        try {
-            // Obtiene la lista de archivos de video en la carpeta "videos_muestra"
-            String[] videoFiles = assetManager.list("videos_muestra");
-
-            if (videoFiles != null) {
-                ArrayList<String> videoFileNames = new ArrayList<>();
-                for (String videoFile : videoFiles) {
-                    // Elimina la extensión del archivo de video antes de agregarlo a la lista
-                    String videoFileName = videoFile.substring(0, videoFile.lastIndexOf('.'));
-                    videoFileNames.add(videoFileName);
-                }
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, videoFileNames);
-                listView.setAdapter(adapter);
-                listView.setOnItemClickListener((parent, view, position, id) -> {
-                    String videoPath = "file:///android_asset/videos_muestra/" + videoFiles[position];
-                    Uri videoUri = Uri.parse(videoPath);
-                    videoView.setVideoURI(videoUri);
-                    videoView.start();
-                    changeAppear(videoFileNames.get(position));
-                });
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    // Crea un list view con el titulo de cada video
+    // Los videos deberan de ir en la carpeta res/raw
+    private void listVideosFromRaw() {
+        List<String> videoFilesList = listMp4FilesFromRaw();
+        if (videoFilesList != null) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, videoFilesList);
+            listView.setAdapter(adapter);
+            listView.setOnItemClickListener((parent, view, position, id) -> {
+                String videoFileNameComplete = videoFilesList.get(position) + "_mp4"; // Agregamos la extension "_mp4" de nuevo
+                int videoResourceId = getResources().getIdentifier(videoFileNameComplete, "raw", getPackageName());
+                Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + videoResourceId);
+                videoView.setVideoURI(videoUri);
+                videoView.start();
+                changeAppear(videoFilesList.get(position));
+            });
         }
     }
 
+    // En esta funcion se recoge el nombre de cada video de la carpeta raw y se le quita la extension
+    private List<String> listMp4FilesFromRaw() {
+        Field[] fields = R.raw.class.getFields();
+        List<String> mp4Files = new ArrayList<>();
+
+        for (Field field : fields) {
+            try {
+                int resourceId = field.getInt(null);
+                String fileName = getResources().getResourceEntryName(resourceId);
+                if (fileName.endsWith("_mp4")) {
+                    String displayName = fileName.substring(0, fileName.length() - 4); // Quitamos la extension "_mp4"
+                    mp4Files.add(displayName);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return mp4Files;
+    }
 
     private void changeAppear(String... title) {
-        if(title.length>0){
+        if (title.length > 0) {
             videoView.setVisibility(View.VISIBLE);
             closeButton.setVisibility(View.VISIBLE);
             videoTitle.setText(title[0]);
             videoTitle.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             videoView.stopPlayback();
             videoView.setVisibility(View.GONE);
             closeButton.setVisibility(View.GONE);
