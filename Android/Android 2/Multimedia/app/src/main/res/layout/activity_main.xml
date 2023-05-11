@@ -18,5 +18,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Reproductor de video" />
+    <Button
+        android:id="@+id/galleryBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Galeria " />
+    <Button
+        android:id="@+id/recorderBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Grabadora de voz" />
 
 </LinearLayout>

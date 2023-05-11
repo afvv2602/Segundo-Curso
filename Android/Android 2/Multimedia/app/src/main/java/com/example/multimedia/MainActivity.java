@@ -8,7 +8,7 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button cameraBtn,videoBtn;
+    private Button cameraBtn,videoBtn,galleryBtn,recorderBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         cameraBtn = findViewById(R.id.cameraBtn);
         videoBtn = findViewById(R.id.videoPlayerBtn);
+        galleryBtn = findViewById(R.id.galleryBtn);
+        recorderBtn = findViewById(R.id.recorderBtn);
 
         cameraBtn.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, CameraActivity.class);
@@ -24,6 +26,16 @@ public class MainActivity extends AppCompatActivity {
 
         videoBtn.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, VideoActivity.class);
+            startActivity(intent);
+        });
+
+        galleryBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, GalleryActivity.class);
+            startActivity(intent);
+        });
+
+        recorderBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AudioActivity.class);
             startActivity(intent);
         });
     }

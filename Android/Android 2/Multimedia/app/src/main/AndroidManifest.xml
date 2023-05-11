@@ -4,6 +4,7 @@
     <uses-feature android:name="android.hardware.camera" android:required="true" />
     <uses-feature android:name="android.hardware.microphone" android:required="true" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
@@ -27,6 +28,8 @@
         </activity>
         <activity android:name=".CameraActivity"></activity>
         <activity android:name=".VideoActivity"></activity>
+        <activity android:name=".GalleryActivity" />
+        <activity android:name=".AudioActivity" />
     </application>
 
 </manifest>
