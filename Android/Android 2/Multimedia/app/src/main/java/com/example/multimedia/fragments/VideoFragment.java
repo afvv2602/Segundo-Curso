@@ -38,7 +38,7 @@ public class VideoFragment extends Fragment {
         videoView.requestFocus();
         videoView.start();
         fragmentManager = getParentFragmentManager();
-        closeBtn = rootView.findViewById(R.id.closeVideoButton);
+        closeBtn = rootView.findViewById(R.id.closeVideoBtn);
         closeBtn.setOnClickListener(v -> fragmentManager.popBackStack());
         return rootView;
     }

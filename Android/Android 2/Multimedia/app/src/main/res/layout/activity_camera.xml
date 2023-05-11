@@ -17,7 +17,7 @@
         app:layout_constraintVertical_bias="0.058" />
 
     <Button
-        android:id="@+id/button_take_photo"
+        android:id="@+id/photoBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Tomar foto"
@@ -29,7 +29,7 @@
         app:layout_constraintVertical_bias="0.976" />
 
     <Button
-        android:id="@+id/button_record_video"
+        android:id="@+id/recordVideoBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Grabar vídeo"

@@ -8,14 +8,14 @@
     tools:context=".VideoActivity">
 
     <TextView
-        android:id="@+id/textView_video_title"
+        android:id="@+id/titleTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Título del vídeo"
         android:visibility="gone"/>
 
     <ListView
-        android:id="@+id/listView_videos"
+        android:id="@+id/videosLv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -32,7 +32,7 @@
             android:visibility="gone" />
 
         <Button
-            android:id="@+id/closeVideoButton"
+            android:id="@+id/closeVideoBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="X"

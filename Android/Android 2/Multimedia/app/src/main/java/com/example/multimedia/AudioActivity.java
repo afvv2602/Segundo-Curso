@@ -2,7 +2,6 @@ package com.example.multimedia;
 
 
 import android.Manifest;
-import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import java.io.IOException;
 
@@ -29,9 +27,9 @@ public class AudioActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio);
 
-        recordButton = findViewById(R.id.recordButton);
-        stopButton = findViewById(R.id.stopButton);
-        playButton = findViewById(R.id.playButton);
+        recordButton = findViewById(R.id.recordBtn);
+        stopButton = findViewById(R.id.stopBtn);
+        playButton = findViewById(R.id.playBtn);
 
         audioFilePath = getExternalFilesDir(null).getAbsolutePath() + "/test.3gp";
         isRecording = false;
@@ -80,7 +78,8 @@ public class AudioActivity extends AppCompatActivity {
 
     private void startPlaying() {
         mediaPlayer = new MediaPlayer();
-
+        playButton.setVisibility(View.GONE);
+        recordButton.setVisibility(View.GONE);
         try {
             mediaPlayer.setDataSource(audioFilePath);
             mediaPlayer.prepare();
@@ -95,6 +94,8 @@ public class AudioActivity extends AppCompatActivity {
             mediaPlayer.stop();
             mediaPlayer.release();
             mediaPlayer = null;
+            playButton.setVisibility(View.VISIBLE);
+            recordButton.setVisibility(View.VISIBLE);
         }
     }
 }

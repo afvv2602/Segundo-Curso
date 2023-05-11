@@ -56,29 +56,21 @@ public class GalleryActivity extends AppCompatActivity {
     }
 
     private void setUpGallery() {
-        imageFiles = listImageFilesFromFolder();
+        imageFiles = listImages();
         GalleryImage adapter = new GalleryImage(this, imageFiles);
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener((parent, view, position, id) -> {
-
-            // Crear un AlertDialog.Builder
             AlertDialog.Builder builder = new AlertDialog.Builder(GalleryActivity.this);
-
-            // Crear un ImageView para mostrar la imagen seleccionada
+            // Mostramos la imagen en un imageView dentro de dialogo
             ImageView imageView = new ImageView(GalleryActivity.this);
             imageView.setImageURI(Uri.fromFile(imageFiles.get(position)));
-
-            // Ajustar el ImageView al AlertDialog.Builder
             builder.setView(imageView);
-
-            // Crear y mostrar el AlertDialog
             AlertDialog dialog = builder.create();
             dialog.show();
         });
     }
 
-
-    private ArrayList<File> listImageFilesFromFolder() {
+    private ArrayList<File> listImages() {
         File imageFolder = new File("/sdcard/MultimediaPictures");
         File[] files = imageFolder.listFiles();
         ArrayList<File> imageFiles = new ArrayList<>();

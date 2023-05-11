@@ -8,20 +8,20 @@
     tools:context=".AudioActivity">
 
     <Button
-        android:id="@+id/recordButton"
+        android:id="@+id/recordBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Grabar" />
 
     <Button
-        android:id="@+id/stopButton"
+        android:id="@+id/stopBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Detener" />
 
     <Button
-        android:id="@+id/playButton"
+        android:id="@+id/playBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

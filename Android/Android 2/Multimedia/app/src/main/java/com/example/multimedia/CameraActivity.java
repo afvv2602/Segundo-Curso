@@ -24,8 +24,8 @@ public class CameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
-        Button recordVideoButton = findViewById(R.id.button_record_video);
-        Button takePhotoButton = findViewById(R.id.button_take_photo);
+        Button recordVideoButton = findViewById(R.id.recordVideoBtn);
+        Button takePhotoButton = findViewById(R.id.photoBtn);
         fragmentManager = getSupportFragmentManager();
 
         takePhotoButton.setOnClickListener(v -> openCamera());

@@ -39,12 +39,10 @@ public class GalleryImage extends BaseAdapter {
     }
 
     @Override
-        public long getItemId(int position) {
+    public long getItemId(int position) {
         return position;
     }
 
-
-    // Metodo para obtener la vista de cada elemento en la lista de archivos de imagen.
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
@@ -64,17 +62,18 @@ public class GalleryImage extends BaseAdapter {
         int width = options.outWidth;
         int inSampleSize = 1;
 
+        // Si la altura o el ancho de la imagen es mayor que el width y el height establecido
+        // Se consigue un factor para escalar la imagen, hasta que cumpla el ancho y el alto
         if (height > this.height || width > this.width) {
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-            while ((halfHeight / inSampleSize) >= this.height && (halfWidth / inSampleSize) >= this.width) {
-                inSampleSize *= 2;
-            }
+            final int halfHeight = height / 4;
+            final int halfWidth = width / 4;
+            while ((halfHeight / inSampleSize) >= this.height && (halfWidth / inSampleSize) >= this.width) { inSampleSize *= 4; }
         }
 
-        // Decodifica la imagen con el factor de escala calculado
+        // Decodificar la imagen con el nuevo factor de escala
         options.inSampleSize = inSampleSize;
         options.inJustDecodeBounds = false;
+        options.inPreferredConfig = Bitmap.Config.RGB_565;  // Cambiamos la configuracion del bitmap para que use menos memoria
         Bitmap bitmap = BitmapFactory.decodeFile(imageFiles.get(position).getAbsolutePath(), options);
         imageView.setImageBitmap(bitmap);
 

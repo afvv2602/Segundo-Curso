@@ -28,10 +28,10 @@ public class VideoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_video);
 
         videoView = findViewById(R.id.videoView);
-        videoTitle = findViewById(R.id.textView_video_title);
-        listView = findViewById(R.id.listView_videos);
+        videoTitle = findViewById(R.id.titleTv);
+        listView = findViewById(R.id.videosLv);
 
-        closeButton = findViewById(R.id.closeVideoButton);
+        closeButton = findViewById(R.id.closeVideoBtn);
         MediaController mediaController = new MediaController(this);
         mediaController.setAnchorView(videoView);
         videoView.setMediaController(mediaController);
