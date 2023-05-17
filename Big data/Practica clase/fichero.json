@@ -1,0 +1,17 @@
+{
+    "nombre": "Ejemplo",
+    "edad": 25,
+    "direcciones": [
+      {
+        "calle": "Calle Principal",
+        "ciudad": "Ciudad Ejemplo",
+        "codigo_postal": "12345"
+      },
+      {
+        "calle": "Calle Secundaria",
+        "ciudad": "Otra Ciudad",
+        "codigo_postal": "67890"
+      }
+    ]
+  }
+  

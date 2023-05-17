@@ -1,0 +1,29 @@
+:root {
+    --pastel-blue: #aec6cf;
+    --pastel-green: #77dd77;
+    --pastel-pink: #ffb3ba;
+  }
+  
+  body {
+    background-color: var(--pastel-blue);
+  }
+  
+  .btn {
+    background-color: var(--pastel-green);
+    color: white;
+  }
+  
+  a {
+    color: var(--pastel-pink);
+  }
+
+  .carousel {
+    height: 300px;  /* Cambia esto a la altura que prefieras */
+  }
+  
+  .carousel img {
+    height: 100%;
+    object-fit: cover;  /* Esto hace que la imagen se recorte en lugar de estirarse o encogerse */
+  }
+  
+  
