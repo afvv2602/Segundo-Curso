@@ -1,85 +1,42 @@
-/*
-Grid de a partir 1024px
-*/
-body{
-  font-family: Arial, Helvetica, sans-serif;
-  text-align: center;
+* {
+  box-sizing: border-box;
+  font-family: "Lucida Sans", sans-serif;
+  border-radius: 10px;
 }
 
-.grid-layout {
-    margin: 0 auto;
-    display: grid; 
-    grid-template-columns: auto auto;
-    grid-template-rows: auto auto auto auto;
-    grid-template-areas:'header header'
-                        'top-menu top-menu'
-                        'contenido validation'
-                        'result result';
-  }
-
-.container {
-  border: 4px solid black;
-  text-align: center;
-  line-height: 0.1vh;
-} 
-.header{
-  grid-area: header;
-  background-color: lightseagreen;
-}
-.menu{
-  grid-area: top-menu;
-  background-color: lightyellow;
-}
-.content{
-  grid-area: contenido;
-  background-color: lightskyblue;  
-  display: grid;
-  grid-template-columns: auto;
-}
-.validation{
-  padding-top: 5vh;
-  grid-area: validation;
-  background-color: lightpink;
-}
-.result{
-  padding: 1vh;
-  grid-area: result;
-  background-color: lightcoral;
-  display: grid;
-  grid-template-columns: auto auto auto;
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f0f8ff;
 }
 
-/*
-Grid para dispositivos pequeños
-*/
-@media screen and (max-width : 760px){
-  .grid-layout {
-    grid-template-columns: 70% auto;
-    grid-template-rows: auto auto auto auto auto;
-    grid-template-areas:'header header'
-                        'top-menu top-menu'
-                        'contenido contenido'
-                        'validation validation'
-                        'result result'
-  }
-  .result{
-    padding: 2.5vh;
-    grid-template-columns: auto auto;
-  }
+.form-container {
+  background-color: #f0f8ff;
+  padding: 20px;
+  border-radius: 15px;
+  margin: 15px;
 }
 
-@media screen and (max-width : 1100px){
-  .grid-layout {
-    grid-template-columns: 70% auto;
-    grid-template-rows: auto auto auto auto auto;
-    grid-template-areas:'header header'
-                        'top-menu top-menu'
-                        'contenido contenido'
-                        'validation validation'
-                        'result result';
-  }
-  .validation{
-    padding-top: 5vh;
-    
-  }
+.form-container input[type=text], .form-container input[type=number], .form-container input[type=date] {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.form-container button {
+  width: 100%;
+  background-color: #ffb6c1;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.form-container button:hover {
+  background-color: #dda0dd;
 }

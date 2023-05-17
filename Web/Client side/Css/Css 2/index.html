@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="style.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="style.css" rel="stylesheet" crossorigin="anonymous">
 </head>
 <body>
 
@@ -14,32 +13,59 @@
     <div class="row">
         <div class="col-3 menu">
             <ul>
-                <li>The Flight</li>
-                <li>The City</li>
-                <li>The Island</li>
-                <li>The Food</li>
+                <li>El Vuelo</li>
+                <li>La Ciudad</li>
+                <li>La Isla</li>
+                <li>La Comida</li>
             </ul>
         </div>
 
         <div class="col-6">
-            <h1>The City</h1>
-            <p>Chania is the capital of the Chania region on the island of Crete. The city can be divided in two parts, the old town and the modern city.</p>
+            <h1>La Ciudad</h1>
+            <p>Chania es la capital de la región de Chania en la isla de Creta. La ciudad puede dividirse en dos partes, el casco antiguo y la ciudad moderna.</p>
         </div>
 
-            <div class="col-3 right">
-                <div class="aside">
-                    <h2>What?</h2>  
-                    <p>Chania is a city on the island of Crete.</p>
-                    <h2>Where?</h2>
-                    <p>Crete is a Greek island in the Mediterranean Sea.</p>
-                    <h2>How?</h2>
-                    <p>You can reach Chania airport from all over Europe.</p>
-                </div>
+        <div class="col-3 right">
+            <div class="aside">
+                <h2>¿Qué?</h2>  
+                <p>Chania es una ciudad en la isla de Creta.</p>
+                <h2>¿Dónde?</h2>
+                <p>Creta es una isla griega en el Mar Mediterráneo.</p>
+                <h2>¿Cómo?</h2>
+                <p>Puedes llegar al aeropuerto de Chania desde toda Europa.</p>
+            </div>
         </div>
     </div>
-    
+
+    <div class="row">
+        <div class="col-12">
+          <div class="form-container">
+            <h2>Formulario para viajar a la isla</h2>
+            <form action="/submit_form" method="post">
+              <label for="fname">Nombre</label>
+              <input type="text" id="fname" name="firstname" placeholder="Tu nombre..">
+      
+              <label for="lname">Apellido</label>
+              <input type="text" id="lname" name="lastname" placeholder="Tu apellido..">
+      
+              <label for="email">Correo electrónico</label>
+              <input type="email" id="email" name="email" placeholder="Tu correo electrónico..">
+      
+              <label for="country">País</label>
+              <select id="country" name="country">
+                <option value="spain">España</option>
+                <option value="usa">EE.UU.</option>
+                <option value="other">Otro</option>
+              </select>
+        
+              <input type="submit" value="Enviar">
+            </form>
+          </div>
+        </div>
+      </div>
+      
     <div class="footer">
-    <p>Resize the browser window to see how the content respond to the resizing.</p>
+    <p>Ajusta el tamaño de la ventana del navegador para ver cómo el contenido responde al cambio de tamaño.</p>
     </div>
 
 </body>

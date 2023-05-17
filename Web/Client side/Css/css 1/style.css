@@ -1,48 +1,86 @@
-div#Contenedor{
+body {
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #f0f8ff;
+  }
+  
+  div#Contenedor{
 	text-align: left;
 	margin: auto;
-	width: 1000px;
-	height: 1000px;
-}
-header{
+	max-width: 1000px;
+	padding: 20px;
+	box-sizing: border-box;
+  }
+  
+  header{
 	width: 100%;
 	height: 25%;
-	background-color: grey;	
-}
-nav{
-	margin-top: 5px;
+	background-color: #ffb6c1;
+	border-radius: 15px;
+	padding: 20px;
+	box-sizing: border-box;
+	font-size: 2em;
+	color: white;
+	text-align: center;
+  }
+  
+  nav{
+	margin-top: 20px;
 	width: 100%;
-	height: 5%;
-	background-color:brown;
-}
-div#Columnas{
-	margin-top: 5px;
+	height: auto;
+	background-color: #f5deb3;
+	border-radius: 15px;
+	padding: 10px;
+	box-sizing: border-box;
+	font-size: 1.5em;
+  }
+  
+  div#Columnas{
+	margin-top: 20px;
 	width: 100%;
-	height: 65%;
-}
-div.col1{
-	background-color: grey;
-	float: left;
-	width: 24%;
-	height: 100%;
-	margin-right: 10px;
-}
-div.col2{
-	background-color: brown;
-	float: left;
-	width: 24%;
-	height: 100%;
-	margin-right: 10px;
-}
-div.dcha{
-	background-color: brown;
-	float: left;
-	width: 25%;
-	height: 100%;
-}
-footer{
-	margin-top: 5px;
-	height: 5%;
+	display: flex;
+	justify-content: space-between;
+	gap: 20px;
+  }
+  
+  div.col1, div.col2, div.col3, div.dcha{
+	flex: 1;
+	box-sizing: border-box;
+	padding: 10px;
+	border-radius: 15px;
+  }
+  
+  div.col1{
+	background-color: #ffc0cb;
+	border: 3px solid #ffb6c1;
+  }
+  
+  div.col2{
+	background-color: #d8bfd8;
+	border: 3px solid #dda0dd;
+  }
+  
+  div.col3{
+	background-color: #e0ffff;
+	border: 3px solid #afeeee;
+  }
+  
+  div.dcha{
+	background-color: #b0e0e6;
+	border: 3px solid #87ceeb;
+	box-shadow: 0px 0px 10px #87ceeb;
+  }
+  
+  footer{
+	margin-top: 20px;
+	height: auto;
 	width: 100%;
-	background-color: brown;
-}
+	background-color: #f5f5dc;
+	border-radius: 15px;
+	color: #696969;
+	text-align: center;
+	padding: 10px;
+	box-sizing: border-box;
+	font-size: 1.5em;
+  }

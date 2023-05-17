@@ -1,55 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <!--Imports-->
-    <script src="script.js"></script>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css"/>
-    <title>Javascript 1</title>
+    <link href="style.css" rel="stylesheet" crossorigin="anonymous">
 </head>
 <body>
-    <div class="grid-layout">
-        <div class="container header">
-            <h1>Header</h1>
-        </div>
-        <div class="container menu">
-            <h1>Menu</h1>
-        </div>
-        <div class="container content">
-            <span>Nombre:<input type="text" id="nombre" placeholder="Nombre" /><label id="errornombre">Campo incompleto o incorrecto</label></span>
-            <span>Primer apellido:<input type="text" id="apellido1" placeholder="Primer apellido" /><label id="errorapellido1">Campo incompleto o incorrecto</label></span>
-            <span>Segundo apellido:<input type="text"  id="apellido2" placeholder="Segundo apellido" /><label id="errorapellido2">Campo incompleto o incorrecto</label></span>
-            <span>Nota:<input type="text" id="nota" placeholder="10" /><label id="errornota">Campo incompleto o incorrecto</label></span>
-            <span>Edad:<input type="text" id="edad" placeholder="Edad" /><label id="erroredad">Campo incompleto o incorrecto</label></span>
-        </div>
-        <div class="container validation">
-            Valoracion:<select id="valoracion">
-            <option value=""></option>
-            <option value="*">*</option>
-            <option value="**">**</option>
-            <option value="***">***</option>
-            <option value="****">****</option>
-            <option value="*****">*****</option>
-            </select>
-            <label id="errorvaloracion">Seleciona una valoracion</label>
-            <div id="regis" align="center">
-                <input type="button" id="registro" value="validar" onclick="validacion();"/>
-            </div>
-        </div>
-        <div class="container result">
-            <span><label>Nombre</label><input type="text" value="" id="nombref"/></span>
-            <span><label>1º Apellido</label><input type="text" value="" id="apellido1f"/></span>
-            <span><label>2º Apellido</label><input type="text" value="" id="apellido2f"/></span>
-            <span><label>Nota</label><input type="text" value="" id="notaf"/></span>
-            <span><label>Edad</label><input type="text" value="" id="edadf"/></span>
-            <span>Valoración<input type="text" value="" id="valoracionf"/></span>
-        </div>
+    <div class="form-container">
+        <h2>Validación de datos personales</h2>
+        <input type="text" id="nombre" placeholder="Nombre">
+        <input type="text" id="apellido1" placeholder="Primer apellido">
+        <input type="text" id="apellido2" placeholder="Segundo apellido">
+        <button id="validarNombre">Validar</button>
+        <p id="nombreCompleto"></p>
     </div>
+
+    <div class="form-container">
+        <h2>Validación de nota</h2>
+        <input type="number" id="nota" min="0" max="10" placeholder="Nota">
+        <button id="validarNota">Validar</button>
+        <p id="notaTexto"></p>
+    </div>
+
+    <div class="form-container">
+        <h2>Validación de valoración</h2>
+        <input type="number" id="valoracion" min="0" max="5" placeholder="Valoración">
+        <button id="validarValoracion">Validar</button>
+        <p id="valoracionTexto"></p>
+    </div>
+
+    <div class="form-container">
+        <h2>Validación de edad</h2>
+        <input type="date" id="fechaNacimiento" placeholder="Fecha de nacimiento">
+        <button id="validarEdad">Validar</button>
+        <p id="edad"></p>
+    </div>
+
+<script src="script.js"></script>
 </body>
 </html>
-
-<!--
-    
--->
