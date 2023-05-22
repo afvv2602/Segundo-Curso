@@ -45,11 +45,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     class TaskViewHolder extends RecyclerView.ViewHolder {
         TextView nameTextView;
         TextView deadlineTextView;
+        // Otros campos...
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.task_name);
             deadlineTextView = itemView.findViewById(R.id.task_deadline);
+            // Inicializar otros campos...
         }
     }
 }

@@ -29,16 +29,28 @@ public class TaskViewModel extends AndroidViewModel {
         return taskRepository.getTasksByOwner(owner);
     }
 
+    public void addTask(Task task) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            taskRepository.insert(task);
+        });
+    }
+
     public void insert(Task task) {
-        taskRepository.insert(task);
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            taskRepository.insert(task);
+        });
     }
 
     public void update(Task task) {
-        taskRepository.update(task);
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            taskRepository.update(task);
+        });
     }
 
     public void delete(Task task) {
-        taskRepository.delete(task);
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            taskRepository.delete(task);
+        });
     }
 
 }

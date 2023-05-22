@@ -9,11 +9,24 @@
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:text="Bienvenido"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
+        android:gravity="left"/>
+
+    <Button
+        android:id="@+id/add_task_button"
+        android:layout_width="wrap_content"
+        android:layout_height="49dp"
+        android:layout_alignTop="@+id/textView"
+        android:layout_alignBottom="@+id/textView"
+        android:layout_marginStart="158dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="1dp"
+        android:layout_toEndOf="@+id/textView"
+        android:gravity="right"
+        android:text="Add Task" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/task_recyclerview"
