@@ -15,7 +15,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 // https://developer.android.com/codelabs/android-room-with-a-view#0
-@Database(entities = {User.class},version = 1,exportSchema = false)
+@Database(entities = {User.class,Task.class},version = 1,exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     // Hay que añadir cada uno de nuestros DAOs (Data access object) a la base de datos

@@ -1,6 +1,20 @@
 package com.example.taskmanager.task_fragments;
 
 
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.taskmanager.R;
+import com.example.taskmanager.db.task.Task;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
     private List<Task> tasks = new ArrayList<>();
 
@@ -16,7 +30,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         Task task = tasks.get(position);
         holder.nameTextView.setText(task.getName());
         holder.deadlineTextView.setText(task.getDeadline());
-        // Hacer lo mismo para otros campos de la tarea
     }
 
     @Override
@@ -32,13 +45,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     class TaskViewHolder extends RecyclerView.ViewHolder {
         TextView nameTextView;
         TextView deadlineTextView;
-        // Otros campos...
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.task_name);
             deadlineTextView = itemView.findViewById(R.id.task_deadline);
-            // Inicializar otros campos...
         }
     }
 }

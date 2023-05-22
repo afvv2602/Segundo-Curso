@@ -2,24 +2,28 @@ package com.example.taskmanager.db.task;
 
 import android.app.Application;
 import androidx.lifecycle.LiveData;
+
+import com.example.taskmanager.db.AppDatabase;
+
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
 public class TaskRepository {
-    private TaskDao taskDao;
-    private LiveData<List<Task>> allTasks;
+    private TaskDAO taskDao;
+
     private ExecutorService executorService;
 
     public TaskRepository(Application application) {
-        TaskDatabase db = TaskDatabase.getDatabase(application);
+        AppDatabase db = AppDatabase.getDatabase(application);
         taskDao = db.taskDao();
-        allTasks = taskDao.getAllTasks();
         executorService = Executors.newFixedThreadPool(2);
     }
 
-    public LiveData<List<Task>> getAllTasks() {
-        return allTasks;
+
+    public LiveData<List<Task>> getTasksByOwner(String owner) {
+        return taskDao.getTasksByOwner(owner);
     }
 
     public void insert(Task task) {
@@ -33,4 +37,5 @@ public class TaskRepository {
     public void delete(Task task) {
         executorService.execute(() -> taskDao.delete(task));
     }
+
 }

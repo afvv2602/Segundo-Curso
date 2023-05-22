@@ -25,7 +25,7 @@ public class Task {
 
     public String getName(){ return this.name; }
 
-    public String getDescription(){ return this.description }
+    public String getDescription(){ return this.description; }
 
     public String getDeadline(){ return this.deadline; }
 

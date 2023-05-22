@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.taskmanager.db.AppDatabase;
 
+import java.util.List;
+
 // El ViewModel es el que se encarga de pasarle la informacion a la UI, se encarga de hacer
 // de puente entre el UserDAO y la UI
 public class TaskViewModel extends AndroidViewModel {
@@ -19,9 +21,7 @@ public class TaskViewModel extends AndroidViewModel {
 
     public TaskViewModel(@NonNull Application application) {
         super(application);
-
-        AppDatabase appDatabase = AppDatabase.getDatabase(application);
-        taskRepository = new TaskRepository(appDatabase.taskDao());
+        taskRepository = new TaskRepository(application);
         userTasks = new MutableLiveData<>();
     }
 
@@ -30,16 +30,17 @@ public class TaskViewModel extends AndroidViewModel {
     }
 
     public void insert(Task task) {
-        repository.insert(task);
+        taskRepository.insert(task);
     }
 
     public void update(Task task) {
-        repository.update(task);
+        taskRepository.update(task);
     }
 
     public void delete(Task task) {
-        repository.delete(task);
+        taskRepository.delete(task);
     }
 
 }
+
 
