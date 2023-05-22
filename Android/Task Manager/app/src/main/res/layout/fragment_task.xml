@@ -12,11 +12,18 @@
         android:layout_height="wrap_content"
         android:hint="Task name"/>
 
-    <EditText
-        android:id="@+id/edittext_deadline"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Deadline"/>
+    <DatePicker
+        android:id="@+id/date_picker"
+        android:layout_width="379dp"
+        android:layout_height="233dp"
+        android:calendarViewShown="false" />
+
+    <TimePicker
+        android:id="@+id/time_picker"
+        android:layout_width="380dp"
+        android:layout_height="92dp"
+        android:timePickerMode="spinner" />
+
 
     <EditText
         android:id="@+id/edittext_descripcion"
@@ -24,7 +31,6 @@
         android:layout_height="wrap_content"
         android:hint="Description"/>
 
-    <!-- Añade aquí otros EditTexts para otros campos de la tarea -->
 
     <Button
         android:id="@+id/button_add"
