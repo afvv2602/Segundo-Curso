@@ -18,7 +18,7 @@ import com.example.taskmanager.db.task.Task;
 import com.example.taskmanager.db.task.TaskViewModel;
 import com.example.taskmanager.task_fragments.TaskAdapter;
 
-public class PrincipalActivity extends AppCompatActivity {
+public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.TaskClickListener {
     String username;
     TaskViewModel taskViewModel;
     RecyclerView taskRecyclerView;
@@ -38,10 +38,9 @@ public class PrincipalActivity extends AppCompatActivity {
         }
 
         // Inicializar el RecyclerView y el adaptador con lista vacía
-        taskAdapter = new TaskAdapter();
+        taskAdapter = new TaskAdapter(this);
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         taskRecyclerView.setAdapter(taskAdapter);
-        
 
         // Inicializar el TaskViewModel y observar los cambios en la lista de tareas
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
@@ -108,10 +107,15 @@ public class PrincipalActivity extends AppCompatActivity {
         builder.setTitle("Task Details");
         builder.setMessage(
                 "Name: " + task.getName() + "\n" +
-                        "Deadline: " + task.getDeadline() + "\n" +
-                        "Description: " + task.getDescription()
+                "Deadline: " + task.getDeadline() + "\n" +
+                "Description: " + task.getDescription()
         );
         builder.setPositiveButton("Close", null);
         builder.show();
+    }
+
+    @Override
+    public void onTaskClick(Task task) {
+        showTaskDetailDialog(task);
     }
 }

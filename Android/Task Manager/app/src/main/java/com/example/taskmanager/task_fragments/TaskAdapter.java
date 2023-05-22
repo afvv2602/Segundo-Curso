@@ -1,6 +1,5 @@
 package com.example.taskmanager.task_fragments;
 
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,15 @@ import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
     private List<Task> tasks = new ArrayList<>();
+    private TaskClickListener listener;
+
+    public interface TaskClickListener {
+        void onTaskClick(Task task);
+    }
+
+    public TaskAdapter(TaskClickListener listener) {
+        this.listener = listener;
+    }
 
     @NonNull
     @Override
@@ -30,6 +38,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         Task task = tasks.get(position);
         holder.nameTextView.setText(task.getName());
         holder.deadlineTextView.setText(task.getDeadline());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onTaskClick(task);
+            }
+        });
     }
 
     @Override

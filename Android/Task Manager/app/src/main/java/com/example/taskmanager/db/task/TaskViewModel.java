@@ -35,12 +35,6 @@ public class TaskViewModel extends AndroidViewModel {
         });
     }
 
-    public void insert(Task task) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            taskRepository.insert(task);
-        });
-    }
-
     public void update(Task task) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             taskRepository.update(task);
