@@ -1,0 +1,9 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/GrisCl" /> <!-- Color de fondo -->
+    <stroke
+        android:width="2dp"
+        android:color="@color/GrisCl" /> <!-- Color del borde -->
+    <corners
+        android:topLeftRadius="50dp"
+        android:topRightRadius="50dp" />
+</shape>
