@@ -7,6 +7,8 @@
     import android.app.TimePickerDialog;
     import android.content.Context;
     import android.content.Intent;
+    import android.graphics.Color;
+    import android.graphics.drawable.ColorDrawable;
     import android.os.Bundle;
     import android.view.LayoutInflater;
     import android.view.View;
@@ -35,11 +37,8 @@
         RecyclerView taskRecyclerView;
         TaskAdapter taskAdapter;
         Button addTask;
-        EditText dateEdit;
-
-        int selectedYear, selectedMonth, selectedDay;
-
-
+        EditText dateEdit,timeEdit;
+        int selectedYear, selectedMonth, selectedDay,selectedHour, selectedMinute;
 
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -68,7 +67,6 @@
             // Boton añadir tarea
             addTask.setOnClickListener(view -> showAddTaskDialog());
         }
-
         private void showAddTaskDialog() {
             // Creacion del dialogo de alerta
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -82,38 +80,35 @@
             EditText taskNameEdit = dialogView.findViewById(R.id.taskNameEdit);
             EditText descriptionEdit = dialogView.findViewById(R.id.taskDescriptionEdit);
             dateEdit = dialogView.findViewById(R.id.datePickerEdit);
+            timeEdit = dialogView.findViewById(R.id.timePickerEdit);
             Button buttonAdd = dialogView.findViewById(R.id.newTaskBtn);
-
 
             // Crear el AlertDialog
             AlertDialog dialog = builder.create();
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // Hacemos el dialogo transparente
 
             dateEdit.setOnClickListener(v -> showDatePicker());
+            timeEdit.setOnClickListener(v -> showTimePicker());
+
+            dialog.show();
             // Cuando se pulsa añadir
             buttonAdd.setOnClickListener(view -> {
                 String name = taskNameEdit.getText().toString();
                 String description = descriptionEdit.getText().toString();
-                if (!name.isEmpty() && !description.isEmpty()) {
-                    // Convertir la fecha y hora seleccionadas en un objeto Calendar
-                    Calendar deadline = Calendar.getInstance();
-                    deadline.set(selectedYear, selectedMonth, selectedDay);
 
+                if (!name.isEmpty() && !description.isEmpty() && !dateEdit.getText().toString().isEmpty() && !timeEdit.getText().toString().isEmpty()) {
+                    Calendar deadline = Calendar.getInstance();
+                    deadline.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
                     // Crear la nueva tarea
                     Task newTask = new Task(0, name, description, deadline.getTime(), username);
                     taskViewModel.addTask(newTask);
-
                     // Programar una notificación para un día antes de la fecha límite
                     scheduleNotification(newTask);
-
                     // Cerrar el diálogo
                     dialog.dismiss();
                 }
             });
-
-            // Mostrar el dialogo con todas las opciones
-            builder.create().show();
         }
-
         public void showDatePicker() {
             Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
@@ -140,7 +135,28 @@
             );
             datePickerDialog.show();
         }
+        public void showTimePicker() {
+            Calendar calendar = Calendar.getInstance();
+            int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+            int minute = calendar.get(Calendar.MINUTE);
 
+            TimePickerDialog timePickerDialog = new TimePickerDialog(
+                    this,
+                    new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            // Actualiza el EditText con la hora seleccionada.
+                            timeEdit.setText(String.format("%02d:%02d", hourOfDay, minute));
+                            selectedHour = hourOfDay;
+                            selectedMinute = minute;
+                        }
+                    },
+                    hourOfDay,
+                    minute,
+                    true // Configura el formato de 24 horas.
+            );
+            timePickerDialog.show();
+        }
         private void showTaskDetailDialog(Task task) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Task Details");
@@ -152,12 +168,10 @@
             builder.setPositiveButton("Close", null);
             builder.show();
         }
-
         @Override
         public void onTaskClick(Task task) {
             showTaskDetailDialog(task);
         }
-
         private void scheduleNotification(Task task) {
             // Crear un Intent para la notificación
             Intent notificationIntent = new Intent(this, TaskNotificationReceiver.class);

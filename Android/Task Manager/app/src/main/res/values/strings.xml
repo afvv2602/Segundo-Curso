@@ -10,6 +10,7 @@
     <string name="taskNombre">Nombre de la tarea</string>
     <string name="taskDescription">Descripcion de la tarea</string>
     <string name="taskDate">Fecha limite de la tarea</string>
-    <string name="msgNewTask">Añadir tarea</string>
+    <string name="msgNewTask">Nueva tarea</string>
     <string name="btnAdd">Añadir tarea</string>
+    <string name="taskTime">Hora limite para la tarea</string>
 </resources>
