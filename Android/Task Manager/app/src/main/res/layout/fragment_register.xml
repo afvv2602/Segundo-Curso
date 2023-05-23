@@ -1,64 +1,120 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginVertical="200dp"
-    android:layout_marginTop="50dp">
+    android:background="@color/Amarillo">
 
-        <TextView
-            android:id="@+id/Tittle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Registrarse"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@id/usernameEditText"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.472"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
 
-        <EditText
-            android:id="@+id/passwordEditText"
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineH"
             android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="36dp"
-            android:background="@android:color/white"
-            android:ems="10"
-            android:hint="Contraseña"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/usernameEditText" />
-
-        <EditText
-            android:id="@+id/usernameEditText"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="8dp"
-            android:background="@android:color/white"
-            android:ems="10"
-            android:hint="Usuario"
-            app:layout_constraintBottom_toTopOf="@id/passwordEditText"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Tittle" />
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.45" />
 
 
-        <Button
-            android:id="@+id/registerButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="50dp"
-            android:layout_marginTop="20dp"
-            android:text="Registrar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/soft_border"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/guidelineH"
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_editor_absoluteX="0dp">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guidelineVLeft"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.1" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guidelineVRight"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.90" />
+
+                <TextView
+                    android:id="@+id/registroTV"
+                    android:layout_width="250dp"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="32dp"
+                    android:padding="5dp"
+                    android:text="@string/msgRegistro"
+                    android:textColor="@color/Negro"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@id/guidelineVLeft"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/loginTV2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:padding="5dp"
+                    android:text="@string/loginTV2"
+                    android:textColor="@color/Amarillo"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toEndOf="@id/guidelineVLeft"
+                    app:layout_constraintTop_toBottomOf="@+id/registroTV" />
+
+                <EditText
+                    android:id="@+id/userEdit"
+                    android:layout_width="328dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="28dp"
+                    android:background="@drawable/edit_border"
+                    android:hint="@string/usuarioLogin"
+                    android:padding="10dp"
+                    android:textSize="18sp"
+                    android:textColor="@color/GrisOb"
+                    android:textColorHint="@color/GrisOb"
+                    app:layout_constraintEnd_toStartOf="@id/guidelineVRight"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@id/guidelineVLeft"
+                    app:layout_constraintTop_toBottomOf="@id/loginTV2" />
+
+                <EditText
+                    android:id="@+id/passEdit"
+                    android:layout_width="328dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/edit_border"
+                    android:hint="@string/contrasenaLogin"
+                    android:padding="10dp"
+                    android:inputType="textPassword"
+                    android:textColor="@color/GrisOb"
+                    android:textColorHint="@color/GrisOb"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toStartOf="@id/guidelineVRight"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@id/guidelineVLeft"
+                    app:layout_constraintTop_toBottomOf="@id/userEdit" />
+
+
+                <Button
+                    android:id="@+id/registerBtn"
+                    android:layout_width="160dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="44dp"
+                    android:background="@drawable/btn_border"
+                    android:gravity="center"
+                    android:text="@string/btnRegister"
+                    android:textColor="@color/Negro"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@id/guidelineVRight"
+                    app:layout_constraintHorizontal_bias="0.497"
+                    app:layout_constraintStart_toEndOf="@id/guidelineVLeft"
+                    app:layout_constraintTop_toBottomOf="@+id/passEdit" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

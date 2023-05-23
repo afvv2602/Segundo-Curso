@@ -1,9 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.LibreriaRoom" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Default" parent="Theme.AppCompat.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.LibreriaRoom" parent="Base.Theme.LibreriaRoom" />
 </resources>

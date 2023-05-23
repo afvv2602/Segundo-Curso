@@ -3,7 +3,10 @@
     <color name="Rosa">#F8BBD0</color>
     <color name="Azul">#B2EBF2</color>
     <color name="Amarillo">#FFD54F</color>
+    <color name="AmarilloCl">#FFF3B7</color>
     <color name="Gris">#757575 </color>
     <color name="GrisOb">#333333</color>
     <color name="GrisCl">#F5F5F5</color>
+    <color name="Blanco">#FFFFFF</color>
+    <color name="Negro">#000000</color>
 </resources>

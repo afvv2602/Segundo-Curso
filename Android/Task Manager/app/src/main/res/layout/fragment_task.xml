@@ -1,41 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/edittext_name"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Task name"/>
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <DatePicker
-        android:id="@+id/date_picker"
-        android:layout_width="379dp"
-        android:layout_height="233dp"
-        android:calendarViewShown="false" />
-
-    <TimePicker
-        android:id="@+id/time_picker"
-        android:layout_width="380dp"
-        android:layout_height="92dp"
-        android:timePickerMode="spinner" />
-
-
-    <EditText
-        android:id="@+id/edittext_descripcion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Description"/>
+        <TextView
+            android:id="@+id/newTaskTV"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:textColor="@color/Negro"
+            android:textSize="20sp"
+            android:text="@string/msgNewTask"
+            app:layout_constraintBottom_toTopOf="@+id/taskNameEdit"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
 
-    <Button
-        android:id="@+id/button_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add task"/>
+        <EditText
+            android:id="@+id/taskNameEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/taskNombre"
+            android:padding="10dp"
+            android:textColorHint="@color/GrisOb"
+            android:textColor="@color/GrisOb"
+            android:background="@drawable/edit_border"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-</LinearLayout>
+        <EditText
+            android:id="@+id/taskDescriptionEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/taskDescription"
+            android:padding="10dp"
+            android:textColorHint="@color/GrisOb"
+            android:textColor="@color/GrisOb"
+            android:background="@drawable/edit_border"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/taskNameEdit" />
+
+        <EditText
+            android:id="@+id/datePickerEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/taskDate"
+            android:padding="10dp"
+            android:textColorHint="@color/GrisOb"
+            android:textColor="@color/GrisOb"
+            android:background="@drawable/edit_border"
+            android:inputType="none"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/taskDescriptionEdit" />
+
+        <EditText
+            android:id="@+id/timePickerEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint=""
+            android:padding="10dp"
+            android:textColorHint="@color/GrisOb"
+            android:textColor="@color/GrisOb"
+
+            android:background="@drawable/edit_border"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/datePickerEdit" />
+
+        <Button
+            android:id="@+id/newTaskBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btnAdd"
+            android:background="@drawable/btn_border"
+            android:textColor="@color/Negro"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timePickerEdit" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

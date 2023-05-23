@@ -52,10 +52,10 @@ public class LoginFragment extends Fragment {
     }
 
     private void setUpViews(View view) {
-        usernameEditText = view.findViewById(R.id.usernameEditText);
-        passwordEditText = view.findViewById(R.id.passwordEditText);
-        Button loginButton = view.findViewById(R.id.loginButton);
-        Button registerButton = view.findViewById(R.id.registerButton);
+        usernameEditText = view.findViewById(R.id.userEdit);
+        passwordEditText = view.findViewById(R.id.passEdit);
+        Button loginButton = view.findViewById(R.id.loginBtn);
+        Button registerButton = view.findViewById(R.id.registerBtn);
         userViewModel = new ViewModelProvider(requireActivity(), new UserViewModel.UserViewModelFactory(requireActivity().getApplication())).get(UserViewModel.class);
         loginButton.setOnClickListener(v -> validateFields());
         registerButton.setOnClickListener(v -> navigationInterface.navigateToRegister());

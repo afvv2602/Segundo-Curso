@@ -30,9 +30,9 @@ public class RegisterFragment extends Fragment {
 
     public void onViewCreated(View view, Bundle savedInstanceState) { super.onViewCreated(view, savedInstanceState);
         userViewModel = new ViewModelProvider(requireActivity(), new UserViewModel.UserViewModelFactory(requireActivity().getApplication())).get(UserViewModel.class);
-        usernameEditText = view.findViewById(R.id.usernameEditText);
-        passwordEditText = view.findViewById(R.id.passwordEditText);
-        Button registerButton = view.findViewById(R.id.registerButton);
+        usernameEditText = view.findViewById(R.id.userEdit);
+        passwordEditText = view.findViewById(R.id.passEdit);
+        Button registerButton = view.findViewById(R.id.registerBtn);
         registerButton.setOnClickListener(v -> validateFields());
     }
 
