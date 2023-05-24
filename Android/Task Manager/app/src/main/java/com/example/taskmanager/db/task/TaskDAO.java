@@ -20,6 +20,9 @@ public interface TaskDAO { // DAO (Data access object)
     @Update
     void update(Task task);
 
+    @Query("UPDATE tasks SET status = :status WHERE id = :taskId")
+    void updateStatus(boolean status, int taskId);
+
     @Delete
     void delete(Task task);
 

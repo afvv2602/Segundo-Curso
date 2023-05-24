@@ -78,19 +78,20 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             deadlineTextView.setText(dateString);
             taskBackground = itemView.findViewById(R.id.task_background);
             itemView.setOnClickListener(v -> listener.onTaskClick(task));
-            switch (task.getTier()) {
-                case "Important":
-                    taskBackground.setBackgroundResource(R.drawable.tasks_card_important);
-                    break;
-                case "Low":
-                    taskBackground.setBackgroundResource(R.drawable.tasks_card_low);
-                    break;
-                default:
-                    taskBackground.setBackgroundResource(R.drawable.tasks_card);
-                    break;
-            }
             if (task.getStatus()){
                 taskBackground.setBackgroundResource(R.drawable.tasks_card_completed);
+            }else{
+                switch (task.getTier()) {
+                    case "Important":
+                        taskBackground.setBackgroundResource(R.drawable.tasks_card_important);
+                        break;
+                    case "Low":
+                        taskBackground.setBackgroundResource(R.drawable.tasks_card_low);
+                        break;
+                    default:
+                        taskBackground.setBackgroundResource(R.drawable.tasks_card);
+                        break;
+                }
             }
         }
     }

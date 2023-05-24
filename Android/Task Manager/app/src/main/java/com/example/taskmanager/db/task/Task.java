@@ -44,6 +44,10 @@ public class Task {
     public String getTier(){ return this.tier; }
     public boolean getStatus() { return this.status; }
 
+    public void setStatus(boolean status) {
+        this.status = (status) ? true : false;
+    }
+
     // Convierte los valores para poder añadirlos a la base de datos
     // Los @TypeConverter son una caracteristica del framework room
     // para facilitar la conversion de tipos que no pueden guardarse en la base de datos

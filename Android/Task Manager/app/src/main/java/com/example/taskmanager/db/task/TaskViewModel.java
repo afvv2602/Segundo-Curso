@@ -41,6 +41,13 @@ public class TaskViewModel extends AndroidViewModel {
         });
     }
 
+    public void updateStatus(boolean status, int taskId) {
+        AppDatabase.databaseWriteExecutor.execute(() ->{
+            taskRepository.updateStatus(status, taskId);
+        });
+    }
+
+
     public void delete(Task task) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             taskRepository.delete(task);

@@ -169,6 +169,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         TextView taskNameTextView = dialogView.findViewById(R.id.task_name);
         TextView taskDeadlineTextView = dialogView.findViewById(R.id.task_deadline);
         TextView taskDescriptionTextView = dialogView.findViewById(R.id.task_description);
+        TextView taskTierTextView = dialogView.findViewById(R.id.task_description);
         Button deleteButton = dialogView.findViewById(R.id.button);
         Button completeButton = dialogView.findViewById(R.id.button2);
         ConstraintLayout taskBackground = dialogView.findViewById(R.id.task_background);
@@ -178,40 +179,50 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         String dateString = format.format(task.getDeadline());
         taskDeadlineTextView.setText(dateString);
+        taskTierTextView.setText(task.getTier());
         taskDescriptionTextView.setText(task.getDescription());
-        switch (task.getTier()) {
-            case "Important":
-                taskBackground.setBackgroundResource(R.drawable.tasks_card_important);
-                completeButton.setBackgroundResource(R.drawable.btn_important);
-                deleteButton.setBackgroundResource(R.drawable.btn_important);
-                break;
-            case "Low":
-                taskBackground.setBackgroundResource(R.drawable.tasks_card_low);
-                completeButton.setBackgroundResource(R.drawable.btn_low);
-                deleteButton.setBackgroundResource(R.drawable.btn_low);
-                break;
-            default:
-                taskBackground.setBackgroundResource(R.drawable.tasks_card);
-                completeButton.setBackgroundResource(R.drawable.btn_border);
-                deleteButton.setBackgroundResource(R.drawable.btn_border);
-                break;
+        if(task.getStatus()){
+            taskBackground.setBackgroundResource(R.drawable.tasks_card_completed);
+            completeButton.setVisibility(View.GONE);
+            deleteButton.setBackgroundResource(R.drawable.btn_completed);
+        }else{
+            switch (task.getTier()) {
+                case "Important":
+                    taskBackground.setBackgroundResource(R.drawable.tasks_card_important);
+                    completeButton.setBackgroundResource(R.drawable.btn_important);
+                    deleteButton.setBackgroundResource(R.drawable.btn_important);
+                    break;
+                case "Low":
+                    taskBackground.setBackgroundResource(R.drawable.tasks_card_low);
+                    completeButton.setBackgroundResource(R.drawable.btn_low);
+                    deleteButton.setBackgroundResource(R.drawable.btn_low);
+                    break;
+                default:
+                    taskBackground.setBackgroundResource(R.drawable.tasks_card);
+                    completeButton.setBackgroundResource(R.drawable.btn_border);
+                    deleteButton.setBackgroundResource(R.drawable.btn_border);
+                    break;
+            }
         }
         // Crea el dialogo pero con el fondo transparente
         AlertDialog dialog = builder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        // Define las acciones de los botones
-        deleteButton.setOnClickListener(view -> {
-            // Añade aquí lo que quieras que suceda cuando se pulse el botón delete
-        });
-        completeButton.setOnClickListener(view -> {
-            // Añade aquí lo que quieras que suceda cuando se pulse el botón complete
-        });
-
         // Muestra el dialogo
         dialog.show();
-    }
 
+        deleteButton.setOnClickListener(view -> {
+            taskViewModel.delete(task);
+            dialog.dismiss();
+        });
+
+        completeButton.setOnClickListener(view -> {
+            task.setStatus(true); // o lo que sea que necesites hacer para cambiar el estado a true
+            taskViewModel.updateStatus(true, task.getId()); // asumiendo que getId() retorna el id de la tarea
+            taskBackground.setBackgroundResource(R.drawable.tasks_card_completed); // cambiar a un drawable que represente una tarea completa
+            dialog.dismiss();
+        });
+    }
 
     // Programar la notificacion para que sea un dia antes
     private void scheduleNotification(Task task) {
