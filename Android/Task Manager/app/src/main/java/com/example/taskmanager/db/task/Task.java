@@ -16,14 +16,18 @@ public class Task {
     private String description;
     private Date deadline;
     private String owner;
+    private String tier;
+    private boolean status;
 
     // Constructor, getters y setters
-    public Task(int id,String name,String description, Date deadline, String owner){
+    public Task(int id,String name,String description, Date deadline, String owner,String tier,boolean status){
         this.id = id;
         this.name = name;
         this.description = description;
         this.deadline = deadline;
         this.owner = owner;
+        this.tier = tier;
+        this.status = status;
     }
 
     public int getId(){ return this.id; }
@@ -37,6 +41,8 @@ public class Task {
     }
 
     public String getOwner(){ return this.owner; }
+    public String getTier(){ return this.tier; }
+    public boolean getStatus() { return this.status; }
 
     // Convierte los valores para poder añadirlos a la base de datos
     // Los @TypeConverter son una caracteristica del framework room

@@ -13,4 +13,5 @@
     <string name="msgNewTask">Nueva tarea</string>
     <string name="btnAdd">Añadir tarea</string>
     <string name="taskTime">Hora limite para la tarea</string>
+    <string name="taskTier">Elige la importancia de la tarea</string>
 </resources>

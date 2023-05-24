@@ -1,0 +1,127 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:background="@android:color/transparent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/task_border"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:padding="15dp">
+
+        <TextView
+            android:id="@+id/newTaskTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Negro"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="@string/msgNewTask"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+
+        <EditText
+            android:id="@+id/taskNameEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/taskNombre"
+            android:padding="10dp"
+            android:textColorHint="@color/GrisOb"
+            android:textColor="@color/GrisOb"
+            android:background="@drawable/edit_border"
+            android:layout_marginTop="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/newTaskTV" />
+
+        <EditText
+            android:id="@+id/taskDescriptionEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/taskDescription"
+            android:padding="10dp"
+            android:textColorHint="@color/GrisOb"
+            android:textColor="@color/GrisOb"
+            android:background="@drawable/edit_border"
+            android:layout_marginTop="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/taskNameEdit" />
+
+        <EditText
+            android:id="@+id/datePickerEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/taskDate"
+            android:padding="10dp"
+            android:textColorHint="@color/GrisOb"
+            android:textColor="@color/GrisOb"
+            android:background="@drawable/edit_border"
+            android:inputType="none"
+            android:focusable="false"
+            android:layout_marginTop="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/taskDescriptionEdit" />
+
+        <EditText
+            android:id="@+id/timePickerEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/taskTime"
+            android:inputType="none"
+            android:focusable="false"
+            android:padding="10dp"
+            android:textColorHint="@color/GrisOb"
+            android:textColor="@color/GrisOb"
+            android:background="@drawable/edit_border"
+            android:layout_marginTop="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/datePickerEdit" />
+
+        <EditText
+            android:id="@+id/tierPickerEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/taskTier"
+            android:inputType="none"
+            android:focusable="false"
+            android:padding="10dp"
+            android:textColorHint="@color/GrisOb"
+            android:textColor="@color/GrisOb"
+            android:background="@drawable/edit_border"
+            android:layout_marginTop="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timePickerEdit" />
+
+        <Button
+            android:id="@+id/newTaskBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btnAdd"
+            android:background="@drawable/btn_border"
+            android:textColor="@color/Negro"
+            android:textSize="15sp"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tierPickerEdit" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

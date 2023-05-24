@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="Rosa">#F8BBD0</color>
-    <color name="Azul">#B2EBF2</color>
+    <color name="AzulOb">#82C2D6</color>
+    <color name="AzulCl">#A4D8E8</color>
+    <color name="VerdeOb">#88C399</color>
+    <color name="VerdeCl">#B2D8B5</color>
+    <color name="RojoOb">#E99487</color>
+    <color name="RojoCl">#FAB5A3</color>
     <color name="Amarillo">#FFD54F</color>
     <color name="AmarilloCl">#FFF3B7</color>
     <color name="Gris">#757575 </color>

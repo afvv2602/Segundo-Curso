@@ -9,6 +9,7 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/task_background"
         android:layout_width="375dp"
         android:layout_height="81dp"
         android:background="@drawable/tasks_card"

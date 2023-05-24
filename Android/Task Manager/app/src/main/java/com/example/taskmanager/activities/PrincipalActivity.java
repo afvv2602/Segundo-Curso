@@ -23,7 +23,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
     private String username;
     private TaskViewModel taskViewModel;
     private TaskAdapter taskAdapter;
-    private EditText dateEdit,timeEdit;
+    private EditText dateEdit,timeEdit,tierEdit;
     private int selectedYear, selectedMonth, selectedDay,selectedHour, selectedMinute;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +54,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
     private void showAddTaskDialog() {
         // Crea un dialogo usando el fragment_task
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View dialogView = getLayoutInflater().inflate(R.layout.fragment_task, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.fragment_add_task, null);
         builder.setView(dialogView);
 
         // Inicializa los elementos del dialogo
@@ -62,6 +62,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         EditText descriptionEdit = dialogView.findViewById(R.id.taskDescriptionEdit);
         dateEdit = dialogView.findViewById(R.id.datePickerEdit);
         timeEdit = dialogView.findViewById(R.id.timePickerEdit);
+        tierEdit = dialogView.findViewById(R.id.tierPickerEdit);
         Button buttonAdd = dialogView.findViewById(R.id.newTaskBtn);
 
         // Crea el dialogo pero con el fondo transparente
@@ -71,7 +72,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         // Abre los pickers pulsando los edit text correspondientes
         dateEdit.setOnClickListener(v -> showDatePicker());
         timeEdit.setOnClickListener(v -> showTimePicker());
-
+        tierEdit.setOnClickListener(view -> showTierPicker());
         // Muestra el dialogo
         dialog.show();
 
@@ -85,12 +86,14 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
     private boolean addTask(EditText taskNameEdit, EditText descriptionEdit) {
         String name = taskNameEdit.getText().toString();
         String description = descriptionEdit.getText().toString();
-
+        String date = dateEdit.getText().toString();
+        String time = timeEdit.getText().toString();
+        String tier = tierEdit.getText().toString();
         // Solo añadimos la tarea si todos los campos estan rellenos
-        if (!name.isEmpty() && !description.isEmpty() && !dateEdit.getText().toString().isEmpty() && !timeEdit.getText().toString().isEmpty()) {
+        if (!name.isEmpty() && !description.isEmpty() && !date.isEmpty() && !time.isEmpty() && !tier.isEmpty()) {
             Calendar deadline = Calendar.getInstance();
             deadline.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
-            Task newTask = new Task(0, name, description, deadline.getTime(), username);
+            Task newTask = new Task(0, name, description, deadline.getTime(), username,tier,false);
             taskViewModel.addTask(newTask);
             scheduleNotification(newTask);
             return true;
@@ -131,6 +134,24 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
                 true
         );
         timePickerDialog.show();
+    }
+
+    private void showTierPicker() {
+        // Las opciones disponibles en el picker
+        String[] tiers = {"Default", "Important", "Low"};
+
+        // Crear un nuevo AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose Priority");
+
+        // Establecer las opciones y el listener del clic
+        builder.setItems(tiers, (dialog, which) -> {
+            // Cada vez que se elija una opción, se actualizará el texto del EditText con esa opción
+            tierEdit.setText(tiers[which]);
+        });
+
+        // Mostrar el AlertDialog
+        builder.show();
     }
 
     // Creacion del popup cuando se pulsa encima de una task
