@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -10,8 +11,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/task_background"
-        android:layout_width="375dp"
-        android:layout_height="81dp"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
         android:background="@drawable/tasks_card"
         android:foregroundGravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -27,27 +28,67 @@
             android:layout_weight="1"
             android:text="Task Name"
             android:textColor="@color/Negro"
-            android:textSize="18sp"
+            android:textSize="25sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.192" />
+            app:layout_constraintVertical_bias="0.096" />
 
         <TextView
             android:id="@+id/task_deadline"
             android:layout_width="177dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="11dp"
             android:layout_weight="1"
             android:text="Deadline"
             android:textColor="@color/GrisOb"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.08"
+            app:layout_constraintHorizontal_bias="0.78"
+            app:layout_constraintStart_toEndOf="@+id/task_name"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.088" />
+
+        <TextView
+            android:id="@+id/task_description"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Deadline"
+            android:textColor="@color/GrisOb"
+            app:layout_constraintBottom_toBottomOf="@id/button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.173"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/task_name"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.15" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/btn_border"
+            android:padding="10dp"
+            android:text="@string/btnEliminar"
+            android:textColor="@color/Blanco"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/btn_border"
+            android:padding="10dp"
+            android:text="@string/btnCompletar"
+            android:textColor="@color/Blanco"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.67"
+            app:layout_constraintStart_toEndOf="@+id/button" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

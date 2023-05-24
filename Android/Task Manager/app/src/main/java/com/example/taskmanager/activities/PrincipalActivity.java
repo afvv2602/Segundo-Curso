@@ -10,6 +10,7 @@ import android.view.*;
 import android.widget.*;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.*;
 
@@ -17,7 +18,9 @@ import com.example.taskmanager.*;
 import com.example.taskmanager.db.task.*;
 import com.example.taskmanager.task_fragments.*;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.TaskClickListener {
     private String username;
@@ -157,16 +160,58 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
     // Creacion del popup cuando se pulsa encima de una task
     @Override
     public void onTaskClick(Task task) {
-        new AlertDialog.Builder(this)
-                .setTitle("Detalles de la tarea")
-                .setMessage(
-                        "Nombre: " + task.getName() + "\n" +
-                        "Fecha final: " + task.getDeadline() + "\n" +
-                        "Descripcion: " + task.getDescription()
-                )
-                .setPositiveButton("Close", null)
-                .show();
+        // Crea un dialogo usando el fragment_task
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.fragment_task, null);
+        builder.setView(dialogView);
+
+        // Inicializa los elementos del dialogo
+        TextView taskNameTextView = dialogView.findViewById(R.id.task_name);
+        TextView taskDeadlineTextView = dialogView.findViewById(R.id.task_deadline);
+        TextView taskDescriptionTextView = dialogView.findViewById(R.id.task_description);
+        Button deleteButton = dialogView.findViewById(R.id.button);
+        Button completeButton = dialogView.findViewById(R.id.button2);
+        ConstraintLayout taskBackground = dialogView.findViewById(R.id.task_background);
+
+        // Rellena los elementos del dialogo con los datos de la tarea
+        taskNameTextView.setText(task.getName());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        String dateString = format.format(task.getDeadline());
+        taskDeadlineTextView.setText(dateString);
+        taskDescriptionTextView.setText(task.getDescription());
+        switch (task.getTier()) {
+            case "Important":
+                taskBackground.setBackgroundResource(R.drawable.tasks_card_important);
+                completeButton.setBackgroundResource(R.drawable.btn_important);
+                deleteButton.setBackgroundResource(R.drawable.btn_important);
+                break;
+            case "Low":
+                taskBackground.setBackgroundResource(R.drawable.tasks_card_low);
+                completeButton.setBackgroundResource(R.drawable.btn_low);
+                deleteButton.setBackgroundResource(R.drawable.btn_low);
+                break;
+            default:
+                taskBackground.setBackgroundResource(R.drawable.tasks_card);
+                completeButton.setBackgroundResource(R.drawable.btn_border);
+                deleteButton.setBackgroundResource(R.drawable.btn_border);
+                break;
+        }
+        // Crea el dialogo pero con el fondo transparente
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        // Define las acciones de los botones
+        deleteButton.setOnClickListener(view -> {
+            // Añade aquí lo que quieras que suceda cuando se pulse el botón delete
+        });
+        completeButton.setOnClickListener(view -> {
+            // Añade aquí lo que quieras que suceda cuando se pulse el botón complete
+        });
+
+        // Muestra el dialogo
+        dialog.show();
     }
+
 
     // Programar la notificacion para que sea un dia antes
     private void scheduleNotification(Task task) {
