@@ -16,18 +16,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+// Adaptador para el RecyclerView que muestra las tareas
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
     private List<Task> tasks = new ArrayList<>();
     private TaskClickListener listener;
 
+    // Interfaz para el click en las tareas
     public interface TaskClickListener {
         void onTaskClick(Task task);
     }
 
+    // Constructor del adaptador
     public TaskAdapter(TaskClickListener listener) {
         this.listener = listener;
     }
 
+    // Infla la vista para cada item de la lista
     @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -35,36 +39,40 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         return new TaskViewHolder(view);
     }
 
+    // Vincula los datos con la vista
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task task = tasks.get(position);
         holder.nameTextView.setText(task.getName());
+
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         String dateString = format.format(task.getDeadline());
         holder.deadlineTextView.setText(dateString);
+
         holder.itemView.setOnClickListener(v -> listener.onTaskClick(task));
     }
 
+    // Retorna el numero total de tareas
     @Override
     public int getItemCount() {
         return tasks.size();
     }
 
+    // Actualiza la lista de tareas y notifica al adaptador
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
         notifyDataSetChanged();
     }
 
+    // Contenedor de vistas para cada item de la lista
     class TaskViewHolder extends RecyclerView.ViewHolder {
         TextView nameTextView;
         TextView deadlineTextView;
-        // Otros campos...
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.task_name);
             deadlineTextView = itemView.findViewById(R.id.task_deadline);
-            // Inicializar otros campos...
         }
     }
 }

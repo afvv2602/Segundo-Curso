@@ -36,12 +36,12 @@ public class Task {
         return deadline;
     }
 
-    public void setDeadline(Date deadline) {
-        this.deadline = deadline;
-    }
-
     public String getOwner(){ return this.owner; }
 
+    // Convierte los valores para poder añadirlos a la base de datos
+    // Los @TypeConverter son una caracteristica del framework room
+    // para facilitar la conversion de tipos que no pueden guardarse en la base de datos
+    // Estos metodos permiten que room pueda interactuar con los objetos tipo date
     public static class DateConverter {
         @TypeConverter
         public static Date fromTimestamp(Long value) {

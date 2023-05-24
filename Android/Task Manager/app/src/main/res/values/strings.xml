@@ -6,7 +6,7 @@
     <string name="contrasenaLogin">Ingresa tu contraseña</string>
     <string name="btnLogin">Iniciar sesion</string>
     <string name="btnRegister">Registrarse</string>
-    <string name="msgRegistro">Registrarse</string>
+    <string name="msgRegistro">Registro</string>
     <string name="taskNombre">Nombre de la tarea</string>
     <string name="taskDescription">Descripcion de la tarea</string>
     <string name="taskDate">Fecha limite de la tarea</string>

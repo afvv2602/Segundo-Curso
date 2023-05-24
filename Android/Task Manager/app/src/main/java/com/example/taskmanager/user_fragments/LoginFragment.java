@@ -21,14 +21,16 @@ public class LoginFragment extends Fragment {
     private UserViewModel userViewModel;
     private EditText usernameEditText,passwordEditText;
 
-    //Con esto guardamos una referencia del activity para luego poder cambiar los fragments
+    // Referencia al activity para cambiar de fragments
     private NavigationInterface navigationInterface;
 
+    // Se infla la vista del fragmento de inicio de sesion
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
+    // Se guarda una referencia al activity cuando el fragmento se añade
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -39,18 +41,21 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    // Se borra la referencia al activity
     @Override
     public void onDetach() {
         super.onDetach();
         navigationInterface = null;
     }
 
+    // Metodo para configurar la vista una vez que se ha creado
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setUpViews(view);
     }
 
+    // Configura los elementos de la vista
     private void setUpViews(View view) {
         usernameEditText = view.findViewById(R.id.userEdit);
         passwordEditText = view.findViewById(R.id.passEdit);
@@ -61,11 +66,11 @@ public class LoginFragment extends Fragment {
         registerButton.setOnClickListener(v -> navigationInterface.navigateToRegister());
     }
 
+    // Inicia sesion del usuario
     private void loginUser(String username, String password) {
         userViewModel.loginUser(username, password);
         userViewModel.getLoggedInUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
-                showMessage("Login con exito!.");
                 navigationInterface.navigateToPrincipalActivity(username);
             } else {
                 showMessage("Algo ha ido mal por favor intentelo de nuevo");
@@ -73,6 +78,7 @@ public class LoginFragment extends Fragment {
         });
     }
 
+    // Valida que los campos no esten vacios
     private void validateFields() {
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
@@ -83,6 +89,7 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    // Muestra un mensaje en pantalla
     private void showMessage(String message) {
         Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show();
     }

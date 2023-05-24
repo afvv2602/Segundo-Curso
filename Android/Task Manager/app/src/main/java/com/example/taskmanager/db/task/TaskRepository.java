@@ -21,7 +21,6 @@ public class TaskRepository {
         executorService = Executors.newFixedThreadPool(2);
     }
 
-
     public LiveData<List<Task>> getTasksByOwner(String owner) {
         return taskDao.getTasksByOwner(owner);
     }

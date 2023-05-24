@@ -23,12 +23,15 @@ public class RegisterFragment extends Fragment {
     EditText usernameEditText,passwordEditText;
     private NavigationInterface navigationInterface;
 
+    // Se infla la vista del fragmento de registro
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_register, container, false);
     }
 
-    public void onViewCreated(View view, Bundle savedInstanceState) { super.onViewCreated(view, savedInstanceState);
+    // Metodo para configurar la vista una vez que se ha creado
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         userViewModel = new ViewModelProvider(requireActivity(), new UserViewModel.UserViewModelFactory(requireActivity().getApplication())).get(UserViewModel.class);
         usernameEditText = view.findViewById(R.id.userEdit);
         passwordEditText = view.findViewById(R.id.passEdit);
@@ -36,6 +39,7 @@ public class RegisterFragment extends Fragment {
         registerButton.setOnClickListener(v -> validateFields());
     }
 
+    // Se guarda una referencia al activity cuando el fragmento se añade
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -45,12 +49,15 @@ public class RegisterFragment extends Fragment {
             throw new RuntimeException(context.toString());
         }
     }
+
+    // Se borra la referencia al activity
     @Override
     public void onDetach() {
         super.onDetach();
         navigationInterface = null;
     }
 
+    // Registra al usuario
     private void registerUser(String username, String password) {
         User newUser = new User(0, username, password);
         userViewModel.registerUser(newUser,success -> {
@@ -63,6 +70,7 @@ public class RegisterFragment extends Fragment {
         });
     }
 
+    // Valida que los campos no esten vacios
     private void validateFields() {
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
@@ -73,7 +81,7 @@ public class RegisterFragment extends Fragment {
         }
     }
 
-    // Hay que forzar que el toast use el hilo principal de la UI para que funcione la aplicacion.
+    // Muestra un mensaje en pantalla, asegurandose de hacerlo en el hilo principal de la UI
     private void showMessage(String message) {
         requireActivity().runOnUiThread(() -> Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show());
     }
