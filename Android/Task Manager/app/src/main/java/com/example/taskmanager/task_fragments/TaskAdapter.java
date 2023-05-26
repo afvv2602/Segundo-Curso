@@ -1,5 +1,6 @@
 package com.example.taskmanager.task_fragments;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,32 +8,46 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taskmanager.R;
 import com.example.taskmanager.db.task.Task;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import com.example.taskmanager.db.task.TaskRepository;
+import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
-// Adaptador para el RecyclerView que muestra las tareas
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
-    private List<Task> tasks = new ArrayList<>();
+    private LiveData<List<Task>> tasks;
     private TaskClickListener listener;
+    private TaskRepository taskRepository;
+    private Handler handler = new Handler();
+    private Runnable updateTaskStatusRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Date currentDate = new Date();
+            List<Task> ongoingTasks = tasks.getValue();  // Obtener la lista de tareas desde LiveData<List<Task>>
+            for (Task task : ongoingTasks) {
+                if (currentDate.after(task.getDeadline())) {
+                    task.setStatus(2);
+                    taskRepository.update(task);
+                }
+            }
+            handler.postDelayed(this, 60000); // 60000 milliseconds = 1 minute
+        }
+    };
 
-    // Interfaz para el click en las tareas
+    public TaskAdapter(TaskClickListener listener, TaskRepository taskRepository) {
+        this.listener = listener;
+        this.taskRepository = taskRepository;
+        handler.post(updateTaskStatusRunnable);
+    }
+
     public interface TaskClickListener {
         void onTaskClick(Task task);
     }
 
-    // Constructor del adaptador
-    public TaskAdapter(TaskClickListener listener) {
-        this.listener = listener;
-    }
-
-    // Infla la vista para cada item de la lista
     @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -40,59 +55,94 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         return new TaskViewHolder(view);
     }
 
-    // Vincula los datos con la vista
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        Task task = tasks.get(position);
-        holder.bind(task);  // call bind method here
+        List<Task> taskList = tasks.getValue();
+        if (taskList != null) {
+            Task task = taskList.get(position);
+            holder.bind(task);
+            if (task.getStatus() == 2) {
+                holder.taskBackground.setBackgroundResource(R.drawable.tasks_card_failed);
+            }
+        }
     }
 
-    // Retorna el numero total de tareas
+
     @Override
     public int getItemCount() {
-        return tasks.size();
+        List<Task> taskList = tasks.getValue();
+        if (taskList != null) {
+            return taskList.size();
+        } else {
+            return 0;
+        }
     }
 
-    // Actualiza la lista de tareas y notifica al adaptador
-    public void setTasks(List<Task> tasks) {
+    public void setTasks(LiveData<List<Task>> tasks) {
         this.tasks = tasks;
         notifyDataSetChanged();
     }
 
-    // Contenedor de vistas para cada item de la lista
     class TaskViewHolder extends RecyclerView.ViewHolder {
-        TextView nameTextView;
-        TextView deadlineTextView;
+        TextView nameTextView, statusTextView, deadlineTextView;
         ConstraintLayout taskBackground;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.task_name);
             deadlineTextView = itemView.findViewById(R.id.task_deadline);
+            statusTextView = itemView.findViewById(R.id.task_status);
+            taskBackground = itemView.findViewById(R.id.task_background);
         }
 
         public void bind(Task task) {
             nameTextView.setText(task.getName());
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-            String dateString = format.format(task.getDeadline());
-            deadlineTextView.setText(dateString);
-            taskBackground = itemView.findViewById(R.id.task_background);
+            deadlineTextView.setText(remainingTime(task.getDeadline()));
+            statusTextView.setText(String.valueOf(task.getStatus()));
             itemView.setOnClickListener(v -> listener.onTaskClick(task));
-            if (task.getStatus()){
-                taskBackground.setBackgroundResource(R.drawable.tasks_card_completed);
-            }else{
-                switch (task.getTier()) {
-                    case "Important":
-                        taskBackground.setBackgroundResource(R.drawable.tasks_card_important);
-                        break;
-                    case "Low":
-                        taskBackground.setBackgroundResource(R.drawable.tasks_card_low);
-                        break;
-                    default:
-                        taskBackground.setBackgroundResource(R.drawable.tasks_card);
-                        break;
-                }
+            switch (task.getStatus()) {
+                case 0:
+                    switch (task.getTier()) {
+                        case "Important":
+                            taskBackground.setBackgroundResource(R.drawable.tasks_card_important);
+                            break;
+                        case "Low":
+                            taskBackground.setBackgroundResource(R.drawable.tasks_card_low);
+                            break;
+                        default:
+                            taskBackground.setBackgroundResource(R.drawable.tasks_card);
+                            break;
+                    }
+                    break;
+                case 1:
+                    taskBackground.setBackgroundResource(R.drawable.tasks_card_completed);
+                    break;
+                case 2:
+                    taskBackground.setBackgroundResource(R.drawable.tasks_card_failed);
+                    break;
             }
+        }
+
+        private String remainingTime(Date deadline) {
+            Date currentDate = new Date();
+            long differenceMillis = deadline.getTime() - currentDate.getTime();
+            long differenceMinutes = TimeUnit.MILLISECONDS.toMinutes(differenceMillis);
+            long minutesInDay = TimeUnit.DAYS.toMinutes(1);
+            long remainingDays = differenceMinutes / minutesInDay;
+            long remainingHours = (differenceMinutes % minutesInDay) / 60;
+            long remainingMinutes = differenceMinutes % 60;
+            String remainingTime;
+
+            if (differenceMillis <= 0) {
+                remainingTime = "Se ha acabado el tiempo";
+            } else if (remainingDays > 0) {
+                remainingTime = "Quedan: " + remainingDays + " días";
+            } else if (remainingHours > 0) {
+                remainingTime = "Quedan: " + remainingHours + " horas";
+            } else {
+                remainingTime = "Quedan: " + remainingMinutes + " minutos";
+            }
+            return remainingTime;
         }
     }
 }

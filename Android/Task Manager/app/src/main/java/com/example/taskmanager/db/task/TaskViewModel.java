@@ -6,26 +6,23 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.taskmanager.db.AppDatabase;
 
 import java.util.List;
 
-// El ViewModel es el que se encarga de pasarle la informacion a la UI, se encarga de hacer
-// de puente entre el UserDAO y la UI
 public class TaskViewModel extends AndroidViewModel {
     private TaskRepository taskRepository;
-    private final MutableLiveData<List<Task>> userTasks;
+    private final MutableLiveData<LiveData<Task>> userTasks;
 
     public TaskViewModel(@NonNull Application application) {
         super(application);
         taskRepository = new TaskRepository(application);
         userTasks = new MutableLiveData<>();
+
     }
 
-    public LiveData<List<Task>> getUserTasks(String owner) {
+    public LiveData<List<Task>> getTasksByOwner(String owner) {
         return taskRepository.getTasksByOwner(owner);
     }
 
@@ -41,12 +38,11 @@ public class TaskViewModel extends AndroidViewModel {
         });
     }
 
-    public void updateStatus(boolean status, int taskId) {
+    public void updateStatus(int status, int taskId) {
         AppDatabase.databaseWriteExecutor.execute(() ->{
             taskRepository.updateStatus(status, taskId);
         });
     }
-
 
     public void delete(Task task) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
@@ -55,5 +51,3 @@ public class TaskViewModel extends AndroidViewModel {
     }
 
 }
-
-

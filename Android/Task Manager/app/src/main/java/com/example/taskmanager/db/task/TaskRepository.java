@@ -1,3 +1,4 @@
+// TaskRepository.java
 package com.example.taskmanager.db.task;
 
 import android.app.Application;
@@ -12,7 +13,6 @@ import java.util.concurrent.Executors;
 
 public class TaskRepository {
     private TaskDAO taskDao;
-
     private ExecutorService executorService;
 
     public TaskRepository(Application application) {
@@ -25,6 +25,10 @@ public class TaskRepository {
         return taskDao.getTasksByOwner(owner);
     }
 
+    public LiveData<List<Task>> getOngoingTasks() {
+        return taskDao.getOngoingTasks();
+    }
+
     public void insert(Task task) {
         executorService.execute(() -> taskDao.insert(task));
     }
@@ -33,12 +37,11 @@ public class TaskRepository {
         executorService.execute(() -> taskDao.update(task));
     }
 
-    public void updateStatus(boolean status, int taskId) {
-        executorService.execute(() -> {taskDao.updateStatus(status, taskId);});
+    public void updateStatus(int status, int taskId) {
+        executorService.execute(() -> taskDao.updateStatus(status, taskId));
     }
 
     public void delete(Task task) {
         executorService.execute(() -> taskDao.delete(task));
     }
-
 }

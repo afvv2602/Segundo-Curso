@@ -1,33 +1,51 @@
 package com.example.taskmanager.activities;
 
-import android.app.*;
+import android.app.AlarmManager;
+import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.*;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.taskmanager.*;
-import com.example.taskmanager.db.task.*;
-import com.example.taskmanager.task_fragments.*;
+import com.example.taskmanager.R;
+import com.example.taskmanager.db.AppDatabase;
+import com.example.taskmanager.db.task.Task;
+import com.example.taskmanager.db.task.TaskRepository;
+import com.example.taskmanager.db.task.TaskViewModel;
+import com.example.taskmanager.task_fragments.TaskAdapter;
+import com.example.taskmanager.task_fragments.TaskExpirationNotificationReceiver;
+import com.example.taskmanager.task_fragments.TaskNotificationReceiver;
+import com.example.taskmanager.utils.CustomDatePicker;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.TaskClickListener {
     private String username;
     private TaskViewModel taskViewModel;
     private TaskAdapter taskAdapter;
-    private EditText dateEdit,timeEdit,tierEdit;
-    private int selectedYear, selectedMonth, selectedDay,selectedHour, selectedMinute;
+    private TaskNotificationReceiver notificationReceiver;
+    private EditText dateEdit, timeEdit, tierEdit;
+    private int selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,31 +54,38 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         TextView tv = findViewById(R.id.textView);
         RecyclerView taskRecyclerView = findViewById(R.id.task_recyclerview);
         Button addTask = findViewById(R.id.add_task_button);
-        tv.setText("Bienvenido: "+username);
+
+        tv.setText("Bienvenido: " + username);
         initTaskView(taskRecyclerView, addTask);
     }
 
     // Inicializa la vista de tareas
     private void initTaskView(RecyclerView taskRecyclerView, Button addTask) {
-        taskAdapter = new TaskAdapter(this);
+        TaskRepository taskRepository = new TaskRepository(getApplication());
+        taskAdapter = new TaskAdapter(this, taskRepository);
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         taskRecyclerView.setAdapter(taskAdapter);
 
         // Carga las tareas en el recycler view
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
-        taskViewModel.getUserTasks(username).observe(this, tasks -> taskAdapter.setTasks(tasks));
+        taskViewModel.getTasksByOwner(username).observe(this, tasks -> {
+            taskAdapter.setTasks((LiveData<List<Task>>) tasks);
+        });
+        notificationReceiver = new TaskNotificationReceiver();
+        notificationReceiver.setTaskViewModel(taskViewModel);
 
         addTask.setOnClickListener(view -> showAddTaskDialog());
     }
 
-    // Muestra el dialogo para agregar tarea
+
+    // Muestra el diálogo para agregar tarea
     private void showAddTaskDialog() {
-        // Crea un dialogo usando el fragment_task
+        // Crea un diálogo usando el fragment_add_task
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View dialogView = getLayoutInflater().inflate(R.layout.fragment_add_task, null);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.fragment_add_task, null);
         builder.setView(dialogView);
 
-        // Inicializa los elementos del dialogo
+        // Inicializa los elementos del diálogo
         EditText taskNameEdit = dialogView.findViewById(R.id.taskNameEdit);
         EditText descriptionEdit = dialogView.findViewById(R.id.taskDescriptionEdit);
         dateEdit = dialogView.findViewById(R.id.datePickerEdit);
@@ -68,46 +93,53 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         tierEdit = dialogView.findViewById(R.id.tierPickerEdit);
         Button buttonAdd = dialogView.findViewById(R.id.newTaskBtn);
 
-        // Crea el dialogo pero con el fondo transparente
+        // Crea el diálogo pero con el fondo transparente
         AlertDialog dialog = builder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        // Abre los pickers pulsando los edit text correspondientes
+        // Abre los pickers al hacer clic en los campos correspondientes
         dateEdit.setOnClickListener(v -> showDatePicker());
         timeEdit.setOnClickListener(v -> showTimePicker());
         tierEdit.setOnClickListener(view -> showTierPicker());
-        // Muestra el dialogo
+
+        // Muestra el diálogo
         dialog.show();
 
         buttonAdd.setOnClickListener(view -> {
-            if (addTask(taskNameEdit, descriptionEdit)) dialog.dismiss();
-            else Toast.makeText(getApplicationContext(), "Debes de rellenar todos los campos", Toast.LENGTH_SHORT).show();
+            if (addTask(taskNameEdit, descriptionEdit)) {
+                dialog.dismiss();
+            } else {
+                Toast.makeText(getApplicationContext(), "Debes rellenar todos los campos", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
-    // Añade una tarea nueva
+    // Agrega una nueva tarea
     private boolean addTask(EditText taskNameEdit, EditText descriptionEdit) {
         String name = taskNameEdit.getText().toString();
         String description = descriptionEdit.getText().toString();
         String date = dateEdit.getText().toString();
         String time = timeEdit.getText().toString();
         String tier = tierEdit.getText().toString();
-        // Solo añadimos la tarea si todos los campos estan rellenos
+
+        // Solo se agrega la tarea si todos los campos están rellenados
         if (!name.isEmpty() && !description.isEmpty() && !date.isEmpty() && !time.isEmpty() && !tier.isEmpty()) {
             Calendar deadline = Calendar.getInstance();
             deadline.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
-            Task newTask = new Task(0, name, description, deadline.getTime(), username,tier,false);
+            Task newTask = new Task(0, name, description, deadline.getTime(), username, tier, 0);
             taskViewModel.addTask(newTask);
-            scheduleNotification(newTask);
+            scheduleNotification(newTask);  // Programar la notificación para un día antes
+            scheduleExpiration(newTask);  // Programar la notificación para el vencimiento de la tarea
             return true;
         }
         return false;
     }
 
-    // Abre un panel para elegir la fecha del vencimiento de la tarea
+    // Abre un panel para elegir la fecha de vencimiento de la tarea
+    // Creamos un DatePicker personalizado para evitar que el usuario pueda seleccionar una fecha pasada
     public void showDatePicker() {
         Calendar calendar = Calendar.getInstance();
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
+        CustomDatePicker datePickerDialog = new CustomDatePicker(
                 this,
                 (view, year, month, dayOfMonth) -> {
                     selectedYear = year;
@@ -122,7 +154,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         datePickerDialog.show();
     }
 
-    // Abre un panel para elegir la hora del vencimiento de la tarea
+    // Abre un panel para elegir la hora de vencimiento de la tarea
     public void showTimePicker() {
         Calendar calendar = Calendar.getInstance();
         TimePickerDialog timePickerDialog = new TimePickerDialog(
@@ -157,59 +189,44 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         builder.show();
     }
 
-    // Creacion del popup cuando se pulsa encima de una task
-    @Override
+    // Creación del cuadro emergente cuando se hace clic en una tarea
     public void onTaskClick(Task task) {
-        // Crea un dialogo usando el fragment_task
+        View dialogView = initDialogView();
+        AlertDialog dialog = createDialog(dialogView);
+        handleButtonClicks(dialog, dialogView, task);
+    }
+
+    private View initDialogView() {
+        return LayoutInflater.from(this).inflate(R.layout.fragment_task, null);
+    }
+
+    private AlertDialog createDialog(View dialogView) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View dialogView = getLayoutInflater().inflate(R.layout.fragment_task, null);
         builder.setView(dialogView);
 
-        // Inicializa los elementos del dialogo
-        TextView taskNameTextView = dialogView.findViewById(R.id.task_name);
-        TextView taskDeadlineTextView = dialogView.findViewById(R.id.task_deadline);
-        TextView taskDescriptionTextView = dialogView.findViewById(R.id.task_description);
-        TextView taskTierTextView = dialogView.findViewById(R.id.task_description);
-        Button deleteButton = dialogView.findViewById(R.id.button);
-        Button completeButton = dialogView.findViewById(R.id.button2);
-        ConstraintLayout taskBackground = dialogView.findViewById(R.id.task_background);
-
-        // Rellena los elementos del dialogo con los datos de la tarea
-        taskNameTextView.setText(task.getName());
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        String dateString = format.format(task.getDeadline());
-        taskDeadlineTextView.setText(dateString);
-        taskTierTextView.setText(task.getTier());
-        taskDescriptionTextView.setText(task.getDescription());
-        if(task.getStatus()){
-            taskBackground.setBackgroundResource(R.drawable.tasks_card_completed);
-            completeButton.setVisibility(View.GONE);
-            deleteButton.setBackgroundResource(R.drawable.btn_completed);
-        }else{
-            switch (task.getTier()) {
-                case "Important":
-                    taskBackground.setBackgroundResource(R.drawable.tasks_card_important);
-                    completeButton.setBackgroundResource(R.drawable.btn_important);
-                    deleteButton.setBackgroundResource(R.drawable.btn_important);
-                    break;
-                case "Low":
-                    taskBackground.setBackgroundResource(R.drawable.tasks_card_low);
-                    completeButton.setBackgroundResource(R.drawable.btn_low);
-                    deleteButton.setBackgroundResource(R.drawable.btn_low);
-                    break;
-                default:
-                    taskBackground.setBackgroundResource(R.drawable.tasks_card);
-                    completeButton.setBackgroundResource(R.drawable.btn_border);
-                    deleteButton.setBackgroundResource(R.drawable.btn_border);
-                    break;
-            }
-        }
-        // Crea el dialogo pero con el fondo transparente
         AlertDialog dialog = builder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        // Muestra el dialogo
         dialog.show();
+
+        return dialog;
+    }
+
+    private void handleButtonClicks(AlertDialog dialog, View dialogView, Task task) {
+        TextView taskNameTextView = dialogView.findViewById(R.id.task_name);
+        TextView taskDeadlineTextView = dialogView.findViewById(R.id.task_deadline);
+        TextView taskDescriptionTextView = dialogView.findViewById(R.id.task_description);
+        TextView taskTierTextView = dialogView.findViewById(R.id.task_tier);
+        Button deleteButton = dialogView.findViewById(R.id.button);
+        Button completeButton = dialogView.findViewById(R.id.button2);
+        LinearLayout taskBackground = dialogView.findViewById(R.id.task_background);
+
+        taskNameTextView.setText(task.getName());
+        taskDeadlineTextView.setText(remainingTime(task.getDeadline()));
+        taskTierTextView.setText("Tier: " + task.getTier());
+        taskDescriptionTextView.setText(task.getDescription());
+
+        setDialogBackground(task, taskBackground, completeButton, deleteButton);
 
         deleteButton.setOnClickListener(view -> {
             taskViewModel.delete(task);
@@ -217,19 +234,53 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         });
 
         completeButton.setOnClickListener(view -> {
-            task.setStatus(true); // o lo que sea que necesites hacer para cambiar el estado a true
-            taskViewModel.updateStatus(true, task.getId()); // asumiendo que getId() retorna el id de la tarea
-            taskBackground.setBackgroundResource(R.drawable.tasks_card_completed); // cambiar a un drawable que represente una tarea completa
+            int taskStatus = 1; // Cambia el estado a "Completada con éxito"
+            task.setStatus(taskStatus);
+            taskViewModel.updateStatus(taskStatus, task.getId());
+            scheduleTaskNotification(task, taskStatus);
             dialog.dismiss();
         });
     }
 
-    // Programar la notificacion para que sea un dia antes
-    private void scheduleNotification(Task task) {
+    private void setDialogBackground(Task task, LinearLayout taskBackground, Button completeButton, Button deleteButton) {
+        switch (task.getStatus()) {
+            case 0:
+                switch (task.getTier()) {
+                    case "Important":
+                        taskBackground.setBackgroundResource(R.drawable.tasks_card_important);
+                        completeButton.setBackgroundResource(R.drawable.btn_important);
+                        deleteButton.setBackgroundResource(R.drawable.btn_important);
+                        break;
+                    case "Low":
+                        taskBackground.setBackgroundResource(R.drawable.tasks_card_low);
+                        completeButton.setBackgroundResource(R.drawable.btn_low);
+                        deleteButton.setBackgroundResource(R.drawable.btn_low);
+                        break;
+                    default:
+                        taskBackground.setBackgroundResource(R.drawable.tasks_card);
+                        completeButton.setBackgroundResource(R.drawable.btn_default);
+                        deleteButton.setBackgroundResource(R.drawable.btn_default);
+                        break;
+                }
+                break;
+            case 1:
+                taskBackground.setBackgroundResource(R.drawable.tasks_card_completed);
+                completeButton.setVisibility(View.GONE);
+                deleteButton.setBackgroundResource(R.drawable.btn_completed);
+                break;
+            case 2:
+                taskBackground.setBackgroundResource(R.drawable.tasks_card_failed);
+                completeButton.setBackgroundResource(R.drawable.btn_important);
+                deleteButton.setBackgroundResource(R.drawable.btn_important);
+                break;
+        }
+    }
+
+    private void scheduleTaskNotification(Task task, int taskCompleted) {
         Intent notificationIntent = new Intent(this, TaskNotificationReceiver.class);
         notificationIntent.putExtra("taskName", task.getName());
-
-        // Si ya hay una notificacion con ese id actualiza la informacion
+        notificationIntent.putExtra("taskId", task.getId());
+        notificationIntent.putExtra("taskStatus", taskCompleted);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 this,
                 task.getId(),
@@ -237,11 +288,65 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, task.getDeadline().getTime(), pendingIntent);
+    }
+
+    // Programar la notificación para que sea un día antes
+    private void scheduleNotification(Task task) {
+        Intent notificationIntent = new Intent(this, TaskNotificationReceiver.class);
+        notificationIntent.putExtra("taskName", task.getName());
+        notificationIntent.putExtra("taskId", task.getId());
+        notificationIntent.putExtra("taskStatus", task.getStatus());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                task.getId(),
+                notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Calendar deadline = Calendar.getInstance();
         deadline.setTime(task.getDeadline());
-        deadline.add(Calendar.DATE, -1);
-
-        //Se crea la alarma un dia antes de la fecha limite elegida por el usuario
+        deadline.add(Calendar.DATE, -1);  // un día antes de la fecha límite
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, deadline.getTimeInMillis(), pendingIntent);
+    }
+
+    private void scheduleExpiration(Task task) {
+        Intent expirationIntent = new Intent(this, TaskExpirationNotificationReceiver.class);
+        expirationIntent.putExtra("taskName", task.getName());
+        expirationIntent.putExtra("taskId", task.getId());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                task.getId(),
+                expirationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Calendar deadline = Calendar.getInstance();
+        deadline.setTime(task.getDeadline());  // en el momento de la fecha límite
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, deadline.getTimeInMillis(), pendingIntent);
+    }
+
+    // Si quedan más de un día, muestra los días restantes. Si queda menos, muestra las horas
+    private String remainingTime(Date deadline) {
+        Date currentDate = new Date();
+        long differenceMillis = deadline.getTime() - currentDate.getTime();
+        long differenceMinutes = TimeUnit.MILLISECONDS.toMinutes(differenceMillis);
+        long minutesInDay = TimeUnit.DAYS.toMinutes(1);
+        long remainingDays = differenceMinutes / minutesInDay;
+        long remainingHours = (differenceMinutes % minutesInDay) / 60;
+        long remainingMinutes = differenceMinutes % 60;
+        String remainingTime;
+
+        if (differenceMillis <= 0) {
+            remainingTime = "Se ha acabado el tiempo";
+        } else if (remainingDays > 0) {
+            remainingTime = "Quedan: " + remainingDays + " días";
+        } else if (remainingHours > 0) {
+            remainingTime = "Quedan: " + remainingHours + " horas";
+        } else {
+            remainingTime = "Quedan: " + remainingMinutes + " minutos";
+        }
+        return remainingTime;
     }
 }

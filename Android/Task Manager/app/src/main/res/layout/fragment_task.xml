@@ -1,110 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="10dp">
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/task_background"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="match_parent"
         android:background="@drawable/tasks_card"
-        android:foregroundGravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginBottom="8dp">
 
-        <TextView
-            android:id="@+id/task_name"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Task Name"
-            android:textColor="@color/Negro"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/task_tier"
-            app:layout_constraintEnd_toStartOf="@+id/task_deadline"
-            app:layout_constraintHorizontal_bias="0.087"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.41" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/task_deadline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="28dp"
-            android:layout_weight="1"
-            android:text="Deadline"
-            android:textColor="@color/GrisOb"
-            app:layout_constraintBottom_toTopOf="@+id/task_tier"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.296" />
+            <TextView
+                android:id="@+id/task_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Task Name"
+                android:layout_marginLeft="20dp"
+                android:textColor="@color/Negro"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/task_deadline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="80dp"
+                android:text="Deadline"
+                android:textColor="@color/GrisOb" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/task_tier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="8dp"
             android:text="@string/taskTier"
             android:textColor="@color/Negro"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/task_description"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.082"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_gravity="left"
+            android:layout_marginLeft="20dp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/task_description"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="44dp"
-            android:layout_weight="1"
-            android:text="Deadline"
-            android:textColor="@color/GrisOb"
-            app:layout_constraintBottom_toTopOf="@+id/button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.173"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="20dp"
+            android:layout_gravity="left"
+            android:text="Descripcion"
+            android:textColor="@color/GrisOb" />
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="44dp"
-            android:background="@drawable/btn_default"
-            android:padding="10dp"
-            android:text="@string/btnEliminar"
-            android:textColor="@color/Blanco"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button2"
-            app:layout_constraintHorizontal_bias="0.216"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="28dp"
-            android:layout_marginBottom="44dp"
-            android:background="@drawable/btn_default"
-            android:padding="10dp"
-            android:text="@string/btnCompletar"
-            android:textColor="@color/Blanco"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_default"
+                android:padding="10dp"
+                android:layout_marginLeft="20dp"
+                android:text="@string/btnEliminar"
+                android:textColor="@color/Blanco" />
 
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_default"
+                android:padding="10dp"
+                android:layout_gravity="right"
+                android:layout_marginLeft="20dp"
+                android:text="@string/btnCompletar"
+                android:textColor="@color/Blanco" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+</LinearLayout>

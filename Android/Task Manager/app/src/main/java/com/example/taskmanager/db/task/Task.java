@@ -17,10 +17,10 @@ public class Task {
     private Date deadline;
     private String owner;
     private String tier;
-    private boolean status;
+    private int status;
 
     // Constructor, getters y setters
-    public Task(int id,String name,String description, Date deadline, String owner,String tier,boolean status){
+    public Task(int id,String name,String description, Date deadline, String owner,String tier,int status){
         this.id = id;
         this.name = name;
         this.description = description;
@@ -39,13 +39,14 @@ public class Task {
     public Date getDeadline() {
         return deadline;
     }
-
     public String getOwner(){ return this.owner; }
     public String getTier(){ return this.tier; }
-    public boolean getStatus() { return this.status; }
+    public int getStatus() {
+        return this.status;
+    }
 
-    public void setStatus(boolean status) {
-        this.status = (status) ? true : false;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     // Convierte los valores para poder añadirlos a la base de datos
