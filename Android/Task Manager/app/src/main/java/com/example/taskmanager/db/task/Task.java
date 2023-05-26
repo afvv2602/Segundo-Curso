@@ -17,10 +17,11 @@ public class Task {
     private Date deadline;
     private String owner;
     private String tier;
+    private String remainingTime;
     private int status;
 
     // Constructor, getters y setters
-    public Task(int id,String name,String description, Date deadline, String owner,String tier,int status){
+    public Task(int id,String name,String description, Date deadline, String owner,String tier,int status,String remainingTime){
         this.id = id;
         this.name = name;
         this.description = description;
@@ -28,6 +29,7 @@ public class Task {
         this.owner = owner;
         this.tier = tier;
         this.status = status;
+        this.remainingTime = remainingTime;
     }
 
     public int getId(){ return this.id; }
@@ -41,8 +43,10 @@ public class Task {
     public int getStatus() {
         return this.status;
     }
-
-
+    public String getRemainingTime() { return remainingTime; }
+    public void setRemainingTime(String remainingTime){
+        this.remainingTime = remainingTime;
+    }
     public void setStatus(int status) {
         this.status = status;
     }

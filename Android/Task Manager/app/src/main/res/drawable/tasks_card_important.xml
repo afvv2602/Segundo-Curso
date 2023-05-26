@@ -2,7 +2,7 @@
     <solid android:color="@color/RojoCl" /> <!-- Cambia el color de fondo -->
     <stroke
         android:width="2dp"
-        android:color="@color/RojoOb" /> <!-- Cambia el color del borde -->
+        android:color="@color/RojoCl" /> <!-- Cambia el color del borde -->
     <corners
         android:radius="5dp"/>
 </shape>

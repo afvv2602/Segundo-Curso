@@ -54,7 +54,6 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         TextView tv = findViewById(R.id.textView);
         RecyclerView taskRecyclerView = findViewById(R.id.task_recyclerview);
         Button addTask = findViewById(R.id.add_task_button);
-
         tv.setText("Bienvenido: " + username);
         initTaskView(taskRecyclerView, addTask);
     }
@@ -127,7 +126,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         if (!name.isEmpty() && !description.isEmpty() && !date.isEmpty() && !time.isEmpty() && !tier.isEmpty()) {
             Calendar deadline = Calendar.getInstance();
             deadline.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
-            Task newTask = new Task(0, name, description, deadline.getTime(), username, tier, 0);
+            Task newTask = new Task(0, name, description, deadline.getTime(), username, tier, 0,remainingTime(deadline.getTime()));
             taskViewModel.addTask(newTask);
             scheduleNotification(newTask);  // Programar la notificación para un día antes
             scheduleExpiration(newTask);  // Programar la notificación para el vencimiento de la tarea

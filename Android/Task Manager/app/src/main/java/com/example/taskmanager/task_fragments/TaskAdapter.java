@@ -14,13 +14,15 @@ import com.example.taskmanager.R;
 import com.example.taskmanager.db.task.Task;
 import com.example.taskmanager.db.task.TaskRepository;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
-    private List<Task> tasks = new ArrayList();
+    private List<Task> tasks = new ArrayList<>();
     private TaskClickListener listener;
     private TaskRepository taskRepository;
     private Handler handler = new Handler();
@@ -28,14 +30,18 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         @Override
         public void run() {
             Date currentDate = new Date();
-            List<Task> ongoingTasks = tasks;  // Obtener la lista de tareas desde LiveData<List<Task>>
-            for (Task task : ongoingTasks) {
-                if (currentDate.after(task.getDeadline())) {
+            for (Task task : tasks) {
+                if (task.getStatus() == 0 && currentDate.after(task.getDeadline())) {
                     task.setStatus(2);
                     taskRepository.update(task);
                 }
+                if(task.getStatus() == 1 || task.getStatus() == 2){
+                    break;
+                }else{
+                    task.setRemainingTime(calculateRemainingTime(task.getDeadline()));
+                }
             }
-            handler.postDelayed(this, 60000); // 60000 milliseconds = 1 minute
+            handler.postDelayed(this, 30000); // 30000 milliseconds = 30 segundos
         }
     };
 
@@ -58,31 +64,22 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        List<Task> taskList = tasks;
-        if (taskList != null) {
-            Task task = taskList.get(position);
-            holder.bind(task);
-            if (task.getStatus() == 2) {
-                holder.taskBackground.setBackgroundResource(R.drawable.tasks_card_failed);
-            }
-        }
+        Task task = tasks.get(position);
+        holder.bind(task);
     }
 
-
-    // Retorna el numero total de tareas
     @Override
     public int getItemCount() {
         return tasks.size();
     }
 
-    // Actualiza la lista de tareas y notifica al adaptador
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
         notifyDataSetChanged();
     }
 
     class TaskViewHolder extends RecyclerView.ViewHolder {
-        TextView nameTextView, statusTextView, deadlineTextView;
+        TextView nameTextView, statusTextView, deadlineTextView,remainingTimeTextView,descriptionTextView;
         ConstraintLayout taskBackground;
 
         public TaskViewHolder(@NonNull View itemView) {
@@ -90,57 +87,79 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             nameTextView = itemView.findViewById(R.id.task_name);
             deadlineTextView = itemView.findViewById(R.id.task_deadline);
             statusTextView = itemView.findViewById(R.id.task_status);
+            descriptionTextView = itemView.findViewById(R.id.task_description);
+            remainingTimeTextView = itemView.findViewById(R.id.task_remainingTime);
             taskBackground = itemView.findViewById(R.id.task_background);
         }
 
         public void bind(Task task) {
             nameTextView.setText(task.getName());
-            deadlineTextView.setText(remainingTime(task.getDeadline()));
+            deadlineTextView.setText(formatDeadline(task.getDeadline()));
             statusTextView.setText(String.valueOf(task.getStatus()));
+            descriptionTextView.setText(String.valueOf(task.getDescription()));
+            remainingTimeTextView.setText(calculateRemainingTime(task.getDeadline()));
             itemView.setOnClickListener(v -> listener.onTaskClick(task));
+            setTaskBackground(task);
+        }
+
+        private void setTaskBackground(Task task) {
+            int backgroundResId;
             switch (task.getStatus()) {
-                case 0:
-                    switch (task.getTier()) {
-                        case "Important":
-                            taskBackground.setBackgroundResource(R.drawable.tasks_card_important);
-                            break;
-                        case "Low":
-                            taskBackground.setBackgroundResource(R.drawable.tasks_card_low);
-                            break;
-                        default:
-                            taskBackground.setBackgroundResource(R.drawable.tasks_card);
-                            break;
-                    }
-                    break;
                 case 1:
-                    taskBackground.setBackgroundResource(R.drawable.tasks_card_completed);
+                    backgroundResId = R.drawable.tasks_card_completed;
                     break;
                 case 2:
-                    taskBackground.setBackgroundResource(R.drawable.tasks_card_failed);
+                    backgroundResId = R.drawable.tasks_card_failed;
+                    break;
+                case 0:
+                default:
+                    backgroundResId = getTaskTierBackground(task.getTier());
                     break;
             }
+            taskBackground.setBackgroundResource(backgroundResId);
         }
 
-        private String remainingTime(Date deadline) {
-            Date currentDate = new Date();
-            long differenceMillis = deadline.getTime() - currentDate.getTime();
-            long differenceMinutes = TimeUnit.MILLISECONDS.toMinutes(differenceMillis);
-            long minutesInDay = TimeUnit.DAYS.toMinutes(1);
-            long remainingDays = differenceMinutes / minutesInDay;
-            long remainingHours = (differenceMinutes % minutesInDay) / 60;
-            long remainingMinutes = differenceMinutes % 60;
-            String remainingTime;
-
-            if (differenceMillis <= 0) {
-                remainingTime = "Se ha acabado el tiempo";
-            } else if (remainingDays > 0) {
-                remainingTime = "Quedan: " + remainingDays + " días";
-            } else if (remainingHours > 0) {
-                remainingTime = "Quedan: " + remainingHours + " horas";
-            } else {
-                remainingTime = "Quedan: " + remainingMinutes + " minutos";
+        private int getTaskTierBackground(String tier) {
+            int backgroundResId;
+            switch (tier) {
+                case "Important":
+                    backgroundResId = R.drawable.tasks_card_important;
+                    break;
+                case "Low":
+                    backgroundResId = R.drawable.tasks_card_low;
+                    break;
+                default:
+                    backgroundResId = R.drawable.tasks_card;
+                    break;
             }
-            return remainingTime;
+            return backgroundResId;
         }
+
+        private String formatDeadline(Date deadline) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd MMM", Locale.getDefault());
+            return sdf.format(deadline);
+        }
+    }
+
+    private String calculateRemainingTime(Date deadline) {
+        Date currentDate = new Date();
+        long differenceMillis = deadline.getTime() - currentDate.getTime();
+        long differenceMinutes = TimeUnit.MILLISECONDS.toMinutes(differenceMillis);
+        long minutesInDay = TimeUnit.DAYS.toMinutes(1);
+        long remainingDays = differenceMinutes / minutesInDay;
+        long remainingHours = (differenceMinutes % minutesInDay) / 60;
+        long remainingMinutes = differenceMinutes % 60;
+        String remainingTime;
+
+        if (differenceMillis <= 0) {
+            remainingTime = "Se ha acabado el tiempo";
+        } else if (remainingDays > 0) {
+            remainingTime = "Quedan: " + remainingDays + " días";
+        } else if (remainingHours > 0) {
+            remainingTime = "Quedan: " + remainingHours + " horas";
+        } else {
+            remainingTime = "Quedan: " + remainingMinutes + " minutos";
+        }
+        return remainingTime;
     }
 }
