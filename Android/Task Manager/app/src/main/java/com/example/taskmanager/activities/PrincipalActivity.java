@@ -67,7 +67,8 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
 
         // Carga las tareas en el recycler view
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
-        taskViewModel.getTasksByOwner(username).observe(this, tasks -> {
+        LiveData<List<Task>> tasksLiveData = taskViewModel.getTasksByOwner(username);
+        tasksLiveData.observe(this, tasks -> {
             System.out.println(tasks);
             taskAdapter.setTasks(tasks);
         });
@@ -75,8 +76,13 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         notificationReceiver.setTaskViewModel(taskViewModel);
 
         addTask.setOnClickListener(view -> showAddTaskDialog());
-    }
 
+        // Verificar si las tareas ya están cargadas y actualizar el adaptador
+        List<Task> tasks = tasksLiveData.getValue();
+        if (tasks != null) {
+            taskAdapter.setTasks(tasks);
+        }
+    }
 
     // Muestra el diálogo para agregar tarea
     private void showAddTaskDialog() {
@@ -126,7 +132,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         if (!name.isEmpty() && !description.isEmpty() && !date.isEmpty() && !time.isEmpty() && !tier.isEmpty()) {
             Calendar deadline = Calendar.getInstance();
             deadline.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
-            Task newTask = new Task(0, name, description, deadline.getTime(), username, tier, 0,remainingTime(deadline.getTime()));
+            Task newTask = new Task(0, name, description, deadline.getTime(), username, tier, 0, remainingTime(deadline.getTime()));
             taskViewModel.addTask(newTask);
             scheduleNotification(newTask);  // Programar la notificación para un día antes
             scheduleExpiration(newTask);  // Programar la notificación para el vencimiento de la tarea

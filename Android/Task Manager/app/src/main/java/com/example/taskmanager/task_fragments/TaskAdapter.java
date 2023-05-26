@@ -35,15 +35,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                     task.setStatus(2);
                     taskRepository.update(task);
                 }
-                if(task.getStatus() == 1 || task.getStatus() == 2){
-                    break;
-                }else{
-                    task.setRemainingTime(calculateRemainingTime(task.getDeadline()));
-                }
+                task.setRemainingTime(calculateRemainingTime(task.getDeadline()));
             }
-            handler.postDelayed(this, 30000); // 30000 milliseconds = 30 segundos
+            notifyDataSetChanged(); // Actualizar la lista completa de tareas
+            handler.postDelayed(this, 5000); // 5000 milliseconds = 5 segundos
         }
     };
+
 
     public TaskAdapter(TaskClickListener listener, TaskRepository taskRepository) {
         this.listener = listener;
@@ -79,7 +77,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     }
 
     class TaskViewHolder extends RecyclerView.ViewHolder {
-        TextView nameTextView, statusTextView, deadlineTextView,remainingTimeTextView,descriptionTextView;
+        TextView nameTextView, statusTextView, deadlineTextView, remainingTimeTextView, descriptionTextView;
         ConstraintLayout taskBackground;
 
         public TaskViewHolder(@NonNull View itemView) {
@@ -97,7 +95,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             deadlineTextView.setText(formatDeadline(task.getDeadline()));
             statusTextView.setText(String.valueOf(task.getStatus()));
             descriptionTextView.setText(String.valueOf(task.getDescription()));
-            remainingTimeTextView.setText(calculateRemainingTime(task.getDeadline()));
+            remainingTimeTextView.setText(task.getRemainingTime());
             itemView.setOnClickListener(v -> listener.onTaskClick(task));
             setTaskBackground(task);
         }
