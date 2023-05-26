@@ -13,13 +13,12 @@ import java.util.List;
 
 public class TaskViewModel extends AndroidViewModel {
     private TaskRepository taskRepository;
-    private final MutableLiveData<LiveData<Task>> userTasks;
+    private final MutableLiveData<List<Task>> userTasks;
 
     public TaskViewModel(@NonNull Application application) {
         super(application);
         taskRepository = new TaskRepository(application);
         userTasks = new MutableLiveData<>();
-
     }
 
     public LiveData<List<Task>> getTasksByOwner(String owner) {

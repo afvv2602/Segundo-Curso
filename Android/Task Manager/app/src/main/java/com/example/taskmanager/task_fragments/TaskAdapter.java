@@ -8,18 +8,19 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taskmanager.R;
 import com.example.taskmanager.db.task.Task;
 import com.example.taskmanager.db.task.TaskRepository;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
-    private LiveData<List<Task>> tasks;
+    private List<Task> tasks = new ArrayList();
     private TaskClickListener listener;
     private TaskRepository taskRepository;
     private Handler handler = new Handler();
@@ -27,7 +28,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         @Override
         public void run() {
             Date currentDate = new Date();
-            List<Task> ongoingTasks = tasks.getValue();  // Obtener la lista de tareas desde LiveData<List<Task>>
+            List<Task> ongoingTasks = tasks;  // Obtener la lista de tareas desde LiveData<List<Task>>
             for (Task task : ongoingTasks) {
                 if (currentDate.after(task.getDeadline())) {
                     task.setStatus(2);
@@ -57,7 +58,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        List<Task> taskList = tasks.getValue();
+        List<Task> taskList = tasks;
         if (taskList != null) {
             Task task = taskList.get(position);
             holder.bind(task);
@@ -68,17 +69,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     }
 
 
+    // Retorna el numero total de tareas
     @Override
     public int getItemCount() {
-        List<Task> taskList = tasks.getValue();
-        if (taskList != null) {
-            return taskList.size();
-        } else {
-            return 0;
-        }
+        return tasks.size();
     }
 
-    public void setTasks(LiveData<List<Task>> tasks) {
+    // Actualiza la lista de tareas y notifica al adaptador
+    public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
         notifyDataSetChanged();
     }

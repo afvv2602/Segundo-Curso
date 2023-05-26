@@ -31,11 +31,8 @@ public class Task {
     }
 
     public int getId(){ return this.id; }
-
     public String getName(){ return this.name; }
-
     public String getDescription(){ return this.description; }
-
     public Date getDeadline() {
         return deadline;
     }
@@ -45,9 +42,11 @@ public class Task {
         return this.status;
     }
 
+
     public void setStatus(int status) {
         this.status = status;
     }
+
 
     // Convierte los valores para poder añadirlos a la base de datos
     // Los @TypeConverter son una caracteristica del framework room

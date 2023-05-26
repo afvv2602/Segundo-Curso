@@ -69,7 +69,8 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         // Carga las tareas en el recycler view
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
         taskViewModel.getTasksByOwner(username).observe(this, tasks -> {
-            taskAdapter.setTasks((LiveData<List<Task>>) tasks);
+            System.out.println(tasks);
+            taskAdapter.setTasks(tasks);
         });
         notificationReceiver = new TaskNotificationReceiver();
         notificationReceiver.setTaskViewModel(taskViewModel);
