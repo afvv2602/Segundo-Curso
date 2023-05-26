@@ -33,6 +33,7 @@ import com.example.taskmanager.task_fragments.TaskAdapter;
 import com.example.taskmanager.task_fragments.TaskExpirationNotificationReceiver;
 import com.example.taskmanager.task_fragments.TaskNotificationReceiver;
 import com.example.taskmanager.utils.CustomDatePicker;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -51,15 +52,13 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.principal_activity);
         username = getIntent().getStringExtra("username");
-        TextView tv = findViewById(R.id.textView);
         RecyclerView taskRecyclerView = findViewById(R.id.task_recyclerview);
-        Button addTask = findViewById(R.id.add_task_button);
-        tv.setText("Bienvenido: " + username);
+        FloatingActionButton addTask = findViewById(R.id.add_task_button);
         initTaskView(taskRecyclerView, addTask);
     }
 
     // Inicializa la vista de tareas
-    private void initTaskView(RecyclerView taskRecyclerView, Button addTask) {
+    private void initTaskView(RecyclerView taskRecyclerView, FloatingActionButton addTask) {
         TaskRepository taskRepository = new TaskRepository(getApplication());
         taskAdapter = new TaskAdapter(this, taskRepository);
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
