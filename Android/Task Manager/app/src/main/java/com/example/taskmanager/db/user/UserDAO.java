@@ -4,18 +4,19 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-@Dao
-public interface UserDAO { // DAO (Data access object)
 
-    // Aqui creamos las querys que luego vamos a ejecutar en la aplicacion
-    // En este insert si este mismo user ya existe no lo añade a la base de datos
+@Dao
+public interface UserDAO {
+
+    // Inserta un usuario en la base de datos
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     Long insert(User user);
 
+    // Busca y devuelve un usuario por su nombre de usuario y contraseña
     @Query("SELECT * FROM users WHERE username = :username AND password = :password")
     User loginUser(String username, String password);
 
+    // Busca y devuelve un usuario por su nombre
     @Query("SELECT * FROM users WHERE username = :username LIMIT 1")
     User findUserByUsername(String username);
-
 }

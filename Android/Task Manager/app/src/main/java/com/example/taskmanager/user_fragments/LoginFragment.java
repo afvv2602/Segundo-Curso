@@ -19,7 +19,7 @@ import com.example.taskmanager.db.user.UserViewModel;
 
 public class LoginFragment extends Fragment {
     private UserViewModel userViewModel;
-    private EditText usernameEditText,passwordEditText;
+    private EditText usernameEditText, passwordEditText;
 
     // Referencia al activity para cambiar de fragments
     private NavigationInterface navigationInterface;
@@ -48,7 +48,7 @@ public class LoginFragment extends Fragment {
         navigationInterface = null;
     }
 
-    // Metodo para configurar la vista una vez que se ha creado
+    // Configura la vista una vez que se ha creado
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -84,7 +84,7 @@ public class LoginFragment extends Fragment {
         String password = passwordEditText.getText().toString();
         if (username.isEmpty() || password.isEmpty()) {
             showMessage("Los campos Usuario y Contraseña son obligatorios");
-        } else{
+        } else {
             loginUser(username, password);
         }
     }

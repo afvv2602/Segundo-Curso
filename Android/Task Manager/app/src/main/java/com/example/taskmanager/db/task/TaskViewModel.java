@@ -5,7 +5,6 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.example.taskmanager.db.AppDatabase;
 
@@ -13,16 +12,18 @@ import java.util.List;
 
 public class TaskViewModel extends AndroidViewModel {
     private TaskRepository taskRepository;
-    private final MutableLiveData<List<Task>> userTasks;
 
     public TaskViewModel(@NonNull Application application) {
         super(application);
         taskRepository = new TaskRepository(application);
-        userTasks = new MutableLiveData<>();
     }
 
     public LiveData<List<Task>> getTasksByOwner(String owner) {
         return taskRepository.getTasksByOwner(owner);
+    }
+
+    public LiveData<List<Task>> getOngoingTasks() {
+        return taskRepository.getOngoingTasks();
     }
 
     public void addTask(Task task) {
@@ -38,7 +39,7 @@ public class TaskViewModel extends AndroidViewModel {
     }
 
     public void updateStatus(int status, int taskId) {
-        AppDatabase.databaseWriteExecutor.execute(() ->{
+        AppDatabase.databaseWriteExecutor.execute(() -> {
             taskRepository.updateStatus(status, taskId);
         });
     }
@@ -48,5 +49,4 @@ public class TaskViewModel extends AndroidViewModel {
             taskRepository.delete(task);
         });
     }
-
 }

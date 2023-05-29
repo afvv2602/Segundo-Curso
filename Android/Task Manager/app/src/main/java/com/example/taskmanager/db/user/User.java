@@ -3,7 +3,6 @@ package com.example.taskmanager.db.user;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-//Cada entity representa una tabla de nuestra base de datos
 @Entity(tableName = "users")
 public class User {
     @PrimaryKey(autoGenerate = true)

@@ -14,18 +14,16 @@ import com.example.taskmanager.db.task.TaskDAO;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-// https://developer.android.com/codelabs/android-room-with-a-view#0
-@Database(entities = {User.class,Task.class},version = 1,exportSchema = false)
+@Database(entities = {User.class, Task.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
-    // Hay que añadir cada uno de nuestros DAOs (Data access object) a la base de datos
+    // Se añade un DAO para cada entidad
     public abstract UserDAO userDao();
     public abstract TaskDAO taskDao();
 
     private static volatile AppDatabase INSTANCE;
 
-    // Una pool de hilos para que se hagan las querys y todas las operaciones
-    // de forma asincrona sin entrar en el main thread
+    // Un ExecutorService para ejecutar las operaciones de base de datos en segundo plano
     private static final int NUMBER_OF_THREADS = 4;
     public static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
@@ -34,6 +32,7 @@ public abstract class AppDatabase extends RoomDatabase {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
+                    // Se construye y obtiene la instancia de la base de datos
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                     AppDatabase.class, "app_database")
                             .build();
@@ -43,4 +42,3 @@ public abstract class AppDatabase extends RoomDatabase {
         return INSTANCE;
     }
 }
-

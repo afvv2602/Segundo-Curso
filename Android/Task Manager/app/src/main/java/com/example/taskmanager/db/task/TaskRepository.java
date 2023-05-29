@@ -1,4 +1,3 @@
-// TaskRepository.java
 package com.example.taskmanager.db.task;
 
 import android.app.Application;
@@ -9,7 +8,6 @@ import com.example.taskmanager.db.AppDatabase;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 
 public class TaskRepository {
     private TaskDAO taskDao;

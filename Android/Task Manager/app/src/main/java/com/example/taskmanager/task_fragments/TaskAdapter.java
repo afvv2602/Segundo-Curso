@@ -42,7 +42,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         }
     };
 
-
     public TaskAdapter(TaskClickListener listener, TaskRepository taskRepository) {
         this.listener = listener;
         this.taskRepository = taskRepository;
@@ -80,6 +79,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         TextView nameTextView, statusTextView, deadlineTextView, remainingTimeTextView, descriptionTextView;
         ConstraintLayout taskBackground;
 
+        // Recoge los componentes de la tarea
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.task_name);
@@ -90,6 +90,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             taskBackground = itemView.findViewById(R.id.task_background);
         }
 
+        // Se inicializan los componentes de la tarea
         public void bind(Task task) {
             nameTextView.setText(task.getName());
             deadlineTextView.setText(formatDeadline(task.getDeadline()));

@@ -21,7 +21,7 @@ public class Task {
     private int status;
 
     // Constructor, getters y setters
-    public Task(int id,String name,String description, Date deadline, String owner,String tier,int status,String remainingTime){
+    public Task(int id, String name, String description, Date deadline, String owner, String tier, int status, String remainingTime) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -32,30 +32,47 @@ public class Task {
         this.remainingTime = remainingTime;
     }
 
-    public int getId(){ return this.id; }
-    public String getName(){ return this.name; }
-    public String getDescription(){ return this.description; }
+    public int getId() {
+        return this.id;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
     public Date getDeadline() {
         return deadline;
     }
-    public String getOwner(){ return this.owner; }
-    public String getTier(){ return this.tier; }
+
+    public String getOwner() {
+        return this.owner;
+    }
+
+    public String getTier() {
+        return this.tier;
+    }
+
     public int getStatus() {
         return this.status;
     }
-    public String getRemainingTime() { return remainingTime; }
-    public void setRemainingTime(String remainingTime){
+
+    public String getRemainingTime() {
+        return remainingTime;
+    }
+
+    public void setRemainingTime(String remainingTime) {
         this.remainingTime = remainingTime;
     }
+
     public void setStatus(int status) {
         this.status = status;
     }
 
-
     // Convierte los valores para poder añadirlos a la base de datos
-    // Los @TypeConverter son una caracteristica del framework room
-    // para facilitar la conversion de tipos que no pueden guardarse en la base de datos
-    // Estos metodos permiten que room pueda interactuar con los objetos tipo date
     public static class DateConverter {
         @TypeConverter
         public static Date fromTimestamp(Long value) {
@@ -67,5 +84,4 @@ public class Task {
             return date == null ? null : date.getTime();
         }
     }
-
 }
