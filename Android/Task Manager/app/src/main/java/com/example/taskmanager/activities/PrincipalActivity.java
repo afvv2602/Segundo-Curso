@@ -5,17 +5,21 @@ import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
@@ -25,7 +29,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taskmanager.R;
-import com.example.taskmanager.db.AppDatabase;
 import com.example.taskmanager.db.task.Task;
 import com.example.taskmanager.db.task.TaskRepository;
 import com.example.taskmanager.db.task.TaskViewModel;
@@ -33,11 +36,15 @@ import com.example.taskmanager.task_fragments.TaskAdapter;
 import com.example.taskmanager.task_fragments.TaskExpirationNotificationReceiver;
 import com.example.taskmanager.task_fragments.TaskNotificationReceiver;
 import com.example.taskmanager.utils.CustomDatePicker;
+import com.example.taskmanager.utils.FilterUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.TaskClickListener {
@@ -48,17 +55,23 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
     private EditText dateEdit, timeEdit, tierEdit;
     private int selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute;
 
+    private List<Task> filteredTasks;
+    private FilterUtils.FilterType currentFilter = FilterUtils.FilterType.NONE;
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.principal_activity);
         username = getIntent().getStringExtra("username");
         RecyclerView taskRecyclerView = findViewById(R.id.task_recyclerview);
         FloatingActionButton addTask = findViewById(R.id.add_task_button);
-        initTaskView(taskRecyclerView, addTask);
+        FloatingActionButton filterTask = findViewById(R.id.task_filter);
+        FloatingActionButton testTask = findViewById(R.id.task_test);
+        initTaskView(taskRecyclerView, addTask,filterTask,testTask);
     }
 
     // Inicializa la vista de tareas
-    private void initTaskView(RecyclerView taskRecyclerView, FloatingActionButton addTask) {
+    private void initTaskView(RecyclerView taskRecyclerView, FloatingActionButton addTask,FloatingActionButton filterTask,FloatingActionButton testTask) {
         TaskRepository taskRepository = new TaskRepository(getApplication());
         taskAdapter = new TaskAdapter(this, taskRepository);
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -68,20 +81,79 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
         LiveData<List<Task>> tasksLiveData = taskViewModel.getTasksByOwner(username);
         tasksLiveData.observe(this, tasks -> {
-            System.out.println(tasks);
             taskAdapter.setTasks(tasks);
         });
         notificationReceiver = new TaskNotificationReceiver();
         notificationReceiver.setTaskViewModel(taskViewModel);
 
+        filterTask.setOnClickListener(view -> showFilterDialog());
+        testTask.setOnClickListener(view -> showFilterDialog());
         addTask.setOnClickListener(view -> showAddTaskDialog());
+
 
         // Verificar si las tareas ya están cargadas y actualizar el adaptador
         List<Task> tasks = tasksLiveData.getValue();
         if (tasks != null) {
             taskAdapter.setTasks(tasks);
+        }else{
+            taskViewModel.initSampleTasks(username);
         }
     }
+
+    private void showFilterDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Filter");
+
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.addAll("None", "Completed", "Incomplete", "High Priority", "Low Priority");
+
+        Spinner spinner = new Spinner(this);
+        spinner.setAdapter(adapter);
+        builder.setView(spinner);
+
+        builder.setPositiveButton("Apply", (dialog, which) -> {
+            int selectedPosition = spinner.getSelectedItemPosition();
+            applyFilter(selectedPosition);
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    private void applyFilter(int filterPosition) {
+        FilterUtils.FilterType filterType;
+        switch (filterPosition) {
+            case 1:
+                filterType = FilterUtils.FilterType.COMPLETED;
+                break;
+            case 2:
+                filterType = FilterUtils.FilterType.INCOMPLETE;
+                break;
+            case 3:
+                filterType = FilterUtils.FilterType.HIGH_PRIORITY;
+                break;
+            case 4:
+                filterType = FilterUtils.FilterType.LOW_PRIORITY;
+                break;
+            default:
+                filterType = FilterUtils.FilterType.NONE;
+                break;
+        }
+
+        // Apply the selected filter
+        if (currentFilter != filterType) {
+            currentFilter = filterType;
+
+            List<Task> tasks = taskViewModel.getTasksByOwner(username).getValue();
+            if (tasks != null) {
+                filteredTasks = FilterUtils.applyFilter(tasks, filterType);
+                taskAdapter.setTasks(filteredTasks);
+            }
+        }
+    }
+
 
     // Muestra el diálogo para agregar tarea
     private void showAddTaskDialog() {
@@ -131,7 +203,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         if (!name.isEmpty() && !description.isEmpty() && !date.isEmpty() && !time.isEmpty() && !tier.isEmpty()) {
             Calendar deadline = Calendar.getInstance();
             deadline.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
-            Task newTask = new Task(0, name, description, deadline.getTime(), username, tier, 0, remainingTime(deadline.getTime()));
+            Task newTask = new Task(0, name, description, deadline.getTime(), username, Task.Tier.valueOf(tier.toUpperCase()), Task.Status.IN_PROGRESS, remainingTime(deadline.getTime()));
             taskViewModel.addTask(newTask);
             scheduleNotification(newTask);  // Programar la notificación para un día antes
             scheduleExpiration(newTask);  // Programar la notificación para el vencimiento de la tarea
@@ -141,7 +213,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
     }
 
     // Abre un panel para elegir la fecha de vencimiento de la tarea
-    // Creamos un DatePicker personalizado para evitar que el usuario pueda seleccionar una fecha pasada
+    // Crea un DatePicker personalizado para evitar que el usuario pueda seleccionar una fechas pasadas
     public void showDatePicker() {
         Calendar calendar = Calendar.getInstance();
         CustomDatePicker datePickerDialog = new CustomDatePicker(
@@ -178,7 +250,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
 
     private void showTierPicker() {
         // Las opciones disponibles en el picker
-        String[] tiers = {"Default", "Important", "Low"};
+        String[] tiers = {"Default", "High", "Low"};
 
         // Crear un nuevo AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -239,24 +311,34 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         });
 
         completeButton.setOnClickListener(view -> {
-            int taskStatus = 1; // Cambia el estado a "Completada con éxito"
+            Task.Status taskStatus = Task.Status.COMPLETED;
             task.setStatus(taskStatus);
-            taskViewModel.updateStatus(taskStatus, task.getId());
-            scheduleTaskNotification(task, taskStatus);
+            taskViewModel.update(task);
+            scheduleTaskNotification(task, taskStatus.ordinal());
             dialog.dismiss();
         });
     }
 
     private void setDialogBackground(Task task, LinearLayout taskBackground, Button completeButton, Button deleteButton) {
         switch (task.getStatus()) {
-            case 0:
+            case COMPLETED:
+                taskBackground.setBackgroundResource(R.drawable.tasks_card_completed);
+                completeButton.setVisibility(View.GONE);
+                deleteButton.setBackgroundResource(R.drawable.btn_completed);
+                break;
+            case FAILED:
+                taskBackground.setBackgroundResource(R.drawable.tasks_card_failed);
+                completeButton.setBackgroundResource(R.drawable.btn_important);
+                deleteButton.setBackgroundResource(R.drawable.btn_important);
+                break;
+            default:
                 switch (task.getTier()) {
-                    case "Important":
+                    case HIGH:
                         taskBackground.setBackgroundResource(R.drawable.tasks_card_important);
                         completeButton.setBackgroundResource(R.drawable.btn_important);
                         deleteButton.setBackgroundResource(R.drawable.btn_important);
                         break;
-                    case "Low":
+                    case LOW:
                         taskBackground.setBackgroundResource(R.drawable.tasks_card_low);
                         completeButton.setBackgroundResource(R.drawable.btn_low);
                         deleteButton.setBackgroundResource(R.drawable.btn_low);
@@ -264,23 +346,9 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
                     default:
                         taskBackground.setBackgroundResource(R.drawable.tasks_card);
                         completeButton.setBackgroundResource(R.drawable.btn_default);
-                        deleteButton.setBackgroundResource(R.drawable.btn_default);
-                        break;
                 }
-                break;
-            case 1:
-                taskBackground.setBackgroundResource(R.drawable.tasks_card_completed);
-                completeButton.setVisibility(View.GONE);
-                deleteButton.setBackgroundResource(R.drawable.btn_completed);
-                break;
-            case 2:
-                taskBackground.setBackgroundResource(R.drawable.tasks_card_failed);
-                completeButton.setBackgroundResource(R.drawable.btn_important);
-                deleteButton.setBackgroundResource(R.drawable.btn_important);
-                break;
         }
     }
-
     private void scheduleTaskNotification(Task task, int taskCompleted) {
         Intent notificationIntent = new Intent(this, TaskNotificationReceiver.class);
         notificationIntent.putExtra("taskName", task.getName());
@@ -354,4 +422,60 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         }
         return remainingTime;
     }
+
+    public static List<Task> applyFilter(List<Task> tasks, FilterUtils.FilterType filterType) {
+        switch (filterType) {
+            case COMPLETED:
+                return filterCompletedTasks(tasks);
+            case INCOMPLETE:
+                return filterIncompleteTasks(tasks);
+            case HIGH_PRIORITY:
+                return filterHighPriorityTasks(tasks);
+            case LOW_PRIORITY:
+                return filterLowPriorityTasks(tasks);
+            default:
+                return tasks;
+        }
+    }
+
+    private static List<Task> filterCompletedTasks(List<Task> tasks) {
+        List<Task> filtered = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getStatus().ordinal() == Task.Status.COMPLETED.ordinal()) {
+                filtered.add(task);
+            }
+        }
+        return filtered;
+    }
+
+    private static List<Task> filterIncompleteTasks(List<Task> tasks) {
+        List<Task> filtered = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getStatus().ordinal() == Task.Status.IN_PROGRESS.ordinal()) {
+                filtered.add(task);
+            }
+        }
+        return filtered;
+    }
+
+    private static List<Task> filterHighPriorityTasks(List<Task> tasks) {
+        List<Task> filtered = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getTier().ordinal() == Task.Tier.HIGH.ordinal()) {
+                filtered.add(task);
+            }
+        }
+        return filtered;
+    }
+
+    private static List<Task> filterLowPriorityTasks(List<Task> tasks) {
+        List<Task> filtered = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getTier().ordinal() == Task.Tier.LOW.ordinal()) {
+                filtered.add(task);
+            }
+        }
+        return filtered;
+    }
+
 }

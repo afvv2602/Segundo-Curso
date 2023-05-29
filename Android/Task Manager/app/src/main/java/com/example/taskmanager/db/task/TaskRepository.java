@@ -35,10 +35,6 @@ public class TaskRepository {
         executorService.execute(() -> taskDao.update(task));
     }
 
-    public void updateStatus(int status, int taskId) {
-        executorService.execute(() -> taskDao.updateStatus(status, taskId));
-    }
-
     public void delete(Task task) {
         executorService.execute(() -> taskDao.delete(task));
     }

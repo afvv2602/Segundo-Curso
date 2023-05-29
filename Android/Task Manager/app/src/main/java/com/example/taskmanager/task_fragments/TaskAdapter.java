@@ -31,11 +31,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         public void run() {
             Date currentDate = new Date();
             for (Task task : tasks) {
-                if (task.getStatus() == 0 && currentDate.after(task.getDeadline())) {
-                    task.setStatus(2);
+                if (task.getStatus() == Task.Status.IN_PROGRESS && currentDate.after(task.getDeadline())) {
+                    task.setStatus(Task.Status.FAILED);
                     taskRepository.update(task);
                 }
                 task.setRemainingTime(calculateRemainingTime(task.getDeadline()));
+                taskRepository.update(task);
             }
             notifyDataSetChanged(); // Actualizar la lista completa de tareas
             handler.postDelayed(this, 5000); // 5000 milliseconds = 5 segundos
@@ -94,8 +95,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         public void bind(Task task) {
             nameTextView.setText(task.getName());
             deadlineTextView.setText(formatDeadline(task.getDeadline()));
-            statusTextView.setText(String.valueOf(task.getStatus()));
-            descriptionTextView.setText(String.valueOf(task.getDescription()));
+            statusTextView.setText(task.getStatus().name()); // Mostrar el nombre del estado
+            descriptionTextView.setText(task.getDescription());
             remainingTimeTextView.setText(task.getRemainingTime());
             itemView.setOnClickListener(v -> listener.onTaskClick(task));
             setTaskBackground(task);
@@ -104,13 +105,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         private void setTaskBackground(Task task) {
             int backgroundResId;
             switch (task.getStatus()) {
-                case 1:
+                case COMPLETED:
                     backgroundResId = R.drawable.tasks_card_completed;
                     break;
-                case 2:
+                case FAILED:
                     backgroundResId = R.drawable.tasks_card_failed;
                     break;
-                case 0:
+                case IN_PROGRESS:
                 default:
                     backgroundResId = getTaskTierBackground(task.getTier());
                     break;
@@ -118,15 +119,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             taskBackground.setBackgroundResource(backgroundResId);
         }
 
-        private int getTaskTierBackground(String tier) {
+        private int getTaskTierBackground(Task.Tier tier) {
             int backgroundResId;
             switch (tier) {
-                case "Important":
+                case HIGH:
                     backgroundResId = R.drawable.tasks_card_important;
                     break;
-                case "Low":
+                case LOW:
                     backgroundResId = R.drawable.tasks_card_low;
                     break;
+                case DEFAULT:
                 default:
                     backgroundResId = R.drawable.tasks_card;
                     break;

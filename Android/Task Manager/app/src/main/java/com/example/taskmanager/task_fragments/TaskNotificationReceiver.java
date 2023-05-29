@@ -31,14 +31,11 @@ public class TaskNotificationReceiver extends BroadcastReceiver {
         createNotificationChannel(context);
 
         String taskName = intent.getStringExtra("taskName");
-        int taskId = intent.getIntExtra("taskId", -1);
         int taskStatus = intent.getIntExtra("taskStatus", 0);
 
         String notificationContent;
         if (taskStatus == 0) {
-            taskStatus = 2;  // Cambia el estado a "No completada en tiempo"
             notificationContent = String.format("Tu tarea %s no ha sido completada en el tiempo estimado", taskName);
-            updateTaskStatus(taskStatus, taskId);
         } else if (taskStatus == 1) {
             notificationContent = String.format("Tu tarea %s ha sido completada", taskName);
         } else {
@@ -50,12 +47,6 @@ public class TaskNotificationReceiver extends BroadcastReceiver {
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0, notification);
-    }
-
-    private void updateTaskStatus(int status, int taskId) {
-        if (taskViewModel != null) {
-            taskViewModel.updateStatus(status, taskId);
-        }
     }
 
     private void createNotificationChannel(Context context) {

@@ -14,7 +14,7 @@ import com.example.taskmanager.db.task.TaskDAO;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {User.class, Task.class}, version = 1, exportSchema = false)
+@Database(entities = {User.class, Task.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     // Se añade un DAO para cada entidad

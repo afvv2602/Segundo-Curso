@@ -8,7 +8,7 @@ import androidx.room.TypeConverters;
 import java.util.Date;
 
 @Entity(tableName = "tasks")
-@TypeConverters(Task.DateConverter.class)
+@TypeConverters({Task.DateConverter.class, Task.TierConverter.class, Task.StatusConverter.class})
 public class Task {
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -16,12 +16,12 @@ public class Task {
     private String description;
     private Date deadline;
     private String owner;
-    private String tier;
+    private Tier tier;
     private String remainingTime;
-    private int status;
+    private Status status;
 
     // Constructor, getters y setters
-    public Task(int id, String name, String description, Date deadline, String owner, String tier, int status, String remainingTime) {
+    public Task(int id, String name, String description, Date deadline, String owner, Tier tier, Status status, String remainingTime) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -33,15 +33,15 @@ public class Task {
     }
 
     public int getId() {
-        return this.id;
+        return id;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public String getDescription() {
-        return this.description;
+        return description;
     }
 
     public Date getDeadline() {
@@ -49,15 +49,15 @@ public class Task {
     }
 
     public String getOwner() {
-        return this.owner;
+        return owner;
     }
 
-    public String getTier() {
-        return this.tier;
+    public Tier getTier() {
+        return tier;
     }
 
-    public int getStatus() {
-        return this.status;
+    public Status getStatus() {
+        return status;
     }
 
     public String getRemainingTime() {
@@ -68,8 +68,16 @@ public class Task {
         this.remainingTime = remainingTime;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public enum Tier {
+        HIGH, DEFAULT, LOW
+    }
+
+    public enum Status {
+        COMPLETED, FAILED, IN_PROGRESS
     }
 
     // Convierte los valores para poder añadirlos a la base de datos
@@ -82,6 +90,30 @@ public class Task {
         @TypeConverter
         public static Long dateToTimestamp(Date date) {
             return date == null ? null : date.getTime();
+        }
+    }
+
+    public static class TierConverter {
+        @TypeConverter
+        public static Tier fromString(String value) {
+            return value == null ? null : Tier.valueOf(value);
+        }
+
+        @TypeConverter
+        public static String tierToString(Tier tier) {
+            return tier == null ? null : tier.name();
+        }
+    }
+
+    public static class StatusConverter {
+        @TypeConverter
+        public static Status fromString(String value) {
+            return value == null ? null : Status.valueOf(value);
+        }
+
+        @TypeConverter
+        public static String statusToString(Status status) {
+            return status == null ? null : status.name();
         }
     }
 }
