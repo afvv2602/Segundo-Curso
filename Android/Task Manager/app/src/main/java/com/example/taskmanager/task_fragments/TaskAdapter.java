@@ -24,8 +24,12 @@ import java.util.concurrent.TimeUnit;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
     private List<Task> tasks = new ArrayList<>();
+    private List<Task> filteredTasks = new ArrayList<>(); // Lista filtrada
     private TaskClickListener listener;
     private TaskRepository taskRepository;
+
+    private FilterUtils.FilterType currentFilter = FilterUtils.FilterType.NONE;
+
     private Handler handler = new Handler();
     private Runnable updateTaskStatusRunnable = new Runnable() {
         @Override
@@ -39,10 +43,19 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 task.setRemainingTime(calculateRemainingTime(task.getDeadline()));
                 taskRepository.update(task);
             }
-            notifyDataSetChanged(); // Actualizar la lista completa de tareas
-            handler.postDelayed(this, 5000); // 5000 milliseconds = 5 segundos
+
+            if (currentFilter == FilterUtils.FilterType.NONE) {
+                filteredTasks = new ArrayList<>(tasks); // Restaurar la lista completa de tareas
+            } else {
+                filteredTasks = FilterUtils.applyFilter(tasks, currentFilter); // Recalcular la lista filtrada
+            }
+
+            notifyDataSetChanged(); // Notificar al adaptador de los cambios en la lista
+
+            handler.postDelayed(this, 5000); // 30000 milliseconds = 30 segundos
         }
     };
+
 
     public TaskAdapter(TaskClickListener listener, TaskRepository taskRepository) {
         this.listener = listener;
@@ -63,28 +76,28 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        Task task = tasks.get(position);
+        Task task = filteredTasks.get(position); // Usar la lista filtrada en lugar de la lista completa
         holder.bind(task);
     }
 
 
     @Override
     public int getItemCount() {
-        return tasks.size();
+        return filteredTasks.size(); // Usar el tamaño de la lista filtrada en lugar de la lista completa
     }
 
     public void setTasks(List<Task> tasks) {
         this.tasks.clear();
         this.tasks.addAll(tasks);
-        notifyDataSetChanged();
+        applyFilter(currentFilter); // Aplicar el filtro actual a la nueva lista de tareas
     }
 
 
     public void applyFilter(FilterUtils.FilterType filterType) {
-        List<Task> filteredTasks = FilterUtils.applyFilter(tasks, filterType);
-        setTasks(filteredTasks);
+        currentFilter = filterType;
+        filteredTasks = FilterUtils.applyFilter(tasks, filterType);
+        notifyDataSetChanged();
     }
-
 
     class TaskViewHolder extends RecyclerView.ViewHolder {
         TextView nameTextView, statusTextView, deadlineTextView, remainingTimeTextView, descriptionTextView;

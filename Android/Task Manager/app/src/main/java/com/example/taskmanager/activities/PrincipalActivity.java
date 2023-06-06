@@ -106,6 +106,10 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
 
         Spinner spinner = new Spinner(this);
         spinner.setAdapter(adapter);
+
+        // Mostrar el filtro actual seleccionado en el Spinner
+        spinner.setSelection(getFilterPosition(currentFilter));
+
         builder.setView(spinner);
 
         builder.setPositiveButton("Apply", (dialog, which) -> {
@@ -143,7 +147,20 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         taskAdapter.applyFilter(filterType);
     }
 
-
+    private int getFilterPosition(FilterUtils.FilterType filterType) {
+        switch (filterType) {
+            case COMPLETED:
+                return 1;
+            case INCOMPLETE:
+                return 2;
+            case HIGH_PRIORITY:
+                return 3;
+            case LOW_PRIORITY:
+                return 4;
+            default:
+                return 0; // None
+        }
+    }
 
     private void showAddTaskDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
