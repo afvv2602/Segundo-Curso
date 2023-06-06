@@ -108,7 +108,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         spinner.setAdapter(adapter);
 
         // Mostrar el filtro actual seleccionado en el Spinner
-        spinner.setSelection(getFilterPosition(currentFilter));
+        spinner.setSelection(getFilterPosition());
 
         builder.setView(spinner);
 
@@ -124,31 +124,28 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
     }
 
     private void applyFilter(int filterPosition) {
-        FilterUtils.FilterType filterType;
         switch (filterPosition) {
             case 1:
-                filterType = FilterUtils.FilterType.COMPLETED;
+                currentFilter = FilterUtils.FilterType.COMPLETED;
                 break;
             case 2:
-                filterType = FilterUtils.FilterType.INCOMPLETE;
+                currentFilter = FilterUtils.FilterType.INCOMPLETE;
                 break;
             case 3:
-                filterType = FilterUtils.FilterType.HIGH_PRIORITY;
+                currentFilter = FilterUtils.FilterType.HIGH_PRIORITY;
                 break;
             case 4:
-                filterType = FilterUtils.FilterType.LOW_PRIORITY;
+                currentFilter = FilterUtils.FilterType.LOW_PRIORITY;
                 break;
             default:
-                filterType = FilterUtils.FilterType.NONE;
+                currentFilter = FilterUtils.FilterType.NONE;
                 break;
         }
-
-        // Aplicar el filtro seleccionado
-        taskAdapter.applyFilter(filterType);
+        taskAdapter.applyFilter(currentFilter);
     }
 
-    private int getFilterPosition(FilterUtils.FilterType filterType) {
-        switch (filterType) {
+    private int getFilterPosition() {
+        switch (this.currentFilter) {
             case COMPLETED:
                 return 1;
             case INCOMPLETE:

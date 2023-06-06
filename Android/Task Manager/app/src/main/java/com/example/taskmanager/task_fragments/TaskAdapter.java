@@ -52,7 +52,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
             notifyDataSetChanged(); // Notificar al adaptador de los cambios en la lista
 
-            handler.postDelayed(this, 5000); // 30000 milliseconds = 30 segundos
+            handler.postDelayed(this, 30000); // 30000 milliseconds = 30 segundos
         }
     };
 
@@ -95,8 +95,32 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     public void applyFilter(FilterUtils.FilterType filterType) {
         currentFilter = filterType;
-        filteredTasks = FilterUtils.applyFilter(tasks, filterType);
-        notifyDataSetChanged();
+        filteredTasks.clear(); // Limpiar la lista filtrada antes de aplicar el filtro
+
+        for (Task task : tasks) {
+            boolean includeTask = true;
+
+            switch (filterType) {
+                case COMPLETED:
+                    includeTask = task.getStatus() == Task.Status.COMPLETED;
+                    break;
+                case INCOMPLETE:
+                    includeTask = task.getStatus() != Task.Status.COMPLETED;
+                    break;
+                case HIGH_PRIORITY:
+                    includeTask = task.getTier() == Task.Tier.HIGH;
+                    break;
+                case LOW_PRIORITY:
+                    includeTask = task.getTier() == Task.Tier.LOW;
+                    break;
+            }
+
+            if (includeTask) {
+                filteredTasks.add(task);
+            }
+        }
+
+        notifyDataSetChanged(); // Notificar al adaptador de los cambios en la lista filtrada
     }
 
     class TaskViewHolder extends RecyclerView.ViewHolder {
