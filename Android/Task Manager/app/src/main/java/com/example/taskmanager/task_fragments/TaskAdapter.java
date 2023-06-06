@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.taskmanager.R;
 import com.example.taskmanager.db.task.Task;
 import com.example.taskmanager.db.task.TaskRepository;
+import com.example.taskmanager.utils.FilterUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,15 +67,24 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         holder.bind(task);
     }
 
+
     @Override
     public int getItemCount() {
         return tasks.size();
     }
 
     public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
+        this.tasks.clear();
+        this.tasks.addAll(tasks);
         notifyDataSetChanged();
     }
+
+
+    public void applyFilter(FilterUtils.FilterType filterType) {
+        List<Task> filteredTasks = FilterUtils.applyFilter(tasks, filterType);
+        setTasks(filteredTasks);
+    }
+
 
     class TaskViewHolder extends RecyclerView.ViewHolder {
         TextView nameTextView, statusTextView, deadlineTextView, remainingTimeTextView, descriptionTextView;
