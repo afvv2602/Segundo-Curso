@@ -27,7 +27,6 @@ public class FilterUtils {
         }
     }
 
-
     private static List<Task> filterCompletedTasks(List<Task> tasks) {
         List<Task> filtered = new ArrayList<>();
         for (Task task : tasks) {
@@ -87,8 +86,6 @@ public class FilterUtils {
         }
         return filtered;
     }
-
-
 
     public enum FilterType {
         NONE, COMPLETED, INCOMPLETE,FAILED, HIGH_PRIORITY,MID_PRIORITY, LOW_PRIORITY

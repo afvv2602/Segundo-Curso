@@ -10,8 +10,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,6 +44,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -51,7 +56,6 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
     private TaskNotificationReceiver notificationReceiver;
     private EditText dateEdit, timeEdit, tierEdit;
     private int selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute;
-
     private List<Task> filteredTasks;
     private FilterUtils.FilterType currentFilter = FilterUtils.FilterType.NONE;
 
@@ -63,12 +67,12 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         RecyclerView taskRecyclerView = findViewById(R.id.task_recyclerview);
         FloatingActionButton addTask = findViewById(R.id.add_task_button);
         FloatingActionButton filterTask = findViewById(R.id.task_filter);
-        FloatingActionButton testTask = findViewById(R.id.task_test);
-        initTaskView(taskRecyclerView, addTask, filterTask, testTask);
+        FloatingActionButton searchTask = findViewById(R.id.search_task);
+        initTaskView(taskRecyclerView, addTask, filterTask, searchTask);
     }
 
     // Inicializa la vista de tareas
-    private void initTaskView(RecyclerView taskRecyclerView, FloatingActionButton addTask, FloatingActionButton filterTask, FloatingActionButton testTask) {
+    private void initTaskView(RecyclerView taskRecyclerView, FloatingActionButton addTask, FloatingActionButton filterTask, FloatingActionButton searchTask) {
         TaskRepository taskRepository = new TaskRepository(getApplication());
         taskAdapter = new TaskAdapter(this,taskRepository);
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -77,25 +81,27 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
         LiveData<List<Task>> tasksLiveData = taskViewModel.getTasksByOwner(username);
         tasksLiveData.observe(this, tasks -> {
-            List<Task> filteredTasks = FilterUtils.applyFilter(tasks, currentFilter);
+            filteredTasks = FilterUtils.applyFilter(tasks, currentFilter); // Asigna los valores a filteredTasks
             taskAdapter.setTasks(filteredTasks);
         });
         notificationReceiver = new TaskNotificationReceiver();
         notificationReceiver.setTaskViewModel(taskViewModel);
 
         filterTask.setOnClickListener(view -> showFilterDialog());
-        testTask.setOnClickListener(view -> showFilterDialog());
+        searchTask.setOnClickListener(view -> showSearchTaskDialog());
         addTask.setOnClickListener(view -> showAddTaskDialog());
 
         List<Task> tasks = tasksLiveData.getValue();
         if (tasks != null) {
-            filteredTasks = FilterUtils.applyFilter(tasks, currentFilter);
+            filteredTasks = FilterUtils.applyFilter(tasks, currentFilter); // Asigna los valores a filteredTasks
             taskAdapter.setTasks(filteredTasks);
         } else {
             taskViewModel.initSampleTasks(username);
         }
     }
 
+
+    // Opciones de los tres botones
     private void showFilterDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select Filter");
@@ -122,53 +128,6 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
-    private void applyFilter(int filterPosition) {
-        switch (filterPosition) {
-            case 1:
-                currentFilter = FilterUtils.FilterType.COMPLETED;
-                break;
-            case 2:
-                currentFilter = FilterUtils.FilterType.INCOMPLETE;
-                break;
-            case 3:
-                currentFilter = FilterUtils.FilterType.FAILED;
-                break;
-            case 4:
-                currentFilter = FilterUtils.FilterType.HIGH_PRIORITY;
-                break;
-            case 5:
-                currentFilter = FilterUtils.FilterType.MID_PRIORITY;
-                break;
-            case 6:
-                currentFilter = FilterUtils.FilterType.LOW_PRIORITY;
-                break;
-            default:
-                currentFilter = FilterUtils.FilterType.NONE;
-                break;
-        }
-        taskAdapter.applyFilter(currentFilter);
-    }
-
-    private int getFilterPosition() {
-        switch (this.currentFilter) {
-            case COMPLETED:
-                return 1;
-            case INCOMPLETE:
-                return 2;
-            case FAILED:
-                return 3;
-            case HIGH_PRIORITY:
-                return 4;
-            case MID_PRIORITY:
-                return 5;
-            case LOW_PRIORITY:
-                return 6;
-            default:
-                return 0; // None
-        }
-    }
-
     private void showAddTaskDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.fragment_add_task, null);
@@ -198,7 +157,88 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
             }
         });
     }
+    private void showSearchTaskDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.fragment_search_task, null);
+        EditText searchEditText = dialogView.findViewById(R.id.search_edit_text);
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                searchTaskByName(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        builder.setView(dialogView);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Ajustar el ancho del cuadro de diálogo
+        Window window = dialog.getWindow();
+        if (window != null) {
+            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+            layoutParams.copyFrom(window.getAttributes());
+            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            window.setAttributes(layoutParams);
+        }
+    }
+
+
+    // Filtros
+    private void applyFilter(int filterPosition) {
+        switch (filterPosition) {
+            case 1:
+                currentFilter = FilterUtils.FilterType.COMPLETED;
+                break;
+            case 2:
+                currentFilter = FilterUtils.FilterType.INCOMPLETE;
+                break;
+            case 3:
+                currentFilter = FilterUtils.FilterType.FAILED;
+                break;
+            case 4:
+                currentFilter = FilterUtils.FilterType.HIGH_PRIORITY;
+                break;
+            case 5:
+                currentFilter = FilterUtils.FilterType.MID_PRIORITY;
+                break;
+            case 6:
+                currentFilter = FilterUtils.FilterType.LOW_PRIORITY;
+                break;
+            default:
+                currentFilter = FilterUtils.FilterType.NONE;
+                break;
+        }
+        taskAdapter.applyFilter(currentFilter);
+    }
+    private int getFilterPosition() {
+        switch (this.currentFilter) {
+            case COMPLETED:
+                return 1;
+            case INCOMPLETE:
+                return 2;
+            case FAILED:
+                return 3;
+            case HIGH_PRIORITY:
+                return 4;
+            case MID_PRIORITY:
+                return 5;
+            case LOW_PRIORITY:
+                return 6;
+            default:
+                return 0; // None
+        }
+    }
+
+
+    // Añadir nueva tarea
     private boolean addTask(EditText taskNameEdit, EditText descriptionEdit) {
         String name = taskNameEdit.getText().toString();
         String description = descriptionEdit.getText().toString();
@@ -217,7 +257,6 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         }
         return false;
     }
-
     public void showDatePicker() {
         Calendar calendar = Calendar.getInstance();
         CustomDatePicker datePickerDialog = new CustomDatePicker(
@@ -234,7 +273,6 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         );
         datePickerDialog.show();
     }
-
     public void showTimePicker() {
         Calendar calendar = Calendar.getInstance();
         TimePickerDialog timePickerDialog = new TimePickerDialog(
@@ -250,7 +288,6 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         );
         timePickerDialog.show();
     }
-
     private void showTierPicker() {
         String[] tiers = {"Default", "High", "Low"};
 
@@ -264,12 +301,50 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         builder.show();
     }
 
+
+    // Busqueda de una tarea
+    private void searchTaskByName(String searchQuery) {
+        List<Task> matchingTasks = new ArrayList<>();
+
+        if (filteredTasks != null) {
+            for (Task task : filteredTasks) {
+                if (task.getName().toLowerCase().contains(searchQuery.toLowerCase())) {
+                    matchingTasks.add(task);
+                }
+            }
+        }
+
+        // Muestra los resultados en un cuadro de diálogo si hay al menos una tarea coincidente
+        if (!matchingTasks.isEmpty()) {
+            showSearchResultsDialog(matchingTasks);
+        }
+    }
+    private void showSearchResultsDialog(List<Task> tasks) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Search Results");
+
+        if (tasks.isEmpty()) {
+            builder.setMessage("No matching tasks found.");
+        } else {
+            StringBuilder message = new StringBuilder();
+            for (Task task : tasks) {
+                message.append("- ").append(task.getName()).append("\n");
+            }
+            builder.setMessage(message.toString());
+        }
+
+        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    // Accion al pulsar encima de una tarea (Creacion del popup)
     public void onTaskClick(Task task) {
         View dialogView = LayoutInflater.from(this).inflate(R.layout.fragment_task, null);
         AlertDialog dialog = createDialog(dialogView);
         handleButtonClicks(dialog, dialogView, task);
     }
-
     private AlertDialog createDialog(View dialogView) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView);
@@ -281,7 +356,6 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
 
         return dialog;
     }
-
     private void handleButtonClicks(AlertDialog dialog, View dialogView, Task task) {
         TextView taskNameTextView = dialogView.findViewById(R.id.task_name);
         TextView taskDeadlineTextView = dialogView.findViewById(R.id.task_deadline);
@@ -311,7 +385,6 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
             dialog.dismiss();
         });
     }
-
     private void setDialogBackground(Task task, LinearLayout taskBackground, Button completeButton, Button deleteButton) {
         switch (task.getStatus()) {
             case COMPLETED:
@@ -343,6 +416,8 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         }
     }
 
+
+    // Notificaciones
     private void scheduleTaskNotification(Task task, int taskCompleted) {
         Intent notificationIntent = new Intent(this, TaskNotificationReceiver.class);
         notificationIntent.putExtra("taskName", task.getName());
@@ -357,7 +432,6 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, task.getDeadline().getTime(), pendingIntent);
     }
-
     private void scheduleNotification(Task task) {
         Intent notificationIntent = new Intent(this, TaskNotificationReceiver.class);
         notificationIntent.putExtra("taskName", task.getName());
@@ -376,7 +450,6 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         deadline.add(Calendar.DATE, -1);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, deadline.getTimeInMillis(), pendingIntent);
     }
-
     private void scheduleExpiration(Task task) {
         Intent expirationIntent = new Intent(this, TaskExpirationNotificationReceiver.class);
         expirationIntent.putExtra("taskName", task.getName());
@@ -392,6 +465,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         deadline.setTime(task.getDeadline());
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, deadline.getTimeInMillis(), pendingIntent);
     }
+
 
     private String remainingTime(Date deadline) {
         Date currentDate = new Date();
