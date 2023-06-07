@@ -96,32 +96,35 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public void applyFilter(FilterUtils.FilterType filterType) {
         currentFilter = filterType;
         filteredTasks.clear();
-
-        for (Task task : tasks) {
-            boolean sw = true;
-            switch (filterType) {
-                case COMPLETED:
-                    sw = task.getStatus() == Task.Status.COMPLETED;
-                    break;
-                case INCOMPLETE:
-                    sw = task.getStatus() == Task.Status.IN_PROGRESS;
-                    break;
-                case FAILED:
-                    sw = task.getStatus() == Task.Status.FAILED;
-                    break;
-                case HIGH_PRIORITY:
-                    sw = task.getTier() == Task.Tier.HIGH;
-                    break;
-                case MID_PRIORITY:
-                    sw = task.getTier() == Task.Tier.DEFAULT;
-                    break;
-                case LOW_PRIORITY:
-                    sw = task.getTier() == Task.Tier.LOW;
-                    break;
-            }
-            if (sw) {
-                filteredTasks.add(task);
-            }
+        if (filterType == FilterUtils.FilterType.NONE) {
+            filteredTasks.addAll(tasks);
+        }else{
+            for (Task task : tasks) {
+                boolean sw = true;
+                switch (filterType) {
+                    case COMPLETED:
+                        sw = task.getStatus() == Task.Status.COMPLETED;
+                        break;
+                    case INCOMPLETE:
+                        sw = task.getStatus() == Task.Status.IN_PROGRESS;
+                        break;
+                    case FAILED:
+                        sw = task.getStatus() == Task.Status.FAILED;
+                        break;
+                    case HIGH_PRIORITY:
+                        sw = task.getTier() == Task.Tier.HIGH;
+                        break;
+                    case MID_PRIORITY:
+                        sw = task.getTier() == Task.Tier.DEFAULT;
+                        break;
+                    case LOW_PRIORITY:
+                        sw = task.getTier() == Task.Tier.LOW;
+                        break;
+                }
+                if (sw) {
+                    filteredTasks.add(task);
+                }
+        }
         }
         notifyDataSetChanged(); // Notificar al adaptador de los cambios en la lista filtrada
     }
