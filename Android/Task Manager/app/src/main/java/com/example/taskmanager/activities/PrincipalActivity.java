@@ -251,6 +251,8 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
             deadline.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
             Task newTask = new Task(0, name, description, deadline.getTime(), username, Task.Tier.valueOf(tier.toUpperCase()), Task.Status.IN_PROGRESS, remainingTime(deadline.getTime()));
             taskViewModel.addTask(newTask);
+            currentFilter = FilterUtils.FilterType.NONE;
+            taskAdapter.applyFilter(currentFilter);
             scheduleNotification(newTask);
             scheduleExpiration(newTask);
             return true;
