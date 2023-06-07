@@ -95,31 +95,34 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     public void applyFilter(FilterUtils.FilterType filterType) {
         currentFilter = filterType;
-        filteredTasks.clear(); // Limpiar la lista filtrada antes de aplicar el filtro
+        filteredTasks.clear();
 
         for (Task task : tasks) {
-            boolean includeTask = true;
-
+            boolean sw = true;
             switch (filterType) {
                 case COMPLETED:
-                    includeTask = task.getStatus() == Task.Status.COMPLETED;
+                    sw = task.getStatus() == Task.Status.COMPLETED;
                     break;
                 case INCOMPLETE:
-                    includeTask = task.getStatus() != Task.Status.COMPLETED;
+                    sw = task.getStatus() == Task.Status.IN_PROGRESS;
+                    break;
+                case FAILED:
+                    sw = task.getStatus() == Task.Status.FAILED;
                     break;
                 case HIGH_PRIORITY:
-                    includeTask = task.getTier() == Task.Tier.HIGH;
+                    sw = task.getTier() == Task.Tier.HIGH;
+                    break;
+                case MID_PRIORITY:
+                    sw = task.getTier() == Task.Tier.DEFAULT;
                     break;
                 case LOW_PRIORITY:
-                    includeTask = task.getTier() == Task.Tier.LOW;
+                    sw = task.getTier() == Task.Tier.LOW;
                     break;
             }
-
-            if (includeTask) {
+            if (sw) {
                 filteredTasks.add(task);
             }
         }
-
         notifyDataSetChanged(); // Notificar al adaptador de los cambios en la lista filtrada
     }
 

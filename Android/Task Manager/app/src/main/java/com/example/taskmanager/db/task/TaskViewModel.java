@@ -54,11 +54,14 @@ public class TaskViewModel extends AndroidViewModel {
         Calendar calendar = Calendar.getInstance();
 
         // Crea algunas tareas de muestra con diferentes niveles de prioridad y estados
-        for (int i = 1; i <= 20; i++) {
-            String name = "Task " + i;
-            String description = "Description for Task " + i;
-            int tierIndex = i % 3;  // Alterna entre los tres niveles de prioridad
+        for (int i = 1; i <= 40; i++) {
+            String name = "Tarea " + i;
+            String description = "Descripcion de la tarea:  " + i;
             Task.Tier tier;
+            Task.Status status;
+
+            // Genera aleatoriamente el nivel de prioridad
+            int tierIndex = (int) (Math.random() * 3);
             switch (tierIndex) {
                 case 0:
                     tier = Task.Tier.LOW;
@@ -73,8 +76,9 @@ public class TaskViewModel extends AndroidViewModel {
                     tier = Task.Tier.DEFAULT;
                     break;
             }
-            int statusIndex = i % 3;  // Alterna entre los tres estados
-            Task.Status status;
+
+            // Genera aleatoriamente el estado
+            int statusIndex = (int) (Math.random() * 3);
             switch (statusIndex) {
                 case 0:
                     status = Task.Status.IN_PROGRESS;
@@ -89,11 +93,15 @@ public class TaskViewModel extends AndroidViewModel {
                     status = Task.Status.IN_PROGRESS;
                     break;
             }
-            calendar.add(Calendar.DAY_OF_MONTH, 1);  // Agrega un día a la fecha actual
+
+            // Genera una fecha límite aleatoria en los próximos 30 días
+            calendar.add(Calendar.DAY_OF_MONTH, (int) (Math.random() * 30) + 1);
             Date deadline = calendar.getTime();
-            Task task = new Task(i, name, description, deadline, username, tier, status,calculateRemainingTime(deadline));
+
+            Task task = new Task(i, name, description, deadline, username, tier, status, calculateRemainingTime(deadline));
             sampleTasks.add(task);
         }
+
         AppDatabase.databaseWriteExecutor.execute(() -> {
             for (Task task : sampleTasks) {
                 taskRepository.insert(task);

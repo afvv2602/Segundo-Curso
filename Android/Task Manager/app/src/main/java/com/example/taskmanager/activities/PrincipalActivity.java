@@ -102,7 +102,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
 
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        adapter.addAll("None", "Completed", "Incomplete", "High Priority", "Low Priority");
+        adapter.addAll("None", "Completed", "Incomplete", "Failed" ,"High Priority", "Mid Priority" ,"Low Priority");
 
         Spinner spinner = new Spinner(this);
         spinner.setAdapter(adapter);
@@ -132,9 +132,15 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
                 currentFilter = FilterUtils.FilterType.INCOMPLETE;
                 break;
             case 3:
-                currentFilter = FilterUtils.FilterType.HIGH_PRIORITY;
+                currentFilter = FilterUtils.FilterType.FAILED;
                 break;
             case 4:
+                currentFilter = FilterUtils.FilterType.HIGH_PRIORITY;
+                break;
+            case 5:
+                currentFilter = FilterUtils.FilterType.MID_PRIORITY;
+                break;
+            case 6:
                 currentFilter = FilterUtils.FilterType.LOW_PRIORITY;
                 break;
             default:
@@ -150,10 +156,14 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
                 return 1;
             case INCOMPLETE:
                 return 2;
-            case HIGH_PRIORITY:
+            case FAILED:
                 return 3;
-            case LOW_PRIORITY:
+            case HIGH_PRIORITY:
                 return 4;
+            case MID_PRIORITY:
+                return 5;
+            case LOW_PRIORITY:
+                return 6;
             default:
                 return 0; // None
         }

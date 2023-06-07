@@ -18,10 +18,15 @@ public class FilterUtils {
                 return filterHighPriorityTasks(tasks);
             case LOW_PRIORITY:
                 return filterLowPriorityTasks(tasks);
+            case MID_PRIORITY:
+                return filterMidPriorityTasks(tasks);
+            case FAILED:
+                return filterFailedTasks(tasks);
             default:
                 return tasks;
         }
     }
+
 
     private static List<Task> filterCompletedTasks(List<Task> tasks) {
         List<Task> filtered = new ArrayList<>();
@@ -63,48 +68,30 @@ public class FilterUtils {
         return filtered;
     }
 
-    public static List<Task> sortByPriority(List<Task> tasks) {
-        List<Task> sortedTasks = new ArrayList<>(tasks);
-        quickSortByPriority(sortedTasks, 0, sortedTasks.size() - 1);
-        return sortedTasks;
-    }
-
-    private static void quickSortByPriority(List<Task> tasks, int low, int high) {
-        if (low < high) {
-            int pivotIndex = partitionByPriority(tasks, low, high);
-            quickSortByPriority(tasks, low, pivotIndex - 1);
-            quickSortByPriority(tasks, pivotIndex + 1, high);
-        }
-    }
-
-    private static int partitionByPriority(List<Task> tasks, int low, int high) {
-        Task pivot = tasks.get(high);
-        int i = low - 1;
-
-        for (int j = low; j < high; j++) {
-            if (getPriorityValue(tasks.get(j).getTier()) < getPriorityValue(pivot.getTier())) {
-                i++;
-                Collections.swap(tasks, i, j);
+    private static List<Task> filterMidPriorityTasks(List<Task> tasks) {
+        List<Task> filtered = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getTier() == Task.Tier.DEFAULT) {
+                filtered.add(task);
             }
         }
-
-        Collections.swap(tasks, i + 1, high);
-
-        return i + 1;
+        return filtered;
     }
 
-    private static int getPriorityValue(Task.Tier tier) {
-        switch (tier) {
-            case HIGH:
-                return 2;
-            case LOW:
-                return 0;
-            default:
-                return 1;
+    private static List<Task> filterFailedTasks(List<Task> tasks) {
+        List<Task> filtered = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getStatus() == Task.Status.FAILED) {
+                filtered.add(task);
+            }
         }
+        return filtered;
     }
+
+
 
     public enum FilterType {
-        NONE, COMPLETED, INCOMPLETE, HIGH_PRIORITY, LOW_PRIORITY
+        NONE, COMPLETED, INCOMPLETE,FAILED, HIGH_PRIORITY,MID_PRIORITY, LOW_PRIORITY
     }
+
 }
