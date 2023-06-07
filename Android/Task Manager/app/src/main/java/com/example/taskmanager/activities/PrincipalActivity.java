@@ -156,6 +156,8 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         });
     }
     private void showSearchTaskDialog() {
+        currentFilter = FilterUtils.FilterType.NONE;
+        taskAdapter.applyFilter(currentFilter);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.fragment_search_task, null);
         EditText searchEditText = dialogView.findViewById(R.id.search_edit_text);
