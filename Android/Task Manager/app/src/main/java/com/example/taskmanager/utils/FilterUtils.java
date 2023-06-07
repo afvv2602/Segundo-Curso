@@ -8,7 +8,7 @@ import java.util.List;
 
 public class FilterUtils {
 
-    public static List<Task> applyFilter(List<Task> tasks, FilterType filterType) {
+    public static List<Task> applyFilter(List<Task> tasks, FilterType filterType, String... query) {
         switch (filterType) {
             case COMPLETED:
                 return filterCompletedTasks(tasks);
@@ -22,9 +22,23 @@ public class FilterUtils {
                 return filterMidPriorityTasks(tasks);
             case FAILED:
                 return filterFailedTasks(tasks);
+            case SEARCH:
+                return filterSearchTasks(tasks, String.valueOf(query));
             default:
                 return tasks;
         }
+    }
+
+    private static List<Task> filterSearchTasks(List<Task> tasks,String query) {
+        List<Task> matchingTasks = new ArrayList<>();
+        if (tasks != null) {
+            for (Task task : tasks) {
+                if (task.getName().toLowerCase().contains(query.toLowerCase())) {
+                    matchingTasks.add(task);
+                }
+            }
+        }
+        return matchingTasks;
     }
 
     private static List<Task> filterCompletedTasks(List<Task> tasks) {
@@ -88,7 +102,7 @@ public class FilterUtils {
     }
 
     public enum FilterType {
-        NONE, COMPLETED, INCOMPLETE,FAILED, HIGH_PRIORITY,MID_PRIORITY, LOW_PRIORITY
+        NONE, COMPLETED, INCOMPLETE,FAILED, HIGH_PRIORITY,MID_PRIORITY, LOW_PRIORITY,SEARCH
     }
 
 }

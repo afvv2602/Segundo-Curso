@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -56,6 +57,8 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
     private TaskNotificationReceiver notificationReceiver;
     private EditText dateEdit, timeEdit, tierEdit;
     private int selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute;
+
+    LiveData<List<Task>> tasksLiveData;
     private List<Task> filteredTasks;
     private FilterUtils.FilterType currentFilter = FilterUtils.FilterType.NONE;
 
@@ -77,11 +80,14 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         taskAdapter = new TaskAdapter(this,taskRepository);
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         taskRecyclerView.setAdapter(taskAdapter);
-
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
-        LiveData<List<Task>> tasksLiveData = taskViewModel.getTasksByOwner(username);
+        tasksLiveData = taskViewModel.getTasksByOwner(username);
+        if (tasksLiveData.getValue() == null){
+            taskViewModel.initSampleTasks(username);
+            tasksLiveData = taskViewModel.getTasksByOwner(username);
+        }
         tasksLiveData.observe(this, tasks -> {
-            filteredTasks = FilterUtils.applyFilter(tasks, currentFilter); // Asigna los valores a filteredTasks
+            filteredTasks = FilterUtils.applyFilter(tasks, currentFilter);
             taskAdapter.setTasks(filteredTasks);
         });
         notificationReceiver = new TaskNotificationReceiver();
@@ -90,14 +96,6 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         filterTask.setOnClickListener(view -> showFilterDialog());
         searchTask.setOnClickListener(view -> showSearchTaskDialog());
         addTask.setOnClickListener(view -> showAddTaskDialog());
-
-        List<Task> tasks = tasksLiveData.getValue();
-        if (tasks != null) {
-            filteredTasks = FilterUtils.applyFilter(tasks, currentFilter); // Asigna los valores a filteredTasks
-            taskAdapter.setTasks(filteredTasks);
-        } else {
-            taskViewModel.initSampleTasks(username);
-        }
     }
 
 
@@ -304,8 +302,8 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
 
     // Busqueda de una tarea
     private void searchTaskByName(String searchQuery) {
-        List<Task> matchingTasks = new ArrayList<>();
-
+        currentFilter = FilterUtils.FilterType.SEARCH;
+        List<Task> matchingTasks = FilterUtils.applyFilter(filteredTasks, currentFilter, searchQuery);
         if (filteredTasks != null) {
             for (Task task : filteredTasks) {
                 if (task.getName().toLowerCase().contains(searchQuery.toLowerCase())) {
@@ -313,30 +311,9 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
                 }
             }
         }
-
-        // Muestra los resultados en un cuadro de diálogo si hay al menos una tarea coincidente
         if (!matchingTasks.isEmpty()) {
-            showSearchResultsDialog(matchingTasks);
+            taskAdapter.setTasks(matchingTasks);
         }
-    }
-    private void showSearchResultsDialog(List<Task> tasks) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Search Results");
-
-        if (tasks.isEmpty()) {
-            builder.setMessage("No matching tasks found.");
-        } else {
-            StringBuilder message = new StringBuilder();
-            for (Task task : tasks) {
-                message.append("- ").append(task.getName()).append("\n");
-            }
-            builder.setMessage(message.toString());
-        }
-
-        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
     }
 
     // Accion al pulsar encima de una tarea (Creacion del popup)

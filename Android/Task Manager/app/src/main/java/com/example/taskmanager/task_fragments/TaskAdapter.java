@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
     private List<Task> tasks = new ArrayList<>();
-    private List<Task> filteredTasks = new ArrayList<>(); // Lista filtrada
+    private List<Task> filteredTasks = new ArrayList<>();
     private TaskClickListener listener;
     private TaskRepository taskRepository;
 
