@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -128,10 +127,11 @@ public class MainActivity extends AppCompatActivity {
                 }
                 lastFrame = currentFrame.clone();
             }
-            imageProxy.close();  // Añade esta línea para cerrar el ImageProxy
+            imageProxy.close();
         });
 
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
+        // Esta es la camara que use el provider para recoger el movimiento
         Camera camera = cameraProvider.bindToLifecycle((LifecycleOwner)this, cameraSelector, preview, imageAnalysis);
     }
 
@@ -190,13 +190,13 @@ public class MainActivity extends AppCompatActivity {
                 videoView.stopPlayback();
             }
             videoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + videos[currentVideoIndex]));
-            videoView.setVisibility(View.VISIBLE);
             previewView.setVisibility(View.INVISIBLE);  // Hacer la vista de la cámara invisible cuando el video empieza a reproducirse
+            videoView.setVisibility(View.VISIBLE);
             videoView.start();
             videoView.setOnCompletionListener(mp -> {
                 videoView.pause();
                 videoView.seekTo(videoView.getDuration());
-                previewView.setVisibility(View.VISIBLE);  // Hacer la vista de la cámara visible cuando el video se termina de reproducir
+                videoView.stopPlayback();
             });
         }
         grayLastFrame.release();
@@ -204,8 +204,6 @@ public class MainActivity extends AppCompatActivity {
         frameDelta.release();
         thresholdFrame.release();
     }
-
-
 
     @Override
     protected void onPause() {
