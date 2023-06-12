@@ -109,18 +109,21 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(this), imageProxy -> {
-            if (imageProxy!=null){
-                Mat currentFrame = convertImageToMat(imageProxy.getImage()); // Convierte la imagen a Mat de OpenCV
+            Log.d(TAG, "Inicio del análisis de la imagen");
+            if (imageProxy != null) {
+                Mat currentFrame = convertImageToMat(imageProxy.getImage());
+                Log.d(TAG, "currentFrame es " + (currentFrame == null ? "null" : "no null"));
                 if (lastFrame != null) {
-                    detectMotion(lastFrame, currentFrame); // Detecta el movimiento comparando los fotogramas
+                    Log.d(TAG, "Llamando a detectMotion");
+                    detectMotion(lastFrame, currentFrame);
                 }
-                lastFrame = currentFrame; // Guarda el fotograma actual para la siguiente comparación
+                lastFrame = currentFrame.clone();
             }
         });
 
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
-        Camera camera = cameraProvider.bindToLifecycle((LifecycleOwner)this, cameraSelector, preview, imageAnalysis);
+        cameraProvider.bindToLifecycle((LifecycleOwner)this, cameraSelector, preview, imageAnalysis);
     }
 
     // Convierte la imagen en objeto Mat de OpenCV
@@ -153,6 +156,8 @@ public class MainActivity extends AppCompatActivity {
 
     // Compara el fotograma actual con el último para detectar movimiento
     private void detectMotion(Mat lastFrame, Mat currentFrame) {
+        Log.d(TAG, "Procesando imagen para detección de movimiento");
+
         // Convierte los fotogramas a escala de grises
         Mat grayLastFrame = new Mat();
         Mat grayCurrentFrame = new Mat();
@@ -174,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         // Verifica si hay movimiento
         double movement = Core.sumElems(thresholdFrame).val[0];
         if(movement > 0 && System.currentTimeMillis() - lastMotionTime > 50) {  // <--- Añade la verificación del tiempo
-            Log.i(TAG, "@@@@@@Se detectó movimiento");
+            Log.i(TAG, "Se detectó movimiento");
             lastMotionTime = System.currentTimeMillis();  // <--- Actualiza la última vez que se detectó movimiento
 
             // Muestra un Toast
