@@ -27,7 +27,6 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
@@ -37,8 +36,9 @@ import java.util.concurrent.ExecutionException;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private PreviewView previewView;
-    private Mat lastFrame; // Almacena el último fotograma para comparar
-
+    private Mat lastFrame;
+    private Camera camera;
+    private ProcessCameraProvider cameraProvider;
     private long lastMotionTime = 0;
 
     private static final int REQUEST_CAMERA_PERMISSION = 101;
@@ -48,7 +48,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         previewView = findViewById(R.id.previewView);
+        checkStuff();
 
+    }
+
+    private void checkStuff() {
         if (!OpenCVLoader.initDebug()) {
             Log.e(TAG, "OpenCV no se pudo cargar");
         } else {
@@ -81,14 +85,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Inicia la cámara
     private void startCamera() {
-        ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
-                ProcessCameraProvider.getInstance(this);
-
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
         cameraProviderFuture.addListener(() -> {
             try {
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                cameraProvider = cameraProviderFuture.get();  // Actualiza esta línea
                 bindPreview(cameraProvider);
             } catch (ExecutionException | InterruptedException e) {
                 Log.e(TAG, "Error al obtener el proveedor de la cámara", e);
@@ -96,13 +97,12 @@ public class MainActivity extends AppCompatActivity {
         }, ContextCompat.getMainExecutor(this));
     }
 
-    // Vincula la vista previa (preview) con el proveedor de la cámara
-
     @OptIn(markerClass = ExperimentalGetImage.class)
     private void bindPreview(ProcessCameraProvider cameraProvider) {
+        cameraProvider.unbindAll();
         Preview preview = new Preview.Builder().build();
         CameraSelector cameraSelector = new CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_FRONT).build(); // Utiliza la cámara frontal
+                .requireLensFacing(CameraSelector.LENS_FACING_FRONT).build();
 
         ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
@@ -119,14 +119,13 @@ public class MainActivity extends AppCompatActivity {
                 }
                 lastFrame = currentFrame.clone();
             }
+            imageProxy.close();  // Añade esta línea para cerrar el ImageProxy
         });
 
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
-
-        cameraProvider.bindToLifecycle((LifecycleOwner)this, cameraSelector, preview, imageAnalysis);
+        camera = cameraProvider.bindToLifecycle((LifecycleOwner)this, cameraSelector, preview, imageAnalysis);
     }
 
-    // Convierte la imagen en objeto Mat de OpenCV
     private Mat convertImageToMat(Image image) {
         Image.Plane[] planes = image.getPlanes();
         ByteBuffer yBuffer = planes[0].getBuffer();
@@ -139,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
 
         byte[] nv21 = new byte[ySize + uSize + vSize];
 
-        // Las componentes U y V están intercambiadas
         yBuffer.get(nv21, 0, ySize);
         vBuffer.get(nv21, ySize, vSize);
         uBuffer.get(nv21, ySize + vSize, uSize);
@@ -154,42 +152,53 @@ public class MainActivity extends AppCompatActivity {
         return mat;
     }
 
-    // Compara el fotograma actual con el último para detectar movimiento
     private void detectMotion(Mat lastFrame, Mat currentFrame) {
         Log.d(TAG, "Procesando imagen para detección de movimiento");
 
-        // Convierte los fotogramas a escala de grises
         Mat grayLastFrame = new Mat();
         Mat grayCurrentFrame = new Mat();
         Imgproc.cvtColor(lastFrame, grayLastFrame, Imgproc.COLOR_BGR2GRAY);
         Imgproc.cvtColor(currentFrame, grayCurrentFrame, Imgproc.COLOR_BGR2GRAY);
 
-        // Difumina las imágenes para reducir el ruido
-        Imgproc.GaussianBlur(grayLastFrame, grayLastFrame, new Size(15, 15), 0);  // <--- Cambia el tamaño del kernel
-        Imgproc.GaussianBlur(grayCurrentFrame, grayCurrentFrame, new Size(15, 15), 0);  // <--- Cambia el tamaño del kernel
+        Imgproc.GaussianBlur(grayLastFrame, grayLastFrame, new Size(15, 15), 0);
+        Imgproc.GaussianBlur(grayCurrentFrame, grayCurrentFrame, new Size(15, 15), 0);
 
-        // Calcula la diferencia absoluta entre el fotograma actual y el último
         Mat frameDelta = new Mat();
         Core.absdiff(grayLastFrame, grayCurrentFrame, frameDelta);
 
-        // Aplica umbral a la imagen de la diferencia (el segundo parámetro puede ajustarse según necesidad)
         Mat thresholdFrame = new Mat();
-        Imgproc.threshold(frameDelta, thresholdFrame, 15, 150, Imgproc.THRESH_BINARY);  // <--- Reduce el umbral
+        Imgproc.threshold(frameDelta, thresholdFrame, 15, 150, Imgproc.THRESH_BINARY);
 
-        // Verifica si hay movimiento
         double movement = Core.sumElems(thresholdFrame).val[0];
-        if(movement > 0 && System.currentTimeMillis() - lastMotionTime > 50) {  // <--- Añade la verificación del tiempo
+        if(movement > 0 && System.currentTimeMillis() - lastMotionTime > 50) {
             Log.i(TAG, "Se detectó movimiento");
-            lastMotionTime = System.currentTimeMillis();  // <--- Actualiza la última vez que se detectó movimiento
+            lastMotionTime = System.currentTimeMillis();
 
-            // Muestra un Toast
             runOnUiThread(() -> Toast.makeText(MainActivity.this, "Se detectó movimiento", Toast.LENGTH_SHORT).show());
         }
 
-        // Libera los recursos
         grayLastFrame.release();
         grayCurrentFrame.release();
         frameDelta.release();
         thresholdFrame.release();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (cameraProvider != null) {
+            cameraProvider.unbindAll();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (allPermissionsGranted()) {
+            startCamera();
+        } else {
+            ActivityCompat.requestPermissions(
+                    this, new String[] {Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+        }
     }
 }
