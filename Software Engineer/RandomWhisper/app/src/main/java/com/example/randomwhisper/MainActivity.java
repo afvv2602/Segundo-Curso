@@ -42,8 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
     private VideoView videoView;
     int[] videos = {R.raw.video1, R.raw.video2, R.raw.video3, R.raw.video4};
-    //int[] images = {R.raw.img1, R.raw.img2, R.raw.img3, R.raw.img4};
-
     private int currentVideoIndex = -1;
     private PreviewView previewView;
 
@@ -57,17 +55,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        previewView = findViewById(R.id.previewView);
-        videoView = findViewById(R.id.videoView);
-        checkStuff();
-
+        initActivity();
     }
 
-    private void checkStuff() {
+    // Permisos e iniciar la vista
+    private void initActivity() {
+        previewView = findViewById(R.id.previewView);
+        videoView = findViewById(R.id.videoView);
+
         if (!OpenCVLoader.initDebug()) {
             Log.e(TAG, "OpenCV no se pudo cargar");
         } else {
-            Log.d(TAG, "OpenCV se cargó correctamente");
+            Log.d(TAG, "OpenCV se cargo correctamente");
         }
 
         if (allPermissionsGranted()) {
@@ -77,11 +76,9 @@ public class MainActivity extends AppCompatActivity {
                     this, new String[] {Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
         }
     }
-
     private boolean allPermissionsGranted() {
         return ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -96,11 +93,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    // Iniciamos la camara, la cual solo se mostrara la primera vez que iniciemos la app.
     private void startCamera() {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
         cameraProviderFuture.addListener(() -> {
             try {
-                cameraProvider = cameraProviderFuture.get();  // Actualiza esta línea
+                cameraProvider = cameraProviderFuture.get();
                 bindPreview(cameraProvider);
             } catch (ExecutionException | InterruptedException e) {
                 Log.e(TAG, "Error al obtener el proveedor de la cámara", e);
@@ -131,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
+
         // Esta es la camara que use el provider para recoger el movimiento
         Camera camera = cameraProvider.bindToLifecycle((LifecycleOwner)this, cameraSelector, preview, imageAnalysis);
     }
@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
                 videoView.stopPlayback();
             }
             videoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + videos[currentVideoIndex]));
-            previewView.setVisibility(View.INVISIBLE);  // Hacer la vista de la cámara invisible cuando el video empieza a reproducirse
+            previewView.setVisibility(View.INVISIBLE);
             videoView.setVisibility(View.VISIBLE);
             videoView.start();
             videoView.setOnCompletionListener(mp -> {
@@ -210,6 +210,8 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         if (cameraProvider != null) {
             cameraProvider.unbindAll();
+            videoView.setVisibility(View.INVISIBLE);
+            previewView.setVisibility(View.VISIBLE);
         }
     }
 
