@@ -153,27 +153,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void detectMotion(Mat lastFrame, Mat currentFrame) {
-        Log.d(TAG, "Procesando imagen para detección de movimiento");
-
         Mat grayLastFrame = new Mat();
         Mat grayCurrentFrame = new Mat();
         Imgproc.cvtColor(lastFrame, grayLastFrame, Imgproc.COLOR_BGR2GRAY);
         Imgproc.cvtColor(currentFrame, grayCurrentFrame, Imgproc.COLOR_BGR2GRAY);
 
-        Imgproc.GaussianBlur(grayLastFrame, grayLastFrame, new Size(15, 15), 0);
-        Imgproc.GaussianBlur(grayCurrentFrame, grayCurrentFrame, new Size(15, 15), 0);
+        Imgproc.GaussianBlur(grayLastFrame, grayLastFrame, new Size(31, 31), 0);
+        Imgproc.GaussianBlur(grayCurrentFrame, grayCurrentFrame, new Size(31, 31), 0);
 
         Mat frameDelta = new Mat();
         Core.absdiff(grayLastFrame, grayCurrentFrame, frameDelta);
 
         Mat thresholdFrame = new Mat();
-        Imgproc.threshold(frameDelta, thresholdFrame, 15, 150, Imgproc.THRESH_BINARY);
+        Imgproc.threshold(frameDelta, thresholdFrame, 25, 255, Imgproc.THRESH_BINARY);
 
         double movement = Core.sumElems(thresholdFrame).val[0];
-        if(movement > 0 && System.currentTimeMillis() - lastMotionTime > 50) {
+        double movementThreshold = 1e7;
+        if (movement > movementThreshold && System.currentTimeMillis() - lastMotionTime > 2000) {
             Log.i(TAG, "Se detectó movimiento");
             lastMotionTime = System.currentTimeMillis();
-
             runOnUiThread(() -> Toast.makeText(MainActivity.this, "Se detectó movimiento", Toast.LENGTH_SHORT).show());
         }
 
@@ -182,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
         frameDelta.release();
         thresholdFrame.release();
     }
+
 
     @Override
     protected void onPause() {
