@@ -1,4 +1,4 @@
-from pymongo import MongoClient
+from c import MongoClient
 from datetime import datetime
 
 #Conexiones con la base de datos
@@ -26,6 +26,8 @@ def main():
         elif opcion == 7:
             menu_aggregate()
         elif opcion == 8:
+            retos_mongo()
+        elif opcion == 9:
             print("Saliendo del programa.")
             break
         else:
@@ -176,6 +178,13 @@ def buscar_modulos_por_promedio(nota):
         for modulo in actual['modulos']:
             print(f"  - {modulo}")
     main()
+
+def retos_mongo():
+    mod = db.modulos.find()
+
+    for modulo in mod:
+
+
 
 if __name__ == "__main__":
     main()

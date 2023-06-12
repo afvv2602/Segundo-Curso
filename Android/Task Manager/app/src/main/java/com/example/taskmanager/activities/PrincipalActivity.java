@@ -12,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -57,8 +58,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
     private TaskNotificationReceiver notificationReceiver;
     private EditText dateEdit, timeEdit, tierEdit;
     private int selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute;
-
-    LiveData<List<Task>> tasksLiveData;
+    private LiveData<List<Task>> tasksLiveData;
     private List<Task> filteredTasks;
     private FilterUtils.FilterType currentFilter = FilterUtils.FilterType.NONE;
 
@@ -98,30 +98,26 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         addTask.setOnClickListener(view -> showAddTaskDialog());
     }
 
-
     // Opciones de los tres botones
     private void showFilterDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Select Filter");
+        builder.setTitle("Selecciona un filtro");
 
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        adapter.addAll("None", "Completed", "Incomplete", "Failed" ,"High Priority", "Mid Priority" ,"Low Priority");
+        adapter.addAll("Ninguno", "Completas", "En proceso", "Fallidas" ,"Prioridad alta", "Prioridad media" ,"Prioridad baja");
 
+        // Creacion de un spinner para seleccionar las opciones
         Spinner spinner = new Spinner(this);
         spinner.setAdapter(adapter);
-
-        // Mostrar el filtro actual seleccionado en el Spinner
         spinner.setSelection(getFilterPosition());
-
         builder.setView(spinner);
 
-        builder.setPositiveButton("Apply", (dialog, which) -> {
+        builder.setPositiveButton("Aplicar", (dialog, which) -> {
             int selectedPosition = spinner.getSelectedItemPosition();
             applyFilter(selectedPosition);
         });
-
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -143,6 +139,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
 
         dialog.show();
 
+        // Se muestran los picker cuando se hace click encima del edit text
         dateEdit.setOnClickListener(v -> showDatePicker());
         timeEdit.setOnClickListener(v -> showTimePicker());
         tierEdit.setOnClickListener(view -> showTierPicker());
@@ -166,6 +163,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
+            // La lista de tareas se actualiza conforme el usuario va escribiendo
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 searchTaskByName(s.toString());
@@ -178,16 +176,20 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
 
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
-        dialog.show();
 
-        // Ajustar el ancho del cuadro de diálogo
-        Window window = dialog.getWindow();
-        if (window != null) {
-            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-            layoutParams.copyFrom(window.getAttributes());
-            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-            window.setAttributes(layoutParams);
-        }
+        // Para asegurar que el dialogo se muestre bien
+        dialog.setOnShowListener(dialogInterface -> {
+            Window window = dialog.getWindow();
+            if (window != null) {
+                WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+                layoutParams.copyFrom(window.getAttributes());
+                layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+                layoutParams.gravity = Gravity.BOTTOM; // Mostrar en la parte inferior
+                window.setAttributes(layoutParams);
+            }
+        });
+
+        dialog.show();
     }
 
 

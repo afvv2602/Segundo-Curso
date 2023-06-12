@@ -94,7 +94,7 @@ public class TaskViewModel extends AndroidViewModel {
                     break;
             }
 
-            // Genera una fecha límite aleatoria en los próximos 30 días
+            // Genera una fecha limite aleatoria en los proximos 30 dias
             calendar.add(Calendar.DAY_OF_MONTH, (int) (Math.random() * 30) + 1);
             Date deadline = calendar.getTime();
 
