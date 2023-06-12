@@ -3,9 +3,12 @@ package com.example.randomwhisper;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.media.Image;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
@@ -31,13 +34,18 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import java.nio.ByteBuffer;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+
+    private VideoView videoView;
+    int[] videos = {R.raw.video1, R.raw.video2, R.raw.video3, R.raw.video4,R.raw.video5};
+    private int currentVideoIndex = -1;
+
     private PreviewView previewView;
     private Mat lastFrame;
-    private Camera camera;
     private ProcessCameraProvider cameraProvider;
     private long lastMotionTime = 0;
 
@@ -123,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
-        camera = cameraProvider.bindToLifecycle((LifecycleOwner)this, cameraSelector, preview, imageAnalysis);
+        Camera camera = cameraProvider.bindToLifecycle((LifecycleOwner)this, cameraSelector, preview, imageAnalysis);
     }
 
     private Mat convertImageToMat(Image image) {
@@ -170,9 +178,27 @@ public class MainActivity extends AppCompatActivity {
         double movement = Core.sumElems(thresholdFrame).val[0];
         double movementThreshold = 1e7;
         if (movement > movementThreshold && System.currentTimeMillis() - lastMotionTime > 2000) {
-            Log.i(TAG, "Se detectó movimiento");
             lastMotionTime = System.currentTimeMillis();
-            runOnUiThread(() -> Toast.makeText(MainActivity.this, "Se detectó movimiento", Toast.LENGTH_SHORT).show());
+            videoView = findViewById(R.id.videoView);
+            if (currentVideoIndex == -1) {
+                // Si es el primer movimiento detectado, elige un video aleatorio
+                Random random = new Random();
+                currentVideoIndex = random.nextInt(videos.length);
+            } else {
+                // Si ya se había reproducido un video antes, cambia al siguiente video (cíclicamente)
+                currentVideoIndex = (currentVideoIndex + 1) % videos.length;
+            }
+            // Detén la reproducción actual, si la hay
+            if (videoView.isPlaying()) {
+                videoView.stopPlayback();
+            }
+            // Configura el nuevo video a reproducir
+            videoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + videos[currentVideoIndex]));
+            videoView.start();
+            videoView.setOnCompletionListener(mp -> {
+                videoView.pause();
+                videoView.seekTo(videoView.getDuration());
+            });
         }
 
         grayLastFrame.release();
