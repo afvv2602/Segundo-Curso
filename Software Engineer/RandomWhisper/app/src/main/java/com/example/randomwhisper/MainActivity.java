@@ -2,7 +2,6 @@ package com.example.randomwhisper;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.graphics.ImageFormat;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,7 +27,7 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.Scalar;
+
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
@@ -39,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private PreviewView previewView;
     private Mat lastFrame; // Almacena el último fotograma para comparar
+
+    private long lastMotionTime = 0;
+
     private static final int REQUEST_CAMERA_PERMISSION = 101;
 
     @Override
@@ -46,6 +48,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         previewView = findViewById(R.id.previewView);
+
+        if (!OpenCVLoader.initDebug()) {
+            Log.e(TAG, "OpenCV no se pudo cargar");
+        } else {
+            Log.d(TAG, "OpenCV se cargó correctamente");
+        }
 
         if (allPermissionsGranted()) {
             startCamera();
@@ -152,8 +160,8 @@ public class MainActivity extends AppCompatActivity {
         Imgproc.cvtColor(currentFrame, grayCurrentFrame, Imgproc.COLOR_BGR2GRAY);
 
         // Difumina las imágenes para reducir el ruido
-        Imgproc.GaussianBlur(grayLastFrame, grayLastFrame, new Size(21, 21), 0);
-        Imgproc.GaussianBlur(grayCurrentFrame, grayCurrentFrame, new Size(21, 21), 0);
+        Imgproc.GaussianBlur(grayLastFrame, grayLastFrame, new Size(15, 15), 0);  // <--- Cambia el tamaño del kernel
+        Imgproc.GaussianBlur(grayCurrentFrame, grayCurrentFrame, new Size(15, 15), 0);  // <--- Cambia el tamaño del kernel
 
         // Calcula la diferencia absoluta entre el fotograma actual y el último
         Mat frameDelta = new Mat();
@@ -161,20 +169,16 @@ public class MainActivity extends AppCompatActivity {
 
         // Aplica umbral a la imagen de la diferencia (el segundo parámetro puede ajustarse según necesidad)
         Mat thresholdFrame = new Mat();
-        Imgproc.threshold(frameDelta, thresholdFrame, 25, 255, Imgproc.THRESH_BINARY);
+        Imgproc.threshold(frameDelta, thresholdFrame, 15, 150, Imgproc.THRESH_BINARY);  // <--- Reduce el umbral
 
         // Verifica si hay movimiento
         double movement = Core.sumElems(thresholdFrame).val[0];
-        if(movement > 0) {
-            Log.i(TAG, "Se detectó movimiento");
+        if(movement > 0 && System.currentTimeMillis() - lastMotionTime > 50) {  // <--- Añade la verificación del tiempo
+            Log.i(TAG, "@@@@@@Se detectó movimiento");
+            lastMotionTime = System.currentTimeMillis();  // <--- Actualiza la última vez que se detectó movimiento
 
             // Muestra un Toast
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(MainActivity.this, "Se detectó movimiento", Toast.LENGTH_SHORT).show();
-                }
-            });
+            runOnUiThread(() -> Toast.makeText(MainActivity.this, "Se detectó movimiento", Toast.LENGTH_SHORT).show());
         }
 
         // Libera los recursos
