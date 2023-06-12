@@ -39,16 +39,13 @@ import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-
     private VideoView videoView;
     int[] videos = {R.raw.video1, R.raw.video2, R.raw.video3, R.raw.video4};
     private int currentVideoIndex = -1;
     private PreviewView previewView;
-
     private Mat lastFrame;
     private ProcessCameraProvider cameraProvider;
     private long lastMotionTime = 0;
-
     private static final int REQUEST_CAMERA_PERMISSION = 101;
 
     @Override
@@ -114,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         CameraSelector cameraSelector = new CameraSelector.Builder()
                 .requireLensFacing(CameraSelector.LENS_FACING_FRONT).build();
 
+        // Solo almacenamos la ultima asi el rendimiento es mejor
         ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build();
@@ -135,12 +133,16 @@ public class MainActivity extends AppCompatActivity {
         Camera camera = cameraProvider.bindToLifecycle((LifecycleOwner)this, cameraSelector, preview, imageAnalysis);
     }
 
+    // Usamos un material de OpenCV para el procesamiento, el cual se divide en tres vectores YUV.
     private Mat convertImageToMat(Image image) {
         Image.Plane[] planes = image.getPlanes();
+
+        // Obtenemos los planos de color del objeto Image.
         ByteBuffer yBuffer = planes[0].getBuffer();
         ByteBuffer uBuffer = planes[1].getBuffer();
         ByteBuffer vBuffer = planes[2].getBuffer();
 
+        // Obtenemos los buffers que contienen los datos de cada plano de color.
         int ySize = yBuffer.remaining();
         int uSize = uBuffer.remaining();
         int vSize = vBuffer.remaining();
@@ -154,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
         Mat yuv = new Mat(image.getHeight() + image.getHeight() / 2, image.getWidth(), CvType.CV_8UC1);
         yuv.put(0, 0, nv21);
 
+        // Transformamos la matriz YUV en una matriz BRG
         Mat mat = new Mat(image.getHeight(), image.getWidth(), CvType.CV_8UC3);
         Imgproc.cvtColor(yuv, mat, Imgproc.COLOR_YUV2BGR_NV21, 3);
         yuv.release();
@@ -162,11 +165,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void detectMotion(Mat lastFrame, Mat currentFrame) {
+        // Dos cuadros para el viejo y el nuevo y poder compararlos
         Mat grayLastFrame = new Mat();
         Mat grayCurrentFrame = new Mat();
+
+        // Guardamos los valores en escala de grises
         Imgproc.cvtColor(lastFrame, grayLastFrame, Imgproc.COLOR_BGR2GRAY);
         Imgproc.cvtColor(currentFrame, grayCurrentFrame, Imgproc.COLOR_BGR2GRAY);
 
+        // Se le aplica un filtro gaussiano para reducir el ruido de la imagen
         Imgproc.GaussianBlur(grayLastFrame, grayLastFrame, new Size(31, 31), 0);
         Imgproc.GaussianBlur(grayCurrentFrame, grayCurrentFrame, new Size(31, 31), 0);
 
@@ -176,9 +183,12 @@ public class MainActivity extends AppCompatActivity {
         Mat thresholdFrame = new Mat();
         Imgproc.threshold(frameDelta, thresholdFrame, 25, 255, Imgproc.THRESH_BINARY);
 
+        // Se le aplica otro filtro para convertir la imagen en blanco y negro para diferenciar mejor el movimiento
         double movement = Core.sumElems(thresholdFrame).val[0];
         double movementThreshold = 1e7;
-        if (movement > movementThreshold && System.currentTimeMillis() - lastMotionTime > 2000) {
+
+        // Si el ultimo movimiento ha sido despues de 5 desde el anterior se carga otro video
+        if (movement > movementThreshold && System.currentTimeMillis() - lastMotionTime > 5000) {
             lastMotionTime = System.currentTimeMillis();
             if (currentVideoIndex == -1) {
                 Random random = new Random();
@@ -193,12 +203,16 @@ public class MainActivity extends AppCompatActivity {
             previewView.setVisibility(View.INVISIBLE);
             videoView.setVisibility(View.VISIBLE);
             videoView.start();
+
+            // Cuando el video llega al final se queda pausado en el ultimo frame, esperando a que se vuelva a detectar movimiento
             videoView.setOnCompletionListener(mp -> {
                 videoView.pause();
                 videoView.seekTo(videoView.getDuration());
                 videoView.stopPlayback();
             });
         }
+
+        // Limpiamos todos los recursos
         grayLastFrame.release();
         grayCurrentFrame.release();
         frameDelta.release();
