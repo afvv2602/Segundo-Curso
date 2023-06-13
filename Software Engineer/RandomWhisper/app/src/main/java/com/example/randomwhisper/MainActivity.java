@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     // Iniciamos la camara, la cual solo se mostrara la primera vez que iniciemos la app.
     private void startCamera() {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
@@ -117,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
         ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build();
-
 
         imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(this), imageProxy -> {
             if (imageProxy != null) {
@@ -195,8 +193,8 @@ public class MainActivity extends AppCompatActivity {
         double movement = Core.sumElems(thresholdFrame).val[0];
         double movementThreshold = 1e7;
 
-        // Si el ultimo movimiento ha sido despues de 5 desde el anterior se carga otro video
-        if (movement > movementThreshold && System.currentTimeMillis() - lastMotionTime > 5000) {
+        // Si el ultimo movimiento ha sido despues de 2 segundos desde el anterior se carga otro video
+        if (movement > movementThreshold && System.currentTimeMillis() - lastMotionTime > 2000) {
             lastMotionTime = System.currentTimeMillis();
             if (currentVideoIndex == -1) {
                 Random random = new Random();
