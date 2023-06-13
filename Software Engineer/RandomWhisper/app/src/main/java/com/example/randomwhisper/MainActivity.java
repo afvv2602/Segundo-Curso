@@ -99,29 +99,35 @@ public class MainActivity extends AppCompatActivity {
                 cameraProvider = cameraProviderFuture.get();
                 bindPreview(cameraProvider);
             } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "Error al obtener el proveedor de la cámara", e);
+                Log.e(TAG, "Error al obtener el proveedor de la camara", e);
             }
         }, ContextCompat.getMainExecutor(this));
     }
 
+    // Despues de iniciar la camara la bindeamos al previewview del layout
     @OptIn(markerClass = ExperimentalGetImage.class)
     private void bindPreview(ProcessCameraProvider cameraProvider) {
         cameraProvider.unbindAll();
         Preview preview = new Preview.Builder().build();
+        // Especificamos la camara frontal
         CameraSelector cameraSelector = new CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_FRONT).build();
+                .requireLensFacing(CameraSelector.LENS_FACING_FRONT).build(); 
 
         // Solo almacenamos la ultima asi el rendimiento es mejor
         ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build();
 
+
         imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(this), imageProxy -> {
             if (imageProxy != null) {
+                // Nos aseguramos de que la imagen no sea null y la enviamos a comprobar en detecMotion
                 Mat currentFrame = convertImageToMat(imageProxy.getImage());
                 if (lastFrame != null) {
                     detectMotion(lastFrame, currentFrame);
                 }
+                // Clonamos el ultimo frame para poder comparar el siguiente
+                // La clonamos para evitar que ambas variables apunten a la misma matriz
                 lastFrame = currentFrame.clone();
             }
             imageProxy.close();
@@ -147,12 +153,14 @@ public class MainActivity extends AppCompatActivity {
         int uSize = uBuffer.remaining();
         int vSize = vBuffer.remaining();
 
+        // Se crea un array NV21 con el tamaño de la suma de los tres planos
         byte[] nv21 = new byte[ySize + uSize + vSize];
 
         yBuffer.get(nv21, 0, ySize);
         vBuffer.get(nv21, ySize, vSize);
         uBuffer.get(nv21, ySize + vSize, uSize);
 
+        // Se crea una matriz temporal para contener los valores YUV para despues transformarla
         Mat yuv = new Mat(image.getHeight() + image.getHeight() / 2, image.getWidth(), CvType.CV_8UC1);
         yuv.put(0, 0, nv21);
 
@@ -219,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
         thresholdFrame.release();
     }
 
+    // Cuando al app se pausa la devolvemos al mismo punto que estaba en el onCreate
     @Override
     protected void onPause() {
         super.onPause();
@@ -229,6 +238,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Cuando se vuelve a abrir la app simplemente se revisan los permisos,
+    // ya que en el onPause ya habiamos reiniciado la app
     @Override
     protected void onResume() {
         super.onResume();
