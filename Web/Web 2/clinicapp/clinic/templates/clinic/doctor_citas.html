@@ -1,0 +1,12 @@
+{% if appointments %}
+    <h1>Citas de hoy</h1>
+    <ul>
+    {% for appointment in appointments %}
+        <li>{{ appointment.date }} - {{ appointment.time }} - {{ appointment.specialty }} - {{ appointment.doctor }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <h1>No hay citas para hoy.</h1>
+{% endif %}
+
+<a href="{% url 'doctor_virtual' %}">Ir a Doctor Virtual</a>
