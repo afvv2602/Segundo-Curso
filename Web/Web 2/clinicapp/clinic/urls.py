@@ -4,7 +4,7 @@ from . import views
 app_name = 'clinic'
 
 urlpatterns = [
-    path('login/', views.LoginView.as_view(), name='login'),  # Redirige a la vista de login
+    path('login/', views.LoginView.as_view(), name='login'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
     path('doctor_virtual/', views.DoctorVirtualView.as_view(), name='doctor_virtual'),
     path('doctor_virtual/respuesta/<int:pk>/', views.ResponderPreguntaView.as_view(), name='responder_pregunta'),

@@ -9,11 +9,11 @@
 </head>
 <body>
     <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="{% url 'clinic:login' %}">Logo</a>
+        <a class="navbar-brand" href="{% url 'clinic:citas' %}">Logo</a>
         <a class="nav-link" href="{% url 'clinic:citas' %}">Citas</a>
         <a class="nav-link" href="{% url 'clinic:doctor_virtual' %}">Doctor Virtual</a>
         {% if request.user.is_authenticated %}
-            <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">{{ request.user.username }} - Logout</button>
+            <a class="nav-link" href="{% url 'clinic:logout' %}">{{ request.user.username }} - Salir</a>
         {% endif %}
     </nav>
 

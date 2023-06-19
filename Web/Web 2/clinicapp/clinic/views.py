@@ -1,12 +1,15 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
+from django.views import View
+from django.utils import timezone 
 from django.views.generic import ListView, CreateView, UpdateView
 from .models import Perfil, Pregunta, Cita
-from django.views import View
 
-class LoginView(LoginRequiredMixin,View):
+
+class LoginView(View):
     def get(self, request):
         return render(request, 'login.html')
 
@@ -20,10 +23,10 @@ class LoginView(LoginRequiredMixin,View):
         else:
             return render(request, 'login.html', {'error': 'Usuario o contraseña incorrectos'})
 
-class LogoutView(LoginRequiredMixin,View):
+class LogoutView(View):
     def get(self, request):
         logout(request)
-        return redirect('login')
+        return HttpResponseRedirect(reverse('clinic:login'))
 
 class DoctorVirtualView(LoginRequiredMixin,ListView):
     model = Pregunta
@@ -32,33 +35,32 @@ class DoctorVirtualView(LoginRequiredMixin,ListView):
     def get_queryset(self):
         perfil = Perfil.objects.get(user=self.request.user)
         if perfil.tipo_usuario == 'DOC':
-            return Pregunta.objects.filter(medico=None)
+            return Pregunta.objects.filter(medico=perfil, respuesta='')
         else:
             return Pregunta.objects.filter(perfil=perfil)
 
-class CitasView(LoginRequiredMixin,ListView):
+class CitasView(LoginRequiredMixin, ListView):
     model = Cita
     template_name = 'citas.html'
     
     def get_queryset(self):
         perfil = Perfil.objects.get(user=self.request.user)
         if perfil.tipo_usuario == 'DOC':
-            return Cita.objects.filter(medico=perfil)
+            today = timezone.localdate()
+            # Filtra las citas para que solo las del dia actual
+            return Cita.objects.filter(medico=perfil, fecha=today)
         else:
             return Cita.objects.filter(paciente=perfil)
      
-class ResponderPreguntaView(LoginRequiredMixin,CreateView):
+class ResponderPreguntaView(LoginRequiredMixin, UpdateView):
     model = Pregunta
     fields = ['respuesta']
     template_name = 'responder_pregunta.html'
     success_url = reverse_lazy('clinic:doctor_virtual')
     
     def form_valid(self, form):
-        if form.is_valid():
-            form.instance.medico = Perfil.objects.get(user=self.request.user)
-            return super().form_valid(form)
-        else:
-            return render(self.request, 'responder_pregunta.html', {'form': form})
+        form.instance.medico = Perfil.objects.get(user=self.request.user)
+        return super().form_valid(form)
 
 class NuevaPreguntaView(CreateView):
     model = Pregunta
@@ -98,6 +100,7 @@ class CancelarCitaView(UpdateView):
     
     def form_valid(self, form):
         form.instance.cancelada = True
+        messages.success(self.request, "La cita ha sido cancelada con éxito.")
         return super().form_valid(form)
 
 

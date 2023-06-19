@@ -2,13 +2,12 @@
 
 {% block content %}
     <h2>Doctor Virtual</h2>
-    <p> Tipo de usuario: {{ request.user.perfil.tipo_usuario }} </p>
     {% for pregunta in object_list %}
         <div class="card mb-3">
             <div class="card-body">
                 <h5 class="card-title">{{ pregunta.titulo }}</h5>
                 <p class="card-text">{{ pregunta.descripcion }}</p>
-                {% if request.user.perfil.tipo_usuario == 'DOC' and pregunta.respuesta == '' %}
+                {% if request.user.perfil.tipo_usuario == 'DOC' %}
                     <a href="{% url 'clinic:responder_pregunta' pregunta.id %}" class="btn btn-primary">Responder</a>
                 {% endif %}
                 {% if pregunta.respuesta %}

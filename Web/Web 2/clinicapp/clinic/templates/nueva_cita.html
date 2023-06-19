@@ -4,7 +4,18 @@
     <h2>Nueva Cita</h2>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        <div>
+            <label for="{{ form.fecha.id_for_label }}">Fecha (formato: mm-dd-yyyy)</label><br>
+            {{ form.fecha }}
+        </div>
+        <div>
+            <label for="{{ form.hora.id_for_label }}">Hora (formato: HH:MM)</label><br>
+            {{ form.hora }}
+        </div>
+        <div>
+            {{ form.medico.label_tag }}<br>
+            {{ form.medico }}
+        </div>
         <button type="submit" class="btn btn-primary">Crear cita</button>
     </form>
 {% endblock %}

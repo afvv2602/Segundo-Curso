@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Responder Pregunta</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="respuesta">Respuesta:</label>
+            {{ form.respuesta }}
+            {% if form.respuesta.errors %}
+                <div class="alert alert-danger">
+                    {{ form.respuesta.errors }}
+                </div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar respuesta</button>
+    </form>
+{% endblock %}

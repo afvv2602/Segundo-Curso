@@ -5,12 +5,15 @@
     {% for cita in object_list %}
         <div class="card mb-3">
             <div class="card-body">
-                <h5 class="card-title">{{ cita.fecha }}</h5>
+                <h5 class="card-title">Fecha: {{ cita.fecha }}</h5>
                 <p class="card-text">Hora: {{ cita.hora }}</p>
-                <p class="card-text">Especialidad: {{ cita.especialidad }}</p>
                 <p class="card-text">Médico: {{ cita.medico.user.username }}</p>
-                {% if request.user.perfil.tipo_usuario == 'PAC' %}
-                    <a href="{% url 'clinic:cancelar_cita' cita.id %}" class="btn btn-danger">Cancelar cita</a>
+                {% if cita.cancelada %}
+                    <p class="card-text text-danger">Esta cita ha sido cancelada.</p>
+                {% else %}
+                    {% if request.user.perfil.tipo_usuario == 'PAC' %}
+                        <a href="{% url 'clinic:cancelar_cita' cita.id %}" class="btn btn-danger">Cancelar cita</a>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>
