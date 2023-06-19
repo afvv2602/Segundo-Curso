@@ -24,3 +24,5 @@ class Cita(models.Model):
     hora = models.TimeField()
     medico = models.ForeignKey(Perfil, related_name='citas_doctor', on_delete=models.CASCADE)
     paciente = models.ForeignKey(Perfil, related_name='citas_paciente', on_delete=models.CASCADE)
+    cancelada = models.BooleanField(default=False)  
+
