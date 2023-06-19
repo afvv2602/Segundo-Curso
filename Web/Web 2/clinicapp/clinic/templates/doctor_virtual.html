@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Doctor Virtual</h2>
+    {% for pregunta in object_list %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ pregunta.titulo }}</h5>
+                <p class="card-text">{{ pregunta.descripcion }}</p>
+                {% if request.user.profile.tipo_usuario == 'DOC' and pregunta.respuesta == '' %}
+                    <a href="{% url 'responder_pregunta' pregunta.id %}" class="btn btn-primary">Responder</a>
+                {% endif %}
+                {% if pregunta.respuesta %}
+                    <p class="mt-3"><strong>Respuesta:</strong> {{ pregunta.respuesta }}</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    {% if request.user.profile.tipo_usuario == 'PAC' %}
+        <a href="{% url 'nueva_pregunta' %}" class="btn btn-success">Nueva pregunta</a>
+    {% endif %}
+{% endblock %}

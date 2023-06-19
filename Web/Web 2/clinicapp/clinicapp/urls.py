@@ -1,10 +1,10 @@
-from django.urls import path
-from clinic.views import doctor_virtual, citas
-from django.contrib.auth import views as auth_views
-
+from django.contrib import admin
+from django.urls import include, path, re_path
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
-    path('', auth_views.LoginView.as_view(template_name='registration/login.html'), name='home'),
-    path('doctor_virtual/', doctor_virtual, name='doctor_virtual'),
-    path('citas/', citas, name='citas'),
+    path('admin/', admin.site.urls),
+    path('clinic/', include('clinic.urls')),
+    re_path(r'^$', RedirectView.as_view(url='/clinic/login/', permanent=False)),
+
 ]

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Citas</h2>
+    {% for cita in object_list %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ cita.fecha }}</h5>
+                <p class="card-text">Hora: {{ cita.hora }}</p>
+                <p class="card-text">Especialidad: {{ cita.especialidad }}</p>
+                <p class="card-text">Médico: {{ cita.medico }}</p>
+                {% if request.user.profile.tipo_usuario == 'PAC' %}
+                    <a href="{% url 'cancelar_cita' cita.id %}" class="btn btn-danger">Cancelar cita</a>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    {% if request.user.profile.tipo_usuario == 'PAC' %}
+        <a href="{% url 'nueva_cita' %}" class="btn btn-success">Nueva cita</a>
+    {% endif %}
+{% endblock %}
