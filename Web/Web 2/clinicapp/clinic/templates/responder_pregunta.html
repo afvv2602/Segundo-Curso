@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Responder Pregunta</h2>
+    <h2 class="mb-4">Responder Pregunta</h2>
     <form method="post">
         {% csrf_token %}
-        <div class="form-group">
+        <div class="form-group mb-4">
             <label for="respuesta">Respuesta:</label>
             {{ form.respuesta }}
             {% if form.respuesta.errors %}
@@ -13,6 +13,6 @@
                 </div>
             {% endif %}
         </div>
-        <button type="submit" class="btn btn-primary">Enviar respuesta</button>
+        <button type="submit" class="btn btn-dark">Enviar respuesta</button>
     </form>
 {% endblock %}
