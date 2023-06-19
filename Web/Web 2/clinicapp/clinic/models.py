@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 class Perfil(models.Model):
     TIPO_USUARIO_CHOICES = [
@@ -16,7 +17,7 @@ class Pregunta(models.Model):
     titulo = models.CharField(max_length=200)
     descripcion = models.TextField()
     perfil = models.ForeignKey(Perfil, related_name='preguntas', on_delete=models.CASCADE)
-    medico = models.ForeignKey(Perfil, related_name='respuestas', on_delete=models.SET_NULL, null=True)
+    medico = models.ForeignKey(Perfil, related_name='respuestas', on_delete=models.SET_NULL, null=True, blank=True)
     respuesta = models.TextField(blank=True)
 
 class Cita(models.Model):
@@ -24,5 +25,4 @@ class Cita(models.Model):
     hora = models.TimeField()
     medico = models.ForeignKey(Perfil, related_name='citas_doctor', on_delete=models.CASCADE)
     paciente = models.ForeignKey(Perfil, related_name='citas_paciente', on_delete=models.CASCADE)
-    cancelada = models.BooleanField(default=False)  
-
+    cancelada = models.BooleanField(default=False)

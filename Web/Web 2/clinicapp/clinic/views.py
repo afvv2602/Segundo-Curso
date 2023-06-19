@@ -1,7 +1,8 @@
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, CreateView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView
 from .models import Perfil, Pregunta, Cita
 from django.views import View
 
@@ -50,6 +51,7 @@ class ResponderPreguntaView(LoginRequiredMixin,CreateView):
     model = Pregunta
     fields = ['respuesta']
     template_name = 'responder_pregunta.html'
+    success_url = reverse_lazy('clinic:doctor_virtual')
     
     def form_valid(self, form):
         if form.is_valid():
@@ -58,33 +60,44 @@ class ResponderPreguntaView(LoginRequiredMixin,CreateView):
         else:
             return render(self.request, 'responder_pregunta.html', {'form': form})
 
-class NuevaPreguntaView(LoginRequiredMixin,CreateView):
+class NuevaPreguntaView(CreateView):
     model = Pregunta
-    fields = ['titulo', 'descripcion']
+    fields = ['titulo', 'descripcion', 'medico']
     template_name = 'nueva_pregunta.html'
+    success_url = reverse_lazy('clinic:doctor_virtual')
     
     def form_valid(self, form):
-        if form.is_valid():
-            form.instance.perfil = Perfil.objects.get(user=self.request.user)
-            return super().form_valid(form)
-        else:
-            return render(self.request, 'nueva_pregunta.html', {'form': form})
+        form.instance.perfil = Perfil.objects.get(user=self.request.user)
+        return super().form_valid(form)
 
-class NuevaCitaView(LoginRequiredMixin,CreateView):
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['medico'].queryset = Perfil.objects.filter(tipo_usuario='DOC')
+        return form
+
+class NuevaCitaView(CreateView):
     model = Cita
-    fields = ['fecha', 'hora', 'especialidad', 'medico']
+    fields = ['fecha', 'hora', 'medico']
     template_name = 'nueva_cita.html'
+    success_url = reverse_lazy('clinic:citas')
     
     def form_valid(self, form):
         form.instance.paciente = Perfil.objects.get(user=self.request.user)
         return super().form_valid(form)
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['medico'].queryset = Perfil.objects.filter(tipo_usuario='DOC')
+        return form
     
-class CancelarCitaView(LoginRequiredMixin,View):
-    def post(self, request, pk):
-        cita = get_object_or_404(Cita, pk=pk)
-        if Perfil.objects.get(user=request.user) == cita.paciente:
-            cita.cancelada = True
-            cita.save()
-            return redirect('citas')  
-        else:
-            return render(request, 'error.html', {'message': 'No tienes permiso para cancelar esta cita.'})
+class CancelarCitaView(UpdateView):
+    model = Cita
+    fields = ['cancelada']
+    template_name = 'cancelar_cita.html'
+    success_url = reverse_lazy('clinic:citas')
+    
+    def form_valid(self, form):
+        form.instance.cancelada = True
+        return super().form_valid(form)
+
+
