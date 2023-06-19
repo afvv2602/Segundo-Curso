@@ -1,6 +1,7 @@
 from django import forms
 from .models import Cita
 
+# Definimos un formulario para crear nuevas citas
 class NuevaCitaForm(forms.ModelForm):
     fecha = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}),

@@ -9,7 +9,7 @@
 <body>
     <nav class="navbar navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand text-decoration-none" href="{% url 'clinic:citas' %}">Logo</a>
+            <a class="navbar-brand text-decoration-none" href="{% url 'clinic:citas' %}">Nuestra Salud</a>
             <a class="nav-custom text-decoration-none text-light" href="{% url 'clinic:citas' %}">Citas</a>
             <a class="nav-custom text-decoration-none text-light" href="{% url 'clinic:doctor_virtual' %}">Doctor Virtual</a>
             {% if request.user.is_authenticated %}

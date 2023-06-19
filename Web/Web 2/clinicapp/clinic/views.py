@@ -8,7 +8,6 @@ from django.utils import timezone
 from django.views.generic import ListView, CreateView, UpdateView
 from .models import Perfil, Pregunta, Cita
 
-
 class LoginView(View):
     def get(self, request):
         return render(request, 'login.html')
@@ -100,7 +99,6 @@ class CancelarCitaView(UpdateView):
     
     def form_valid(self, form):
         form.instance.cancelada = True
-        messages.success(self.request, "La cita ha sido cancelada con éxito.")
         return super().form_valid(form)
 
 
