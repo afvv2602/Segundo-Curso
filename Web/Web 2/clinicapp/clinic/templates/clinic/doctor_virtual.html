@@ -1,12 +1,25 @@
-{% if questions %}
-    <h1>Doctor Virtual</h1>
-    <ul>
-    {% for question in questions %}
-        <li>{{ question.title }}</li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <h1>No hay preguntas disponibles.</h1>
-{% endif %}
+{% extends 'base.html' %}
 
-<a href="{% url 'citas' %}">Ir a Citas</a>
+{% block content %}
+  <div class="container">
+    <div class="row justify-content-center mt-5">
+      <div class="col-md-6">
+        {% if questions %}
+          <h1 class="mb-4">Doctor Virtual</h1>
+          <ul class="list-group">
+            {% for question in questions %}
+              <li class="list-group-item">{{ question.title }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <h1>No hay preguntas disponibles.</h1>
+        {% endif %}
+      </div>
+    </div>
+    <div class="row justify-content-center mt-4">
+      <div class="col-md-6">
+        <a class="btn btn-primary" href="{% url 'citas' %}">Ir a Citas</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

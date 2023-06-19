@@ -1,12 +1,25 @@
-{% if appointments %}
-    <h1>Mis citas próximas</h1>
-    <ul>
-    {% for appointment in appointments %}
-        <li>{{ appointment.date }} - {{ appointment.time }} - {{ appointment.specialty }} - {{ appointment.doctor }}</li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <h1>No tienes citas próximas.</h1>
-{% endif %}
+{% extends 'base.html' %}
 
-<a href="{% url 'doctor_virtual' %}">Ir a Doctor Virtual</a>
+{% block content %}
+  <div class="container">
+    <div class="row justify-content-center mt-5">
+      <div class="col-md-6">
+        {% if appointments %}
+          <h1 class="mb-4">Mis citas próximas</h1>
+          <ul class="list-group">
+            {% for appointment in appointments %}
+              <li class="list-group-item">{{ appointment.date }} - {{ appointment.time }} - {{ appointment.specialty }} - {{ appointment.doctor }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <h1>No tienes citas próximas.</h1>
+        {% endif %}
+      </div>
+    </div>
+    <div class="row justify-content-center mt-4">
+      <div class="col-md-6">
+        <a class="btn btn-primary" href="{% url 'doctor_virtual' %}">Ir a Doctor Virtual</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}
