@@ -1,20 +1,9 @@
 package com.example.taskmanager.activities;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.AssetFileDescriptor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaPlayer;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -32,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,13 +31,10 @@ import com.example.taskmanager.db.task.Task;
 import com.example.taskmanager.db.task.TaskRepository;
 import com.example.taskmanager.db.task.TaskViewModel;
 import com.example.taskmanager.task_fragments.TaskAdapter;
-import com.example.taskmanager.task_fragments.TaskExpirationNotificationReceiver;
-import com.example.taskmanager.task_fragments.TaskNotificationReceiver;
 import com.example.taskmanager.utils.CustomDatePicker;
 import com.example.taskmanager.utils.FilterUtils;
 import com.example.taskmanager.utils.NotificationUtils;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -59,7 +44,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
     private String username;
     private TaskViewModel taskViewModel;
     private TaskAdapter taskAdapter;
-    private TaskNotificationReceiver notificationReceiver;
+    private NotificationUtils notificationUtil;
     private EditText searchTask;
     private Button filter, search, addTask, delete;
     private LiveData<List<Task>> tasksLiveData;
@@ -96,8 +81,8 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
             filteredTasks = FilterUtils.applyFilter(tasks, currentFilter);
             taskAdapter.setTasks(filteredTasks);
         });
-        notificationReceiver = new TaskNotificationReceiver();
-        notificationReceiver.setTaskViewModel(taskViewModel);
+        notificationUtil = new NotificationUtils();
+        notificationUtil.setTaskViewModel(taskViewModel);
     }
 
     // Inicializa el menu de lateral
