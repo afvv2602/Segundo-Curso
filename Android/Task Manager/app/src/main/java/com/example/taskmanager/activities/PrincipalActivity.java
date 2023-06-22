@@ -1,5 +1,6 @@
 package com.example.taskmanager.activities;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -14,18 +15,26 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -42,7 +51,7 @@ import com.example.taskmanager.task_fragments.TaskExpirationNotificationReceiver
 import com.example.taskmanager.task_fragments.TaskNotificationReceiver;
 import com.example.taskmanager.utils.CustomDatePicker;
 import com.example.taskmanager.utils.FilterUtils;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -66,16 +75,14 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.principal_activity);
-        username = getIntent().getStringExtra("username");
-        RecyclerView taskRecyclerView = findViewById(R.id.task_recyclerview);
-        FloatingActionButton addTask = findViewById(R.id.add_task_button);
-        FloatingActionButton filterTask = findViewById(R.id.task_filter);
-        FloatingActionButton searchTask = findViewById(R.id.search_task);
-        initTaskView(taskRecyclerView, addTask, filterTask, searchTask);
+        initTaskView();
+        initNavigationView();
     }
 
     // Inicializa la vista de tareas
-    private void initTaskView(RecyclerView taskRecyclerView, FloatingActionButton addTask, FloatingActionButton filterTask, FloatingActionButton searchTask) {
+    private void initTaskView() {
+        username = getIntent().getStringExtra("username");
+        RecyclerView taskRecyclerView = findViewById(R.id.task_recyclerview);
         TaskRepository taskRepository = new TaskRepository(getApplication());
         taskAdapter = new TaskAdapter(this,taskRepository);
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -93,10 +100,34 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         notificationReceiver = new TaskNotificationReceiver();
         notificationReceiver.setTaskViewModel(taskViewModel);
 
-        filterTask.setOnClickListener(view -> showFilterDialog());
-        searchTask.setOnClickListener(view -> showSearchTaskDialog());
-        addTask.setOnClickListener(view -> showAddTaskDialog());
+        //filterTask.setOnClickListener(view -> showFilterDialog());
+        //searchTask.setOnClickListener(view -> showSearchTaskDialog());
+        //addTask.setOnClickListener(view -> showAddTaskDialog());
     }
+
+    private void initNavigationView() {
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+
+        // Inflar el diseño del menú lateral y agregarlo al DrawerLayout
+        LinearLayout drawerContentLayout = findViewById(R.id.drawerLayout);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View sideMenu = inflater.inflate(R.layout.fragment_menu, drawerContentLayout, false);
+        drawerContentLayout.addView(sideMenu);
+
+        Button filter = sideMenu.findViewById(R.id.task_filter);
+        Button search = sideMenu.findViewById(R.id.search_task);
+        Button addTask = sideMenu.findViewById(R.id.add_task_button);
+
+        // Configurar el botón de búsqueda
+        filter.setOnClickListener(v -> showFilterDialog());
+        search.setOnClickListener(v -> showSearchTaskDialog());
+        addTask.setOnClickListener(v -> showAddTaskDialog());
+
+        TextView welcomeTextView = sideMenu.findViewById(R.id.welcomeTextView);
+        welcomeTextView.setText(String.format("Bievenido %s", username));
+    }
+
+
 
     // Opciones de los tres botones
     private void showFilterDialog() {
@@ -122,6 +153,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
     private void showAddTaskDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.fragment_add_task, null);

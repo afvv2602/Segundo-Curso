@@ -1,0 +1,61 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawerLayout"
+    android:layout_width="200dp"
+    android:layout_height="match_parent"
+    android:background="@color/Negro"
+    android:layout_gravity="start"
+    android:orientation="vertical">
+
+    <!-- Layout del menú lateral -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Barra de búsqueda -->
+        <Button
+            android:id="@+id/search_task"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/GrisOb"
+            android:textColorHint="@color/GrisOb"
+            android:background="@drawable/edit_border"
+            android:hint="Buscar..." />
+
+        <!-- Spinner -->
+        <Button
+            android:id="@+id/task_filter"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/GrisOb"
+            android:textColorHint="@color/GrisOb"
+            android:background="@drawable/edit_border"
+            android:hint="Filtro" />
+
+        <Button
+            android:id="@+id/add_task_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/GrisOb"
+            android:textColorHint="@color/GrisOb"
+            android:background="@drawable/edit_border"
+            android:hint="Añadir" />
+
+        <TextView
+            android:id="@+id/welcomeTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textColor="@color/Blanco" />
+
+    </LinearLayout>
+
+</LinearLayout>
