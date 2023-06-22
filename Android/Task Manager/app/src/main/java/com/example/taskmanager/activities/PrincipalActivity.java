@@ -66,6 +66,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
     private TaskAdapter taskAdapter;
     private TaskNotificationReceiver notificationReceiver;
     private EditText dateEdit, timeEdit, tierEdit;
+    private Button filter, search , addTask;
     private int selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute;
     private LiveData<List<Task>> tasksLiveData;
     private List<Task> filteredTasks;
@@ -106,28 +107,28 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
     }
 
     private void initNavigationView() {
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-
         // Inflar el diseño del menú lateral y agregarlo al DrawerLayout
         LinearLayout drawerContentLayout = findViewById(R.id.drawerLayout);
         LayoutInflater inflater = LayoutInflater.from(this);
         View sideMenu = inflater.inflate(R.layout.fragment_menu, drawerContentLayout, false);
         drawerContentLayout.addView(sideMenu);
 
-        Button filter = sideMenu.findViewById(R.id.task_filter);
-        Button search = sideMenu.findViewById(R.id.search_task);
-        Button addTask = sideMenu.findViewById(R.id.add_task_button);
+        filter = sideMenu.findViewById(R.id.task_filter);
+        search = sideMenu.findViewById(R.id.search_task);
+        addTask = sideMenu.findViewById(R.id.add_task_button);
 
-        // Configurar el botón de búsqueda
         filter.setOnClickListener(v -> showFilterDialog());
         search.setOnClickListener(v -> showSearchTaskDialog());
         addTask.setOnClickListener(v -> showAddTaskDialog());
+        addTask.setOnClickListener(v -> deleteFilters());
 
         TextView welcomeTextView = sideMenu.findViewById(R.id.welcomeTextView);
         welcomeTextView.setText(String.format("Bievenido %s", username));
     }
 
+    private void deleteFilters() {
 
+    }
 
     // Opciones de los tres botones
     private void showFilterDialog() {
@@ -199,6 +200,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 searchTaskByName(s.toString());
+                search.setText(s.toString());
             }
 
             @Override
@@ -250,6 +252,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
                 currentFilter = FilterUtils.FilterType.NONE;
                 break;
         }
+        filter.setText(currentFilter.toString());
         taskAdapter.applyFilter(currentFilter);
     }
     private int getFilterPosition() {
