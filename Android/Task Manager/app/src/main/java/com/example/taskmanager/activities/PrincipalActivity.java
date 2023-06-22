@@ -2,12 +2,19 @@ package com.example.taskmanager.activities;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -39,7 +47,9 @@ import com.example.taskmanager.task_fragments.TaskExpirationNotificationReceiver
 import com.example.taskmanager.task_fragments.TaskNotificationReceiver;
 import com.example.taskmanager.utils.CustomDatePicker;
 import com.example.taskmanager.utils.FilterUtils;
+import com.example.taskmanager.utils.NotificationUtils;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -90,7 +100,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         notificationReceiver.setTaskViewModel(taskViewModel);
     }
 
-    // Inicializa el menú de lateral
+    // Inicializa el menu de lateral
     private void initNavigationView() {
         LinearLayout drawerContentLayout = findViewById(R.id.drawerLayout);
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -290,7 +300,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         taskAdapter.applyFilter(currentFilter);
     }
 
-    // Obtiene la posición del filtro actual
+    // Obtiene la posicion del filtro actual
     private int getFilterPosition() {
         switch (this.currentFilter) {
             case COMPLETED:
@@ -310,7 +320,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         }
     }
 
-    // Realiza la búsqueda de tareas por nombre
+    // Realiza la busqueda de tareas por nombre
     private void searchTaskByName(String searchQuery) {
         currentFilter = FilterUtils.FilterType.SEARCH;
         List<Task> matchingTasks = FilterUtils.applyFilter(filteredTasks, currentFilter, searchQuery);
@@ -358,12 +368,12 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
             taskViewModel.addTask(newTask);
             currentFilter = FilterUtils.FilterType.NONE;
             taskAdapter.applyFilter(currentFilter);
-            scheduleNotification(newTask);
-            scheduleExpiration(newTask);
+            NotificationUtils.scheduleTaskNotifications(this,newTask);
             return true;
         }
         return false;
     }
+
 
     // Maneja el evento de clic en una tarea
     // Si el menu esta abierto desactiva esta funcion
@@ -406,16 +416,21 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         setDialogBackground(task, taskBackground, completeButton, deleteButton);
 
         deleteButton.setOnClickListener(view -> {
+            NotificationUtils.cancelTaskNotifications(this,task);
             taskViewModel.delete(task);
             dialog.dismiss();
+            NotificationUtils.showNotification(this,"Tarea eliminada", task.getName());
+            NotificationUtils.playNotificationSound(this, false);
         });
 
         completeButton.setOnClickListener(view -> {
             Task.Status taskStatus = Task.Status.COMPLETED;
+            NotificationUtils.cancelTaskNotifications(this,task);
             task.setStatus(taskStatus);
             taskViewModel.update(task);
-            scheduleTaskNotification(task, taskStatus.ordinal());
             dialog.dismiss();
+            NotificationUtils.showNotification(this,"Tarea Completada", task.getName());
+            NotificationUtils.playNotificationSound(this, true);
         });
     }
 
@@ -460,58 +475,6 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         deleteButton.setBackgroundResource(deleteButtonResource);
     }
 
-    // Programa una notificación para la tarea
-    private void scheduleTaskNotification(Task task, int taskCompleted) {
-        Intent notificationIntent = new Intent(this, TaskNotificationReceiver.class);
-        notificationIntent.putExtra("taskName", task.getName());
-        notificationIntent.putExtra("taskId", task.getId());
-        notificationIntent.putExtra("taskStatus", taskCompleted);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                this,
-                task.getId(),
-                notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-        );
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, task.getDeadline().getTime(), pendingIntent);
-    }
-
-    // Programa una notificación para recordar la tarea un día antes de la fecha límite
-    private void scheduleNotification(Task task) {
-        Intent notificationIntent = new Intent(this, TaskNotificationReceiver.class);
-        notificationIntent.putExtra("taskName", task.getName());
-        notificationIntent.putExtra("taskId", task.getId());
-        notificationIntent.putExtra("taskStatus", task.getStatus());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                this,
-                task.getId(),
-                notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-        );
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Calendar deadline = Calendar.getInstance();
-        deadline.setTime(task.getDeadline());
-        deadline.add(Calendar.DATE, -1);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, deadline.getTimeInMillis(), pendingIntent);
-    }
-
-    // Programa una notificación para informar que la tarea ha expirado
-    private void scheduleExpiration(Task task) {
-        Intent expirationIntent = new Intent(this, TaskExpirationNotificationReceiver.class);
-        expirationIntent.putExtra("taskName", task.getName());
-        expirationIntent.putExtra("taskId", task.getId());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                this,
-                task.getId(),
-                expirationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-        );
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Calendar deadline = Calendar.getInstance();
-        deadline.setTime(task.getDeadline());
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, deadline.getTimeInMillis(), pendingIntent);
-    }
 
     // Calcula el tiempo restante para la fecha limite de la tarea
     private String remainingTime(Date deadline) {
