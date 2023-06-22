@@ -64,13 +64,18 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         initNavigationView();
     }
 
+    // Inicializa la vista de tareas
     private void initTaskView() {
         username = getIntent().getStringExtra("username");
+
+        // Configura el RecyclerView y el adaptador
         RecyclerView taskRecyclerView = findViewById(R.id.task_recyclerview);
         TaskRepository taskRepository = new TaskRepository(getApplication());
         taskAdapter = new TaskAdapter(this, taskRepository);
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         taskRecyclerView.setAdapter(taskAdapter);
+
+        // Obtener el ViewModel y las tareas del usuario
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
         tasksLiveData = taskViewModel.getTasksByOwner(username);
         if (tasksLiveData.getValue() == null) {
@@ -85,6 +90,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         notificationReceiver.setTaskViewModel(taskViewModel);
     }
 
+    // Inicializa el menú de lateral
     private void initNavigationView() {
         LinearLayout drawerContentLayout = findViewById(R.id.drawerLayout);
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -105,8 +111,9 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         welcomeTextView.setText(String.format("Bienvenido %s", username));
     }
 
+    // Elimina los filtros
     private void deleteFilters() {
-        if (searchTask != null){
+        if (searchTask != null) {
             searchTask.setText("");
         }
         currentFilter = FilterUtils.FilterType.NONE;
@@ -114,6 +121,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         filter.setText("Filtrar");
     }
 
+    // Muestra un dialogo para seleccionar un filtro
     private void showFilterDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Selecciona un filtro");
@@ -137,6 +145,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         dialog.show();
     }
 
+    // Muestra un dialogo para agregar una nueva tarea
     private void showAddTaskDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.fragment_add_task, null);
@@ -166,6 +175,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         });
     }
 
+    // Muestra un dialogo para buscar una tarea por su nombre
     private void showSearchTaskDialog() {
         currentFilter = FilterUtils.FilterType.NONE;
         taskAdapter.applyFilter(currentFilter);
@@ -179,7 +189,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Se actualiza la lista de tareas solo si la búsqueda ha cambiado
+                // Actualiza la lista de tareas solo si la busqueda ha cambiado
                 if (!s.toString().equals(search.getText().toString())) {
                     searchTaskByName(s.toString());
                     search.setText(s.toString());
@@ -208,7 +218,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         dialog.show();
     }
 
-
+    // Muestra un selector de fecha
     private void showDatePicker(EditText dateEdit) {
         Calendar calendar = Calendar.getInstance();
         CustomDatePicker datePickerDialog = new CustomDatePicker(
@@ -223,6 +233,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         datePickerDialog.show();
     }
 
+    // Muestra un selector de hora
     private void showTimePicker(EditText timeEdit) {
         Calendar calendar = Calendar.getInstance();
         TimePickerDialog timePickerDialog = new TimePickerDialog(
@@ -250,7 +261,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         builder.show();
     }
 
-
+    // Aplica el filtro seleccionado
     private void applyFilter(int filterPosition) {
         switch (filterPosition) {
             case 1:
@@ -279,6 +290,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         taskAdapter.applyFilter(currentFilter);
     }
 
+    // Obtiene la posición del filtro actual
     private int getFilterPosition() {
         switch (this.currentFilter) {
             case COMPLETED:
@@ -298,6 +310,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         }
     }
 
+    // Realiza la búsqueda de tareas por nombre
     private void searchTaskByName(String searchQuery) {
         currentFilter = FilterUtils.FilterType.SEARCH;
         List<Task> matchingTasks = FilterUtils.applyFilter(filteredTasks, currentFilter, searchQuery);
@@ -313,6 +326,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         }
     }
 
+    // Agrega una nueva tarea
     private boolean addTask(EditText taskNameEdit, EditText descriptionEdit, EditText dateEdit, EditText timeEdit, EditText tierEdit) {
         String name = taskNameEdit.getText().toString();
         String description = descriptionEdit.getText().toString();
@@ -351,14 +365,17 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         return false;
     }
 
+    // Maneja el evento de clic en una tarea
+    // Si el menu esta abierto desactiva esta funcion
     public void onTaskClick(Task task) {
-        if(!isMenuInflated()){
+        if (!isMenuInflated()) {
             View dialogView = LayoutInflater.from(this).inflate(R.layout.fragment_task, null);
             AlertDialog dialog = createDialog(dialogView);
-            handleButtonClicks(dialog, dialogView, task);
+            initTaskDialog(dialog, dialogView, task);
         }
     }
 
+    // Crea un dialogo personalizado para mostrar los detalles de una tarea
     private AlertDialog createDialog(View dialogView) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView);
@@ -371,7 +388,8 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         return dialog;
     }
 
-    private void handleButtonClicks(AlertDialog dialog, View dialogView, Task task) {
+    // Configura el dialogo de las tareas
+    private void initTaskDialog(AlertDialog dialog, View dialogView, Task task) {
         TextView taskNameTextView = dialogView.findViewById(R.id.task_name);
         TextView taskDeadlineTextView = dialogView.findViewById(R.id.task_deadline);
         TextView taskDescriptionTextView = dialogView.findViewById(R.id.task_description);
@@ -401,6 +419,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         });
     }
 
+    // Establece el fondo y los estilos de los botones en el dialogo
     private void setDialogBackground(Task task, LinearLayout taskBackground, Button completeButton, Button deleteButton) {
         int backgroundResource;
         int completeButtonResource;
@@ -441,6 +460,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         deleteButton.setBackgroundResource(deleteButtonResource);
     }
 
+    // Programa una notificación para la tarea
     private void scheduleTaskNotification(Task task, int taskCompleted) {
         Intent notificationIntent = new Intent(this, TaskNotificationReceiver.class);
         notificationIntent.putExtra("taskName", task.getName());
@@ -456,6 +476,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, task.getDeadline().getTime(), pendingIntent);
     }
 
+    // Programa una notificación para recordar la tarea un día antes de la fecha límite
     private void scheduleNotification(Task task) {
         Intent notificationIntent = new Intent(this, TaskNotificationReceiver.class);
         notificationIntent.putExtra("taskName", task.getName());
@@ -475,6 +496,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, deadline.getTimeInMillis(), pendingIntent);
     }
 
+    // Programa una notificación para informar que la tarea ha expirado
     private void scheduleExpiration(Task task) {
         Intent expirationIntent = new Intent(this, TaskExpirationNotificationReceiver.class);
         expirationIntent.putExtra("taskName", task.getName());
@@ -491,6 +513,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, deadline.getTimeInMillis(), pendingIntent);
     }
 
+    // Calcula el tiempo restante para la fecha limite de la tarea
     private String remainingTime(Date deadline) {
         Date currentDate = new Date();
         long differenceMillis = deadline.getTime() - currentDate.getTime();
