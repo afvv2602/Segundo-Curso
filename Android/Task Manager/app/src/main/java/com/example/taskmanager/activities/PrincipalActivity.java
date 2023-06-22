@@ -34,6 +34,7 @@ import com.example.taskmanager.task_fragments.TaskAdapter;
 import com.example.taskmanager.utils.CustomDatePicker;
 import com.example.taskmanager.utils.FilterUtils;
 import com.example.taskmanager.utils.NotificationUtils;
+import com.example.taskmanager.utils.TaskDialogUtils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -359,107 +360,13 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         return false;
     }
 
-
     // Maneja el evento de clic en una tarea
     // Si el menu esta abierto desactiva esta funcion
     public void onTaskClick(Task task) {
         if (!isMenuInflated()) {
-            View dialogView = LayoutInflater.from(this).inflate(R.layout.fragment_task, null);
-            AlertDialog dialog = createDialog(dialogView);
-            initTaskDialog(dialog, dialogView, task);
+            TaskDialogUtils.showTaskDialog(this, task,taskViewModel);
         }
     }
-
-    // Crea un dialogo personalizado para mostrar los detalles de una tarea
-    private AlertDialog createDialog(View dialogView) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(dialogView);
-
-        AlertDialog dialog = builder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        dialog.show();
-
-        return dialog;
-    }
-
-    // Configura el dialogo de las tareas
-    private void initTaskDialog(AlertDialog dialog, View dialogView, Task task) {
-        TextView taskNameTextView = dialogView.findViewById(R.id.task_name);
-        TextView taskDeadlineTextView = dialogView.findViewById(R.id.task_deadline);
-        TextView taskDescriptionTextView = dialogView.findViewById(R.id.task_description);
-        TextView taskTierTextView = dialogView.findViewById(R.id.task_tier);
-        Button deleteButton = dialogView.findViewById(R.id.button);
-        Button completeButton = dialogView.findViewById(R.id.button2);
-        LinearLayout taskBackground = dialogView.findViewById(R.id.task_background);
-
-        taskNameTextView.setText(task.getName());
-        taskDeadlineTextView.setText(remainingTime(task.getDeadline()));
-        taskTierTextView.setText("Tier: " + task.getTier());
-        taskDescriptionTextView.setText(task.getDescription());
-
-        setDialogBackground(task, taskBackground, completeButton, deleteButton);
-
-        deleteButton.setOnClickListener(view -> {
-            NotificationUtils.cancelTaskNotifications(this,task);
-            taskViewModel.delete(task);
-            dialog.dismiss();
-            NotificationUtils.showNotification(this,"Tarea eliminada", task.getName());
-            NotificationUtils.playNotificationSound(this, false);
-        });
-
-        completeButton.setOnClickListener(view -> {
-            Task.Status taskStatus = Task.Status.COMPLETED;
-            NotificationUtils.cancelTaskNotifications(this,task);
-            task.setStatus(taskStatus);
-            taskViewModel.update(task);
-            dialog.dismiss();
-            NotificationUtils.showNotification(this,"Tarea Completada", task.getName());
-            NotificationUtils.playNotificationSound(this, true);
-        });
-    }
-
-    // Establece el fondo y los estilos de los botones en el dialogo
-    private void setDialogBackground(Task task, LinearLayout taskBackground, Button completeButton, Button deleteButton) {
-        int backgroundResource;
-        int completeButtonResource;
-        int deleteButtonResource;
-
-        switch (task.getStatus()) {
-            case COMPLETED:
-                backgroundResource = R.drawable.tasks_card_completed;
-                completeButtonResource = R.drawable.btn_completed;
-                deleteButtonResource = R.drawable.btn_completed;
-                break;
-            case FAILED:
-                backgroundResource = R.drawable.tasks_card_failed;
-                completeButtonResource = R.drawable.btn_important;
-                deleteButtonResource = R.drawable.btn_important;
-                break;
-            default:
-                switch (task.getTier()) {
-                    case HIGH:
-                        backgroundResource = R.drawable.tasks_card_important;
-                        completeButtonResource = R.drawable.btn_important;
-                        deleteButtonResource = R.drawable.btn_important;
-                        break;
-                    case LOW:
-                        backgroundResource = R.drawable.tasks_card_low;
-                        completeButtonResource = R.drawable.btn_low;
-                        deleteButtonResource = R.drawable.btn_low;
-                        break;
-                    default:
-                        backgroundResource = R.drawable.tasks_card;
-                        completeButtonResource = R.drawable.btn_default;
-                        deleteButtonResource = R.drawable.btn_default;
-                }
-        }
-
-        taskBackground.setBackgroundResource(backgroundResource);
-        completeButton.setBackgroundResource(completeButtonResource);
-        deleteButton.setBackgroundResource(deleteButtonResource);
-    }
-
 
     // Calcula el tiempo restante para la fecha limite de la tarea
     private String remainingTime(Date deadline) {

@@ -52,7 +52,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
             notifyDataSetChanged(); // Notificar al adaptador de los cambios en la lista
 
-            handler.postDelayed(this, 30000); // 30000 milliseconds = 30 segundos
+            handler.postDelayed(this, 5000); // 5000 milliseconds = 5 segundos
         }
     };
 
