@@ -106,7 +106,9 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
     }
 
     private void deleteFilters() {
-        searchTask.setText("");
+        if (searchTask != null){
+            searchTask.setText("");
+        }
         currentFilter = FilterUtils.FilterType.NONE;
         taskAdapter.applyFilter(currentFilter);
         filter.setText("Filtrar");
@@ -198,7 +200,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
                 WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
                 layoutParams.copyFrom(window.getAttributes());
                 layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-                layoutParams.gravity = Gravity.BOTTOM;
+                layoutParams.gravity = Gravity.TOP;
                 window.setAttributes(layoutParams);
             }
         });
@@ -273,7 +275,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
                 currentFilter = FilterUtils.FilterType.NONE;
                 break;
         }
-        filter.setText(currentFilter.toString());
+        filter.setText(currentFilter.toString().toLowerCase());
         taskAdapter.applyFilter(currentFilter);
     }
 
@@ -350,9 +352,11 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
     }
 
     public void onTaskClick(Task task) {
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.fragment_task, null);
-        AlertDialog dialog = createDialog(dialogView);
-        handleButtonClicks(dialog, dialogView, task);
+        if(!isMenuInflated()){
+            View dialogView = LayoutInflater.from(this).inflate(R.layout.fragment_task, null);
+            AlertDialog dialog = createDialog(dialogView);
+            handleButtonClicks(dialog, dialogView, task);
+        }
     }
 
     private AlertDialog createDialog(View dialogView) {
@@ -507,5 +511,15 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
             remainingTime = "Quedan: " + remainingMinutes + " minutos";
         }
         return remainingTime;
+    }
+
+    // Revisa si el menu lateral se esta mostrando
+    private boolean isMenuInflated() {
+        LinearLayout drawerContentLayout = findViewById(R.id.drawerLayout);
+        if (drawerContentLayout != null) {
+            int visibility = drawerContentLayout.getVisibility();
+            return visibility == View.VISIBLE;
+        }
+        return false;
     }
 }
