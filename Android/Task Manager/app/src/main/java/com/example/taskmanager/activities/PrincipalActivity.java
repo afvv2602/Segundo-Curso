@@ -65,8 +65,8 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
     private TaskViewModel taskViewModel;
     private TaskAdapter taskAdapter;
     private TaskNotificationReceiver notificationReceiver;
-    private EditText dateEdit, timeEdit, tierEdit;
-    private Button filter, search , addTask;
+    private EditText dateEdit, timeEdit, tierEdit, searchTask;
+    private Button filter, search , addTask,delete;
     private int selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute;
     private LiveData<List<Task>> tasksLiveData;
     private List<Task> filteredTasks;
@@ -80,7 +80,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         initNavigationView();
     }
 
-    // Inicializa la vista de tareas
+    // Inicializa la vista de tareas y el menu lateral
     private void initTaskView() {
         username = getIntent().getStringExtra("username");
         RecyclerView taskRecyclerView = findViewById(R.id.task_recyclerview);
@@ -100,12 +100,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         });
         notificationReceiver = new TaskNotificationReceiver();
         notificationReceiver.setTaskViewModel(taskViewModel);
-
-        //filterTask.setOnClickListener(view -> showFilterDialog());
-        //searchTask.setOnClickListener(view -> showSearchTaskDialog());
-        //addTask.setOnClickListener(view -> showAddTaskDialog());
     }
-
     private void initNavigationView() {
         // Inflar el diseño del menú lateral y agregarlo al DrawerLayout
         LinearLayout drawerContentLayout = findViewById(R.id.drawerLayout);
@@ -116,19 +111,31 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         filter = sideMenu.findViewById(R.id.task_filter);
         search = sideMenu.findViewById(R.id.search_task);
         addTask = sideMenu.findViewById(R.id.add_task_button);
+        delete = sideMenu.findViewById(R.id.delete_filters);
 
         filter.setOnClickListener(v -> showFilterDialog());
         search.setOnClickListener(v -> showSearchTaskDialog());
         addTask.setOnClickListener(v -> showAddTaskDialog());
-        addTask.setOnClickListener(v -> deleteFilters());
+        delete.setOnClickListener(v -> deleteFilters());
 
         TextView welcomeTextView = sideMenu.findViewById(R.id.welcomeTextView);
         welcomeTextView.setText(String.format("Bievenido %s", username));
     }
 
     private void deleteFilters() {
-
+        if (searchTask != null){
+            searchTask.setText("");
+            search.setText("Buscar");
+            currentFilter = FilterUtils.FilterType.NONE;
+            taskAdapter.applyFilter(currentFilter);
+            filter.setText("Filtrar");
+        }else{
+            currentFilter = FilterUtils.FilterType.NONE;
+            taskAdapter.applyFilter(currentFilter);
+            filter.setText("Filtrar");
+        }
     }
+
 
     // Opciones de los tres botones
     private void showFilterDialog() {
@@ -190,8 +197,8 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         taskAdapter.applyFilter(currentFilter);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.fragment_search_task, null);
-        EditText searchEditText = dialogView.findViewById(R.id.search_edit_text);
-        searchEditText.addTextChangedListener(new TextWatcher() {
+        searchTask = dialogView.findViewById(R.id.search_edit_text);
+        searchTask.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }

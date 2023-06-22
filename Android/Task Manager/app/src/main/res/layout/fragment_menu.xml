@@ -44,7 +44,7 @@
             android:textColor="@color/GrisOb"
             android:textColorHint="@color/GrisOb"
             android:background="@drawable/edit_border"
-            android:hint="Filtro" />
+            android:hint="Filtrar" />
 
         <Button
             android:id="@+id/delete_filters"
