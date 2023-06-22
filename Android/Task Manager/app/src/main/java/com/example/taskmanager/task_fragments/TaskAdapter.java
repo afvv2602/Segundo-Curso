@@ -27,7 +27,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     private List<Task> filteredTasks = new ArrayList<>();
     private TaskClickListener listener;
     private TaskRepository taskRepository;
-
     private FilterUtils.FilterType currentFilter = FilterUtils.FilterType.NONE;
 
     private Handler handler = new Handler();
@@ -52,7 +51,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
             notifyDataSetChanged(); // Notificar al adaptador de los cambios en la lista
 
-            handler.postDelayed(this, 5000); // 5000 milliseconds = 5 segundos
+            handler.postDelayed(this, 60000); // 60000 milliseconds = 60 segundos
         }
     };
 
