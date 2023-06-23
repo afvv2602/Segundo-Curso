@@ -32,22 +32,29 @@ public class NotificationUtils extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        // Crea el canal de notificacion
         createNotificationChannel(context);
 
         String taskName = intent.getStringExtra("taskName");
         int taskStatus = intent.getIntExtra("taskStatus", 0);
-
+        boolean isTaskCompleted = false;
         String notificationContent;
+
+        // Configura el contenido de la notificacion segun el estado de la tarea
         if (taskStatus == 0) {
             notificationContent = String.format("Tu tarea %s no ha sido completada en el tiempo estimado", taskName);
+            isTaskCompleted = false;
         } else if (taskStatus == 1) {
             notificationContent = String.format("Tu tarea %s ha sido completada", taskName);
+            isTaskCompleted = true;
         } else {
             notificationContent = "Hubo un problema con tu tarea";
         }
 
-        Notification notification = createNotification(context, taskName, notificationContent);
+        // Crea la notificacion
+        Notification notification = createNotification(context, taskName, notificationContent, isTaskCompleted);
 
+        // Muestra la notificacion
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (notificationManager != null) {
             notificationManager.notify(0, notification);
@@ -55,9 +62,11 @@ public class NotificationUtils extends BroadcastReceiver {
     }
 
     private void createNotificationChannel(Context context) {
+        // Crea el canal de notificacion si la versión de Android es compatible
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "TaskChannel";
             String description = "Channel for task notification";
+
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance);
             channel.setDescription(description);
@@ -69,15 +78,26 @@ public class NotificationUtils extends BroadcastReceiver {
         }
     }
 
-    private Notification createNotification(Context context, String taskName, String notificationContent) {
-        return new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.ic_dialog_alert)
-                .setContentTitle(taskName)
-                .setContentText(notificationContent)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .build();
+    // Crea la notificacion con el icono y contenido correspondiente segun el estado de la tarea
+    private Notification createNotification(Context context, String taskName, String notificationContent, boolean isTaskCompleted) {
+        if (isTaskCompleted) {
+            return new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+                    .setSmallIcon(R.drawable.baseline_done_24)
+                    .setContentTitle(taskName)
+                    .setContentText(notificationContent)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .build();
+        } else {
+            return new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+                    .setSmallIcon(R.drawable.baseline_warning_24)
+                    .setContentTitle(taskName)
+                    .setContentText(notificationContent)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .build();
+        }
     }
 
+    // Programa las notificaciones de la tarea en funcion del tiempo restante hasta la fecha limite
     public static void scheduleTaskNotifications(Context context, Task task) {
         long timeRemainingMillis = task.getDeadline().getTime() - System.currentTimeMillis();
         long oneHourBeforeMillis = TimeUnit.HOURS.toMillis(1);
@@ -95,6 +115,7 @@ public class NotificationUtils extends BroadcastReceiver {
         }
     }
 
+    // Programa la notificacion utilizando el AlarmaManager
     private static void scheduleNotification(Context context, Task task, long delayMillis) {
         Intent notificationIntent = new Intent(context, NotificationUtils.class);
         notificationIntent.putExtra("taskName", task.getName());
@@ -119,6 +140,7 @@ public class NotificationUtils extends BroadcastReceiver {
         }
     }
 
+    // Cancela las notificaciones programadas y las notificaciones mostradas de una tarea
     public static void cancelTaskNotifications(Context context, Task task) {
         Intent alarmIntent = new Intent(context, NotificationUtils.class);
         PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(
@@ -138,6 +160,7 @@ public class NotificationUtils extends BroadcastReceiver {
         }
     }
 
+    // Muestra una notificacion simple
     public static void showNotification(Context context, String title, String message) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (notificationManager != null) {
@@ -149,13 +172,14 @@ public class NotificationUtils extends BroadcastReceiver {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "task_channel")
                     .setContentTitle(title)
                     .setContentText(message)
-                    .setSmallIcon(R.drawable.soft_border)
+                    .setSmallIcon(R.drawable.baseline_warning_24)
                     .setAutoCancel(true);
 
             notificationManager.notify(0, builder.build());
         }
     }
 
+    // Reproduce un sonido de notificacion segun si la tarea esta completada o no
     public static void playNotificationSound(Context context, boolean isComplete) {
         MediaPlayer mediaPlayer = new MediaPlayer();
         try {

@@ -379,7 +379,4 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         return false;
     }
 
-
-
-
 }

@@ -8,6 +8,16 @@
     android:background="@color/Amarillo">
 
 
+        <ImageView
+            android:layout_width="437dp"
+            android:layout_height="419dp"
+            android:background="@drawable/login"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="-13dp"></ImageView>
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelineH"
             android:layout_width="0dp"

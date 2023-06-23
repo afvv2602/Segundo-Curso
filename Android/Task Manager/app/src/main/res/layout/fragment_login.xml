@@ -8,6 +8,16 @@
     android:background="@color/Amarillo">
 
 
+    <ImageView
+        android:layout_width="437dp"
+        android:layout_height="419dp"
+        android:background="@drawable/login"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="-13dp"></ImageView>
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineH"
         android:layout_width="0dp"
@@ -17,6 +27,7 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/soft_border"
@@ -69,14 +80,14 @@
             android:layout_width="328dp"
             android:layout_height="48dp"
             android:layout_marginTop="28dp"
+            android:autofillHints="username"
             android:background="@drawable/edit_border"
             android:hint="@string/usuarioLogin"
-            android:autofillHints="username"
             android:inputType="textPersonName"
             android:padding="10dp"
-            android:textSize="18sp"
             android:textColor="@color/GrisOb"
             android:textColorHint="@color/GrisOb"
+            android:textSize="18sp"
             app:layout_constraintEnd_toStartOf="@id/guidelineVRight"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@id/guidelineVLeft"
@@ -87,14 +98,14 @@
             android:layout_width="328dp"
             android:layout_height="48dp"
             android:layout_marginTop="24dp"
+            android:autofillHints="password"
             android:background="@drawable/edit_border"
             android:hint="@string/contrasenaLogin"
+            android:inputType="textPassword"
             android:padding="10dp"
             android:textColor="@color/GrisOb"
             android:textColorHint="@color/GrisOb"
             android:textSize="18sp"
-            android:autofillHints="password"
-            android:inputType="textPassword"
             app:layout_constraintEnd_toStartOf="@id/guidelineVRight"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@id/guidelineVLeft"
@@ -108,11 +119,11 @@
             android:layout_marginTop="56dp"
             android:layout_marginEnd="168dp"
             android:background="@drawable/btn_border"
-            android:text="@string/btnLogin"
             android:gravity="center"
+            android:text="@string/btnLogin"
+            android:textColor="@color/Negro"
             android:textSize="15sp"
             android:textStyle="bold"
-            android:textColor="@color/Negro"
             app:layout_constraintEnd_toStartOf="@id/guidelineVRight"
             app:layout_constraintStart_toEndOf="@id/guidelineVLeft"
             app:layout_constraintTop_toBottomOf="@id/passEdit" />
@@ -123,11 +134,11 @@
             android:layout_height="48dp"
             android:layout_marginTop="56dp"
             android:background="@drawable/btn_border"
-            android:text="@string/btnRegister"
             android:gravity="center"
+            android:text="@string/btnRegister"
+            android:textColor="@color/Negro"
             android:textSize="15sp"
             android:textStyle="bold"
-            android:textColor="@color/Negro"
             app:layout_constraintEnd_toStartOf="@id/guidelineVRight"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@id/guidelineVLeft"
