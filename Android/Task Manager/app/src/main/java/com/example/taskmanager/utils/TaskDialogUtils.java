@@ -46,7 +46,7 @@ public class TaskDialogUtils {
         LinearLayout taskBackground = dialogView.findViewById(R.id.task_background);
 
         taskNameTextView.setText(task.getName());
-        taskDeadlineTextView.setText(remainingTime(task.getDeadline()));
+        taskDeadlineTextView.setText(DuplicateUtils.remainingTime(task.getDeadline()));
         taskTierTextView.setText("Tier: " + task.getTier());
         taskDescriptionTextView.setText(task.getDescription());
 
@@ -111,25 +111,4 @@ public class TaskDialogUtils {
         deleteButton.setBackgroundResource(deleteButtonResource);
     }
 
-    private static String remainingTime(Date deadline) {
-        Date currentDate = new Date();
-        long differenceMillis = deadline.getTime() - currentDate.getTime();
-        long differenceMinutes = TimeUnit.MILLISECONDS.toMinutes(differenceMillis);
-        long minutesInDay = TimeUnit.DAYS.toMinutes(1);
-        long remainingDays = differenceMinutes / minutesInDay;
-        long remainingHours = (differenceMinutes % minutesInDay) / 60;
-        long remainingMinutes = differenceMinutes % 60;
-        String remainingTime;
-
-        if (differenceMillis <= 0) {
-            remainingTime = "Se ha acabado el tiempo";
-        } else if (remainingDays > 0) {
-            remainingTime = "Quedan: " + remainingDays + " días";
-        } else if (remainingHours > 0) {
-            remainingTime = "Quedan: " + remainingHours + " horas";
-        } else {
-            remainingTime = "Quedan: " + remainingMinutes + " minutos";
-        }
-        return remainingTime;
-    }
 }

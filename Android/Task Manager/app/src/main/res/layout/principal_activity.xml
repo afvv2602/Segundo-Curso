@@ -31,7 +31,7 @@
 
     </LinearLayout>
 
-    <!-- Menú lateral -->
+    <!-- Menu lateral -->
     <LinearLayout
         android:id="@+id/drawerLayout"
         android:layout_width="280dp"

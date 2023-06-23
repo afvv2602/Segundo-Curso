@@ -23,10 +23,6 @@ public class TaskRepository {
         return taskDao.getTasksByOwner(owner);
     }
 
-    public LiveData<List<Task>> getOngoingTasks() {
-        return taskDao.getOngoingTasks();
-    }
-
     public void insert(Task task) {
         executorService.execute(() -> taskDao.insert(task));
     }

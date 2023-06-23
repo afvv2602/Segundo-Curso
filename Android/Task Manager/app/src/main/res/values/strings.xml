@@ -14,6 +14,6 @@
     <string name="btnAdd">Añadir tarea</string>
     <string name="taskTime">Hora limite para la tarea</string>
     <string name="taskTier">Elige la importancia de la tarea</string>
-    <string name="btnCompletar">Terminar tarea</string>
-    <string name="btnEliminar">Eliminar la tarea</string>
+    <string name="btnCompletar">Terminar</string>
+    <string name="btnEliminar">Eliminar</string>
 </resources>

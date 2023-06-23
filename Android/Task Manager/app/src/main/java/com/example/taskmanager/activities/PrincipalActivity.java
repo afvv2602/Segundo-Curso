@@ -32,6 +32,7 @@ import com.example.taskmanager.db.task.TaskRepository;
 import com.example.taskmanager.db.task.TaskViewModel;
 import com.example.taskmanager.task_fragments.TaskAdapter;
 import com.example.taskmanager.utils.CustomDatePicker;
+import com.example.taskmanager.utils.DuplicateUtils;
 import com.example.taskmanager.utils.FilterUtils;
 import com.example.taskmanager.utils.NotificationUtils;
 import com.example.taskmanager.utils.TaskDialogUtils;
@@ -350,7 +351,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
 
             Calendar deadline = Calendar.getInstance();
             deadline.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
-            Task newTask = new Task(0, name, description, deadline.getTime(), username, Task.Tier.valueOf(tier.toUpperCase()), Task.Status.IN_PROGRESS, remainingTime(deadline.getTime()));
+            Task newTask = new Task(0, name, description, deadline.getTime(), username, Task.Tier.valueOf(tier.toUpperCase()), Task.Status.IN_PROGRESS, DuplicateUtils.remainingTime(deadline.getTime()));
             taskViewModel.addTask(newTask);
             currentFilter = FilterUtils.FilterType.NONE;
             taskAdapter.applyFilter(currentFilter);
@@ -368,29 +369,6 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         }
     }
 
-    // Calcula el tiempo restante para la fecha limite de la tarea
-    private String remainingTime(Date deadline) {
-        Date currentDate = new Date();
-        long differenceMillis = deadline.getTime() - currentDate.getTime();
-        long differenceMinutes = TimeUnit.MILLISECONDS.toMinutes(differenceMillis);
-        long minutesInDay = TimeUnit.DAYS.toMinutes(1);
-        long remainingDays = differenceMinutes / minutesInDay;
-        long remainingHours = (differenceMinutes % minutesInDay) / 60;
-        long remainingMinutes = differenceMinutes % 60;
-        String remainingTime;
-
-        if (differenceMillis <= 0) {
-            remainingTime = "Se ha acabado el tiempo";
-        } else if (remainingDays > 0) {
-            remainingTime = "Quedan: " + remainingDays + " días";
-        } else if (remainingHours > 0) {
-            remainingTime = "Quedan: " + remainingHours + " horas";
-        } else {
-            remainingTime = "Quedan: " + remainingMinutes + " minutos";
-        }
-        return remainingTime;
-    }
-
     // Revisa si el menu lateral se esta mostrando
     private boolean isMenuInflated() {
         LinearLayout drawerContentLayout = findViewById(R.id.drawerLayout);
@@ -400,4 +378,8 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         }
         return false;
     }
+
+
+
+
 }

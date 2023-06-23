@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.taskmanager.db.AppDatabase;
+import com.example.taskmanager.utils.DuplicateUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,10 +29,6 @@ public class TaskViewModel extends AndroidViewModel {
         return taskRepository.getTasksByOwner(owner);
     }
 
-    public LiveData<List<Task>> getOngoingTasks() {
-        return taskRepository.getOngoingTasks();
-    }
-
     public void addTask(Task task) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             taskRepository.insert(task);
@@ -49,6 +46,7 @@ public class TaskViewModel extends AndroidViewModel {
             taskRepository.delete(task);
         });
     }
+
     public void initSampleTasks(String username) {
         List<Task> sampleTasks = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
@@ -98,7 +96,7 @@ public class TaskViewModel extends AndroidViewModel {
             calendar.add(Calendar.DAY_OF_MONTH, (int) (Math.random() * 30) + 1);
             Date deadline = calendar.getTime();
 
-            Task task = new Task(i, name, description, deadline, username, tier, status, calculateRemainingTime(deadline));
+            Task task = new Task(i, name, description, deadline, username, tier, status, DuplicateUtils.remainingTime(deadline));
             sampleTasks.add(task);
         }
 
@@ -108,26 +106,6 @@ public class TaskViewModel extends AndroidViewModel {
             }
         });
     }
-    private String calculateRemainingTime(Date deadline) {
-        Date currentDate = new Date();
-        long differenceMillis = deadline.getTime() - currentDate.getTime();
-        long differenceMinutes = TimeUnit.MILLISECONDS.toMinutes(differenceMillis);
-        long minutesInDay = TimeUnit.DAYS.toMinutes(1);
-        long remainingDays = differenceMinutes / minutesInDay;
-        long remainingHours = (differenceMinutes % minutesInDay) / 60;
-        long remainingMinutes = differenceMinutes % 60;
-        String remainingTime;
 
-        if (differenceMillis <= 0) {
-            remainingTime = "Se ha acabado el tiempo";
-        } else if (remainingDays > 0) {
-            remainingTime = "Quedan: " + remainingDays + " días";
-        } else if (remainingHours > 0) {
-            remainingTime = "Quedan: " + remainingHours + " horas";
-        } else {
-            remainingTime = "Quedan: " + remainingMinutes + " minutos";
-        }
-        return remainingTime;
-    }
 
 }
