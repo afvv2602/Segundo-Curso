@@ -38,15 +38,12 @@ import com.example.taskmanager.utils.NotificationUtils;
 import com.example.taskmanager.utils.TaskDialogUtils;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.TaskClickListener {
     private String username;
     private TaskViewModel taskViewModel;
     private TaskAdapter taskAdapter;
-    private NotificationUtils notificationUtil;
     private EditText searchTask;
     private Button filter, search, addTask, delete;
     private LiveData<List<Task>> tasksLiveData;
@@ -68,7 +65,7 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
         // Configura el RecyclerView y el adaptador
         RecyclerView taskRecyclerView = findViewById(R.id.task_recyclerview);
         TaskRepository taskRepository = new TaskRepository(getApplication());
-        taskAdapter = new TaskAdapter(this, taskRepository);
+        taskAdapter = new TaskAdapter(this, this, taskRepository);
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         taskRecyclerView.setAdapter(taskAdapter);
 
@@ -83,8 +80,6 @@ public class PrincipalActivity extends AppCompatActivity implements TaskAdapter.
             filteredTasks = FilterUtils.applyFilter(tasks, currentFilter);
             taskAdapter.setTasks(filteredTasks);
         });
-        notificationUtil = new NotificationUtils();
-        notificationUtil.setTaskViewModel(taskViewModel);
     }
 
     // Inicializa el menu de lateral

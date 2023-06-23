@@ -37,7 +37,7 @@ public class CustomDatePicker extends DatePickerDialog {
                 // Fecha seleccionada es anterior a la fecha actual
                 Toast.makeText(getContext(), "No puedes seleccionar una fecha pasada", Toast.LENGTH_LONG).show();
             } else {
-                // Fecha seleccionada es válida
+                // Fecha seleccionada es valida
                 if (callback != null) {
                     callback.onDateSet(datePicker, year, month, dayOfMonth);
                 }

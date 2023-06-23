@@ -17,6 +17,7 @@ import com.example.taskmanager.db.task.TaskViewModel;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+// Esta clase se encarga de manejar cuando se hace click en una tarea
 public class TaskDialogUtils {
     public static void showTaskDialog(Context context, Task task, TaskViewModel taskViewModel) {
         View dialogView = LayoutInflater.from(context).inflate(R.layout.fragment_task, null);

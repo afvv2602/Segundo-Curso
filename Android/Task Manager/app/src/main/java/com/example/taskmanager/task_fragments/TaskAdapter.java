@@ -1,5 +1,6 @@
 package com.example.taskmanager.task_fragments;
 
+import android.content.Context;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,13 +16,13 @@ import com.example.taskmanager.db.task.Task;
 import com.example.taskmanager.db.task.TaskRepository;
 import com.example.taskmanager.utils.DuplicateUtils;
 import com.example.taskmanager.utils.FilterUtils;
+import com.example.taskmanager.utils.NotificationUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
     private List<Task> tasks = new ArrayList<>();
@@ -29,40 +30,44 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     private TaskClickListener listener;
     private TaskRepository taskRepository;
     private FilterUtils.FilterType currentFilter = FilterUtils.FilterType.NONE;
-
+    private Context context;
     private Handler handler = new Handler();
-    private Runnable updateTaskStatusRunnable = new Runnable() {
-        @Override
-        public void run() {
-            Date currentDate = new Date();
-            for (Task task : tasks) {
-                if (task.getStatus() == Task.Status.IN_PROGRESS && currentDate.after(task.getDeadline())) {
-                    task.setStatus(Task.Status.FAILED);
-                    taskRepository.update(task);
-                }
-                task.setRemainingTime(DuplicateUtils.remainingTime(task.getDeadline()));
-                taskRepository.update(task);
-            }
 
-            if (currentFilter == FilterUtils.FilterType.NONE) {
-                filteredTasks = new ArrayList<>(tasks); // Restaurar la lista completa de tareas
-            } else {
-                filteredTasks = FilterUtils.applyFilter(tasks, currentFilter); // Recalcular la lista filtrada
-            }
-
-            notifyDataSetChanged(); // Notificar al adaptador de los cambios en la lista
-
-            handler.postDelayed(this, 60000); // 60000 milliseconds = 60 segundos
-        }
-    };
-
-
-    public TaskAdapter(TaskClickListener listener, TaskRepository taskRepository) {
+    public TaskAdapter(Context context, TaskClickListener listener, TaskRepository taskRepository) {
+        this.context = context;
         this.listener = listener;
         this.taskRepository = taskRepository;
         handler.post(updateTaskStatusRunnable);
     }
 
+    // Este hilo se encarga de tener actualizadas las tareas y notificar si alguna ha sido fallida
+    private Runnable updateTaskStatusRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Date currentDate = new Date();
+            for (Task task : tasks) {
+                // Programar una notificacion para indicar que la tarea ha fallado
+                if (task.getStatus() == Task.Status.IN_PROGRESS && currentDate.after(task.getDeadline())) {
+                    task.setStatus(Task.Status.FAILED);
+                    taskRepository.update(task);
+                    NotificationUtils.scheduleNotification(context, task, 0);
+                }
+                task.setRemainingTime(DuplicateUtils.remainingTime(task.getDeadline()));
+                taskRepository.update(task);
+            }
+            if (currentFilter == FilterUtils.FilterType.NONE) {
+                filteredTasks = new ArrayList<>(tasks);
+            } else {
+                filteredTasks = FilterUtils.applyFilter(tasks, currentFilter);
+            }
+            notifyDataSetChanged();
+
+            handler.postDelayed(this, 10000);
+        }
+    };
+
+
+    // Manejar los clicks
     public interface TaskClickListener {
         void onTaskClick(Task task);
     }
@@ -74,31 +79,31 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         return new TaskViewHolder(view);
     }
 
+    // Vincula los datos de la tareas al recycler view
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        Task task = filteredTasks.get(position); // Usar la lista filtrada en lugar de la lista completa
+        Task task = filteredTasks.get(position);
         holder.bind(task);
     }
-
 
     @Override
     public int getItemCount() {
         return filteredTasks.size(); // Usar el tamaño de la lista filtrada en lugar de la lista completa
     }
 
+    // Establece la lista completa de tareas y aplica el filtro actual a la nueva lista
     public void setTasks(List<Task> tasks) {
         this.tasks.clear();
         this.tasks.addAll(tasks);
-        applyFilter(currentFilter); // Aplicar el filtro actual a la nueva lista de tareas
+        applyFilter(currentFilter);
     }
-
 
     public void applyFilter(FilterUtils.FilterType filterType) {
         currentFilter = filterType;
         filteredTasks.clear();
         if (filterType == FilterUtils.FilterType.NONE) {
             filteredTasks.addAll(tasks);
-        }else{
+        } else {
             for (Task task : tasks) {
                 boolean sw = true;
                 switch (filterType) {
@@ -124,16 +129,17 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 if (sw) {
                     filteredTasks.add(task);
                 }
-        }
+            }
         }
         notifyDataSetChanged(); // Notificar al adaptador de los cambios en la lista filtrada
     }
 
+    // Clase que representa una cada elemento tarea en el recycler
     class TaskViewHolder extends RecyclerView.ViewHolder {
         TextView nameTextView, statusTextView, deadlineTextView, remainingTimeTextView, descriptionTextView;
         ConstraintLayout taskBackground;
 
-        // Recoge los componentes de la tarea
+        // Inicializa la vista
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.task_name);
@@ -144,11 +150,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             taskBackground = itemView.findViewById(R.id.task_background);
         }
 
-        // Se inicializan los componentes de la tarea
+        // Establece los datos en la tarea
         public void bind(Task task) {
             nameTextView.setText(task.getName());
             deadlineTextView.setText(formatDeadline(task.getDeadline()));
-            statusTextView.setText(task.getStatus().name()); // Mostrar el nombre del estado
+            statusTextView.setText(task.getStatus().name());
             descriptionTextView.setText(task.getDescription());
             remainingTimeTextView.setText(task.getRemainingTime());
             itemView.setOnClickListener(v -> listener.onTaskClick(task));
@@ -194,5 +200,4 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             return sdf.format(deadline);
         }
     }
-
 }

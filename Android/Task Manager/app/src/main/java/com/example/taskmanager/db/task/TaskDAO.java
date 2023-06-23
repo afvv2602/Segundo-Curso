@@ -6,7 +6,6 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Transaction;
 import androidx.room.Update;
 
 import java.util.List;
@@ -26,7 +25,7 @@ public interface TaskDAO {
     @Delete
     void delete(Task task);
 
-    // Obtiene las tareas que pertenecen a un usuario específico
+    // Obtiene las tareas que pertenecen a un usuario especifico
     @Query("SELECT * FROM tasks WHERE owner = :owner")
     LiveData<List<Task>> getTasksByOwner(String owner);
 

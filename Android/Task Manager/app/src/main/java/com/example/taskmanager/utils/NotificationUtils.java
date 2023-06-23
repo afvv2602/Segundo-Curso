@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
@@ -32,7 +33,7 @@ public class NotificationUtils extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // Crea el canal de notificacion
+        // Crea el canal de notificación
         createNotificationChannel(context);
 
         String taskName = intent.getStringExtra("taskName");
@@ -40,21 +41,21 @@ public class NotificationUtils extends BroadcastReceiver {
         boolean isTaskCompleted = false;
         String notificationContent;
 
-        // Configura el contenido de la notificacion segun el estado de la tarea
-        if (taskStatus == 0) {
-            notificationContent = String.format("Tu tarea %s no ha sido completada en el tiempo estimado", taskName);
-            isTaskCompleted = false;
-        } else if (taskStatus == 1) {
+        // Configura el contenido de la notificación segun el estado de la tarea
+        if (taskStatus == Task.Status.IN_PROGRESS.ordinal()) {
+            notificationContent = String.format("Te queda %s para completar la tarea %s",
+                    DuplicateUtils.getRemainingTimeText(intent.getLongExtra("taskRemainingTime", 0)), taskName);
+        } else if (taskStatus == Task.Status.COMPLETED.ordinal()) {
             notificationContent = String.format("Tu tarea %s ha sido completada", taskName);
             isTaskCompleted = true;
         } else {
             notificationContent = "Hubo un problema con tu tarea";
         }
 
-        // Crea la notificacion
+        // Crea la notificación
         Notification notification = createNotification(context, taskName, notificationContent, isTaskCompleted);
 
-        // Muestra la notificacion
+        // Muestra la notificación
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (notificationManager != null) {
             notificationManager.notify(0, notification);
@@ -116,15 +117,18 @@ public class NotificationUtils extends BroadcastReceiver {
     }
 
     // Programa la notificacion utilizando el AlarmaManager
-    private static void scheduleNotification(Context context, Task task, long delayMillis) {
+    public static void scheduleNotification(Context context, Task task, long delayMillis) {
         Intent notificationIntent = new Intent(context, NotificationUtils.class);
         notificationIntent.putExtra("taskName", task.getName());
         notificationIntent.putExtra("taskId", task.getId());
-        notificationIntent.putExtra("taskStatus", task.getStatus());
+        notificationIntent.putExtra("taskStatus", task.getStatus().ordinal());
+        notificationIntent.putExtra("taskRemainingTime", task.getDeadline().getTime() - System.currentTimeMillis());
+
+        int requestCode = task.getId();
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context,
-                task.getId(),
+                requestCode,
                 notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
