@@ -2,6 +2,7 @@ package com.example.taskmanager.user_fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,29 +18,18 @@ import com.example.taskmanager.R;
 import com.example.taskmanager.activities.NavigationInterface;
 import com.example.taskmanager.db.user.User;
 import com.example.taskmanager.db.user.UserViewModel;
+import com.example.taskmanager.utils.PasswordEncryption;
 
 public class RegisterFragment extends Fragment {
-    UserViewModel userViewModel;
-    EditText usernameEditText, passwordEditText;
+    private UserViewModel userViewModel;
+    private EditText usernameEditText, passwordEditText;
     private NavigationInterface navigationInterface;
 
-    // Se infla la vista del fragmento de registro
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_register, container, false);
     }
 
-    // Configura la vista una vez que se ha creado
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        userViewModel = new ViewModelProvider(requireActivity(), new UserViewModel.UserViewModelFactory(requireActivity().getApplication())).get(UserViewModel.class);
-        usernameEditText = view.findViewById(R.id.userEdit);
-        passwordEditText = view.findViewById(R.id.passEdit);
-        Button registerButton = view.findViewById(R.id.registerBtn);
-        registerButton.setOnClickListener(v -> validateFields());
-    }
-
-    // Se guarda una referencia al activity cuando el fragmento se añade
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -50,27 +40,42 @@ public class RegisterFragment extends Fragment {
         }
     }
 
-    // Se borra la referencia al activity
     @Override
     public void onDetach() {
         super.onDetach();
         navigationInterface = null;
     }
 
-    // Registra al usuario
-    private void registerUser(String username, String password) {
-        User newUser = new User(0, username, password);
-        userViewModel.registerUser(newUser, success -> {
-            if (success) {
-                showMessage("Registro con éxito!");
-                navigationInterface.navigateToPrincipalActivity(username);
-            } else {
-                showMessage("Lo siento, pero ese usuario ya está registrado");
-            }
-        });
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setUpViews(view);
     }
 
-    // Valida que los campos no esten vacíos
+    private void setUpViews(View view) {
+        usernameEditText = view.findViewById(R.id.userEdit);
+        passwordEditText = view.findViewById(R.id.passEdit);
+        Button registerButton = view.findViewById(R.id.registerBtn);
+        userViewModel = new ViewModelProvider(requireActivity(), new UserViewModel.UserViewModelFactory(requireActivity().getApplication())).get(UserViewModel.class);
+        registerButton.setOnClickListener(v -> validateFields());
+    }
+
+    private void registerUser(String username, String password) {
+        String encryptedPassword = PasswordEncryption.encryptPassword(password);
+        if (encryptedPassword != null) {
+            User newUser = new User(0, username, encryptedPassword);
+            userViewModel.registerUser(newUser, success -> {
+                if (success) {
+                    navigationInterface.navigateToPrincipalActivity(username);
+                } else {
+                    showMessage("Lo siento, pero ese usuario ya está registrado");
+                }
+            });
+        } else {
+            showMessage("Error al encriptar la contraseña");
+        }
+    }
+
     private void validateFields() {
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
@@ -81,8 +86,7 @@ public class RegisterFragment extends Fragment {
         }
     }
 
-    // Muestra un mensaje en pantalla, asegurandose de se ejecuta en el hilo principal de la UI
     private void showMessage(String message) {
-        requireActivity().runOnUiThread(() -> Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show());
+        Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show();
     }
 }
